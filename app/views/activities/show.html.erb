@@ -7,7 +7,7 @@
         <div class="carousel-inner">
           <% @activity.ordered_images.each_with_index do |image, index| %>
             <div class="carousel-item <%= "active" if index == 0 %>">
-              <%= image_tag image, class: "activity-carousel-image" %>
+              <%= image_tag image, class: "activity-carousel-image", alt: @activity.title %>
             </div>
           <% end %>
         </div>
@@ -23,7 +23,7 @@
         <% end %>
       </div>
     <% else %>
-      <%= image_tag "activity_finder_default_thumbnail.jpg", class: "activity-carousel-image" %>
+      <%= image_tag "activity_finder_default_thumbnail.jpg", class: "activity-carousel-image", alt: "default image" %>
     <% end %>
   </div>
 

@@ -58,7 +58,7 @@
           <div class="image-preview-item existing-image-item" draggable="true" data-id="<%= image.id %>">
             <%= hidden_field_tag "activity[image_order][]", image.id, class: "image-order-input" %>
             <div class="thumbnail-badge">Drag</div>
-            <%= image_tag image.variant(resize_to_fill: [300, 180]), class: "existing-image-preview" %>
+            <%= image_tag image.variant(resize_to_fill: [300, 180]), class: "existing-image-preview", alt: activity.title.presence || "Activity image" %>
             <div class="form-check mt-2">
               <%= check_box_tag "activity[remove_image_ids][]", image.id, false, class: "form-check-input" %>
               <%= label_tag "remove_image_#{image.id}", "Delete image", class: "form-check-label text-danger" %>

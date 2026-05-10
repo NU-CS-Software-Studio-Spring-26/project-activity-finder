@@ -60,7 +60,7 @@
         data-activity-title="<%= activity.title.to_s.downcase %>"
       >
         <div class="activity-card-img">
-          <%= image_tag activity_image(activity), class: "img-fluid" %>
+          <%= image_tag activity_image(activity), class: "img-fluid", alt: activity_image_alt(activity) %>
         </div>
 
       <div class="activity-card-body">
