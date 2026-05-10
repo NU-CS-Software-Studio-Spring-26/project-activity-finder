@@ -9,19 +9,37 @@
  * Consider organizing styles into separate files for maintainability.
  */
 
-:root {
+ :root {
+  /* Backgrounds */
   --af-bg: #070a14;
   --af-bg-2: #0b1220;
-  --af-surface: rgba(255, 255, 255, 0.06);
-  --af-surface-2: rgba(255, 255, 255, 0.09);
-  --af-border: rgba(255, 255, 255, 0.12);
-  --af-text: rgba(255, 255, 255, 0.92);
-  --af-muted: rgba(255, 255, 255, 0.70);
-  --af-muted-2: rgba(255, 255, 255, 0.55);
+  --af-surface: #151c2e;
+  --af-surface-2: #1a2236;
+
+  /* Borders */
+  --af-border: #3a4258;
+  --af-border-strong: #6f7890;
+
+  /* Accessible text */
+  --af-text: #ffffff;        /* 18.7:1 on #0b1220 */
+  --af-text-soft: #e7ecff;   /* 15.9:1 */
+  --af-muted: #c2cbe8;       /* 11.6:1 */
+  --af-muted-2: #aab4d6;     /* 9.1:1 */
+
+  /* Brand colors */
+  --af-primary: #6d5efc;
+  --af-primary-hover: #5a4cf5;
+  --af-primary-active: #4f42ee;
+  --af-accent: #3dd5f3;
+
+  /* Text on colored buttons */
+  --af-on-primary: #ffffff;
+  --af-on-accent: #070a14;
+
+  /* Shadows */
   --af-shadow: 0 18px 60px rgba(0, 0, 0, 0.38);
   --af-shadow-soft: 0 10px 30px rgba(0, 0, 0, 0.22);
-  --af-primary: #6d5efc;
-  --af-primary-2: #3dd5f3;
+
   --af-radius: 18px;
 }
 
@@ -31,7 +49,8 @@ html, body {
 
 .app-body {
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
-  background: radial-gradient(1200px 600px at 10% 10%, rgba(109, 94, 252, 0.25), transparent 55%),
+  background:  
+    radial-gradient(1200px 600px at 10% 10%, rgba(109, 94, 252, 0.25), transparent 55%),
     radial-gradient(900px 500px at 90% 0%, rgba(61, 213, 243, 0.18), transparent 60%),
     linear-gradient(180deg, var(--af-bg) 0%, var(--af-bg-2) 100%);
   color: var(--af-text);
@@ -56,13 +75,17 @@ html, body {
 }
 
 .app-navbar .navbar-brand,
-.app-navbar .nav-link {
-  color: rgba(255, 255, 255, 0.86) !important;
+.app-navbar .nav-link,
+.app-main a,
+.activity-title a,
+.activity-info-value {
+  color: var(--af-text-soft) !important;
 }
 
 .app-navbar .nav-link:hover,
-.app-navbar .nav-link:focus-visible {
-  color: #ffffff !important;
+.app-navbar .nav-link:focus-visible,
+.app-main a:hover {
+  color: var(--af-text) !important;
 }
 
 .app-mark {
@@ -74,13 +97,13 @@ html, body {
 }
 
 .app-main a {
-  color: rgba(255, 255, 255, 0.88);
+  /* color: rgba(255, 255, 255, 0.88); */
   text-decoration-color: rgba(255, 255, 255, 0.35);
   text-underline-offset: 0.16em;
 }
 
 .app-main a:hover {
-  color: #ffffff;
+  /* color: #ffffff; */
   text-decoration-color: rgba(255, 255, 255, 0.55);
 }
 
@@ -93,41 +116,51 @@ html, body {
   border-color: rgba(255, 255, 255, 0.10) !important;
 }
 
+.activity-meta,
+.image-name,
+.form-text,
+.text-muted {
+  color: var(--af-muted) !important;
+}
+
+.activity-category,
+.activity-info-label {
+  color: var(--af-muted-2);
+}
+
 /* Bootstrap theme nudges */
 .btn-primary {
   --bs-btn-bg: var(--af-primary);
   --bs-btn-border-color: var(--af-primary);
-  --bs-btn-hover-bg: #5a4cf5;
-  --bs-btn-hover-border-color: #5a4cf5;
-  --bs-btn-active-bg: #4f42ee;
-  --bs-btn-active-border-color: #4f42ee;
+  --bs-btn-color: var(--af-on-primary);
+
+  --bs-btn-hover-bg: var(--af-primary-hover);
+  --bs-btn-hover-border-color: var(--af-primary-hover);
+  --bs-btn-hover-color: var(--af-on-primary);
+
+  --bs-btn-active-bg: var(--af-primary-active);
+  --bs-btn-active-border-color: var(--af-primary-active);
+  --bs-btn-active-color: var(--af-on-primary);
 }
 
+.btn-secondary,
 .btn-outline-secondary {
-  --bs-btn-color: rgba(255, 255, 255, 0.78);
-  --bs-btn-border-color: rgba(255, 255, 255, 0.22);
-  --bs-btn-hover-bg: rgba(255, 255, 255, 0.10);
-  --bs-btn-hover-border-color: rgba(255, 255, 255, 0.26);
-  --bs-btn-hover-color: #ffffff;
-}
-
-.btn-secondary {
-  --bs-btn-bg: rgba(255, 255, 255, 0.14);
-  --bs-btn-border-color: rgba(255, 255, 255, 0.16);
-  --bs-btn-hover-bg: rgba(255, 255, 255, 0.18);
-  --bs-btn-hover-border-color: rgba(255, 255, 255, 0.20);
-  --bs-btn-color: #ffffff;
+  --bs-btn-color: var(--af-text);
+  --bs-btn-border-color: var(--af-border-strong);
+  --bs-btn-hover-bg: var(--af-surface-2);
+  --bs-btn-hover-border-color: var(--af-border-strong);
+  --bs-btn-hover-color: var(--af-text);
 }
 
 .form-control,
 .form-select {
-  background-color: rgba(255, 255, 255, 0.06);
-  border-color: rgba(255, 255, 255, 0.16);
-  color: rgba(255, 255, 255, 0.92);
+  background-color: var(--af-surface-2);
+  border-color: var(--af-border);
+  color: var(--af-text);
 }
 
 .form-control::placeholder {
-  color: rgba(255, 255, 255, 0.50);
+  color: var(--af-muted-2);
 }
 
 .form-control:focus,
@@ -138,12 +171,6 @@ html, body {
 
 .form-text {
   color: rgba(255, 255, 255, 0.58);
-}
-
-.card {
-  background: rgba(255, 255, 255, 0.06);
-  border-color: rgba(255, 255, 255, 0.12);
-  box-shadow: var(--af-shadow-soft);
 }
 
 .list-group {
@@ -193,8 +220,18 @@ html, body {
 
 .surface-card {
   border-radius: var(--af-radius);
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.card,
+.surface-card,
+.auth-card,
+.activity-card,
+.activity-main-info,
+.activity-info-card,
+.activity-hero-card,
+.image-preview-item {
+  background: var(--af-surface);
+  border: 1px solid var(--af-border);
   box-shadow: var(--af-shadow-soft);
 }
 
@@ -217,11 +254,8 @@ html, body {
 }
 
 .auth-card {
-  background: rgba(255, 255, 255, 0.06);
   border-radius: var(--af-radius);
   padding: 32px;
-  box-shadow: var(--af-shadow);
-  border: 1px solid rgba(255, 255, 255, 0.12);
 }
 
 .auth-title {
@@ -301,11 +335,8 @@ html, body {
 }
 
 .activity-card {
-  background: rgba(255, 255, 255, 0.06);
   border-radius: var(--af-radius);
   overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  box-shadow: var(--af-shadow-soft);
   transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
@@ -379,12 +410,9 @@ html, body {
 
 .image-preview-item {
   position: relative;
-  border: 1px solid rgba(255, 255, 255, 0.14);
   border-radius: 16px;
   padding: 8px;
-  background: rgba(255, 255, 255, 0.06);
   cursor: grab;
-  box-shadow: var(--af-shadow-soft);
 }
 
 .image-preview-item.dragging {
@@ -432,9 +460,6 @@ html, body {
 .activity-hero-card {
   border-radius: 22px;
   overflow: hidden; 
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.10);
-  box-shadow: var(--af-shadow);
 }
 
 .activity-carousel-image {
@@ -455,11 +480,8 @@ html, body {
 
 .activity-main-info,
 .activity-info-card {
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 16px;
   padding: 28px;
-  box-shadow: var(--af-shadow-soft);
 }
 
 .activity-category-badge {
