@@ -27,9 +27,10 @@
   --af-muted-2: #aab4d6;     /* 9.1:1 */
 
   /* Brand colors */
-  --af-primary: #6d5efc;
-  --af-primary-hover: #5a4cf5;
-  --af-primary-active: #4f42ee;
+  /* Primary darkened from #6d5efc (4.44:1 on white) to meet WCAG AA. */
+  --af-primary: #5645e8;        /* 6.07:1 on white */
+  --af-primary-hover: #4a3bd9;  /* 7.05:1 on white */
+  --af-primary-active: #3f30c0; /* 8.68:1 on white */
   --af-accent: #3dd5f3;
 
   /* Text on colored buttons */
