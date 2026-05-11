@@ -3,12 +3,28 @@ document.addEventListener("turbo:load", () => {
   setupExistingImageReorder();
 });
 
+function activityImagePreviewAlt() {
+  const titleInput = document.querySelector('input[name="activity[title]"]');
+  const title = titleInput?.value?.trim();
+  return title || "Activity image";
+}
+
+function refreshNewImagePreviewAlts() {
+  const alt = activityImagePreviewAlt();
+  document.querySelectorAll(".new-image-item img").forEach((img) => {
+    img.alt = alt;
+  });
+}
+
 function setupNewImageUpload() {
   const input = document.getElementById("activity-images-input");
   const dropZone = document.getElementById("drop-zone");
   const previewList = document.getElementById("image-preview-list");
 
   if (!input || !dropZone || !previewList) return;
+
+  const titleInput = document.querySelector('input[name="activity[title]"]');
+  titleInput?.addEventListener("input", refreshNewImagePreviewAlts);
 
   let files = [];
 
@@ -52,13 +68,23 @@ function setupNewImageUpload() {
         const item = document.createElement("div");
         item.className = "image-preview-item new-image-item";
         item.draggable = true;
-        item.dataset.index = index;
+        item.dataset.index = String(index);
 
-        item.innerHTML = `
-          <div class="thumbnail-badge">${index + 1}</div>
-          <img src="${event.target.result}" alt="Preview">
-          <div class="image-name">${file.name}</div>
-        `;
+        const badge = document.createElement("div");
+        badge.className = "thumbnail-badge";
+        badge.textContent = String(index + 1);
+
+        const img = document.createElement("img");
+        img.src = event.target.result;
+        img.alt = activityImagePreviewAlt();
+
+        const nameDiv = document.createElement("div");
+        nameDiv.className = "image-name";
+        nameDiv.textContent = file.name;
+
+        item.appendChild(badge);
+        item.appendChild(img);
+        item.appendChild(nameDiv);
 
         item.addEventListener("dragstart", handleDragStart);
         item.addEventListener("dragover", handleDragOver);

@@ -19,4 +19,16 @@ module ActivitiesHelper
 
     asset_path("activity_finder_default_thumbnail.jpg")
   end
+
+  def activity_image_alt(activity)
+    return activity.title.to_s if activity.thumbnail.present?
+
+    external_fallback = EXTERNAL_ACTIVITY_IMAGE_FALLBACKS.find do |pattern, _url|
+      activity.title.to_s.match?(pattern)
+    end
+
+    return activity.title.to_s if external_fallback.present?
+
+    "default image"
+  end
 end
