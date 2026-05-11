@@ -17,11 +17,13 @@
       <div class="activity-search mt-3">
         <div class="activity-search-controls">
           <div class="activity-search-input-wrap">
+            <label for="activity-search" class="visually-hidden">Search activities by name</label>
             <input
               type="search"
+              id="activity-search"
+              name="q"
               class="form-control activity-search-input"
               placeholder="Search by activity name"
-              aria-label="Search activities by name"
               data-search-target="input"
               data-action="input->search#filter search->search#filter"
             >
