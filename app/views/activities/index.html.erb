@@ -54,6 +54,53 @@
     </div>
   </section>
 
+  <nav class="activity-pagination surface-card mb-4" aria-label="Activity list pagination">
+    <div class="surface-card-body py-3">
+      <div class="d-flex flex-column flex-lg-row flex-wrap align-items-center justify-content-between gap-3">
+        <div class="d-flex flex-wrap align-items-center gap-2">
+          <%= form_with url: activities_path, method: :get, local: true, class: "d-flex flex-wrap align-items-center gap-2 m-0" do %>
+            <%= hidden_field_tag :page, 1 %>
+            <label for="activities-per-page" class="form-label mb-0 text-nowrap small text-muted">Per page</label>
+            <%= select_tag :per_page,
+                  options_for_select(
+                    ActivitiesController::ACTIVITIES_PER_PAGE_CHOICES.map { |n| [n.to_s, n] },
+                    @pagination[:per_page]
+                  ),
+                  id: "activities-per-page",
+                  class: "form-select form-select-sm w-auto",
+                  onchange: "this.form.requestSubmit()" %>
+          <% end %>
+        </div>
+
+        <p class="small text-muted mb-0 align-self-center">
+          <% if @pagination[:total].zero? %>
+            No activities yet.
+          <% else %>
+            Showing <%= @pagination[:first_number] %>–<%= @pagination[:last_number] %>
+            of <%= @pagination[:total] %>
+            (page <%= @pagination[:page] %> of <%= @pagination[:total_pages] %>)
+          <% end %>
+        </p>
+
+        <div class="d-flex flex-wrap align-items-center gap-2 justify-content-lg-end">
+          <% p = @pagination %>
+          <% path_prev = activities_path(page: p[:page] - 1, per_page: p[:per_page]) %>
+          <% path_next = activities_path(page: p[:page] + 1, per_page: p[:per_page]) %>
+          <% if p[:page] <= 1 %>
+            <span class="btn btn-outline-secondary btn-sm disabled" aria-disabled="true">Previous</span>
+          <% else %>
+            <%= link_to "Previous", path_prev, class: "btn btn-outline-secondary btn-sm" %>
+          <% end %>
+          <% if p[:page] >= p[:total_pages] %>
+            <span class="btn btn-outline-secondary btn-sm disabled" aria-disabled="true">Next</span>
+          <% else %>
+            <%= link_to "Next", path_next, class: "btn btn-outline-secondary btn-sm" %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </nav>
+
   <div class="activity-grid" data-search-target="results">
     <% @activities.each do |activity| %>
       <div

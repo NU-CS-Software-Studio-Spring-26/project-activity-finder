@@ -421,6 +421,11 @@ body {
   color: #6c757d;
   font-size: 0.95rem;
 }
+
+.activity-pagination .form-select {
+  min-width: 4.5rem;
+}
+
 .activity-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 17.5rem), 1fr));

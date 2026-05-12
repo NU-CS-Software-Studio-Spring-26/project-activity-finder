@@ -42,6 +42,39 @@ class ActivitiesControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
+  test "index paginates by per_page and page" do
+    4.times do |i|
+      Activity.create!(
+        title: "Paginated #{i}",
+        city: "Seattle",
+        category: "Test",
+        event_date: Date.today + i.days,
+        user: @user
+      )
+    end
+
+    # 7 activities total (fixtures + setup + 4); per_page 6 → page 2 shows 1 card
+    get activities_path(per_page: 6, page: 2)
+    assert_response :success
+    assert_match(/page 2 of 2/, response.body)
+    assert_select ".activity-card", count: 1
+  end
+
+  test "index ignores invalid per_page and defaults to 12" do
+    get activities_path(per_page: 999)
+    assert_response :success
+    assert_select "#activities-per-page option[selected]", text: "12"
+  end
+
+  test "index json includes activities and pagination" do
+    get activities_path(format: :json)
+    assert_response :success
+    body = JSON.parse(response.body)
+    assert body["activities"].is_a?(Array)
+    assert_equal 1, body.dig("pagination", "page")
+    assert_equal 12, body.dig("pagination", "per_page")
+  end
+
   test "should get new" do
     get new_activity_url
     assert_response :success
