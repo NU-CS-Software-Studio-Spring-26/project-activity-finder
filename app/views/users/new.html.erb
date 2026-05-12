@@ -2,10 +2,10 @@
 
 <div class="auth-container">
   <div class="auth-card">
-    <h1 class="auth-title mb-1">Create your account</h1>
-    <p class="text-muted text-center mb-4">Join activities, host events, and invite friends.</p>
+    <h1 class="auth-title mb-1" id="auth-heading">Create your account</h1>
+    <p class="text-muted text-center mb-4" id="auth-intro">Join activities, host events, and invite friends.</p>
 
-    <%= form_with model: @user do |f| %>
+    <%= form_with model: @user, html: { "aria-labelledby": "auth-heading", "aria-describedby": "auth-intro" } do |f| %>
       <% if @user.errors.any? %>
         <div class="alert alert-danger">
           <ul class="mb-0">
@@ -40,8 +40,8 @@
     <% end %>
 
     <div class="auth-links">
-      Already have an account?
-      <%= link_to "Login", login_path %>
+      <span class="auth-links-prompt">Already have an account?</span>
+      <%= link_to "Login", login_path, "aria-label": "Go to login for an existing account" %>
     </div>
   </div>
 </div>
