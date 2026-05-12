@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-bs-theme="dark">
   <head>
     <title><%= content_for(:title) || "Activity Finder" %></title>
     <%# Allow pinch-zoom and up to 200%+ browser zoom (no maximum-scale / user-scalable=no). %>
@@ -31,13 +31,13 @@
   </head>
 
   <body class="app-body">
-    <a class="visually-hidden-focusable" href="#main">Skip to content</a>
+    <a class="visually-hidden-focusable app-skip-link" href="#main">Skip to main content</a>
 
     <nav class="navbar navbar-expand-lg app-navbar border-bottom">
       <div class="container-xxl">
-        <%= link_to root_path, class: "navbar-brand d-flex align-items-center gap-2" do %>
+        <%= link_to root_path, class: "navbar-brand d-flex align-items-center gap-2", "aria-label": "Activity Finder — home" do %>
           <span class="app-mark" aria-hidden="true"></span>
-          <span>Activity Finder</span>
+          <span class="navbar-brand-text">Activity Finder</span>
         <% end %>
 
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#topNav" aria-controls="topNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -47,7 +47,7 @@
         <div class="collapse navbar-collapse" id="topNav">
           <ul class="navbar-nav me-auto mb-2 mb-lg-0">
             <li class="nav-item">
-              <%= link_to "Activities", activities_path, class: "nav-link" %>
+              <%= link_to "Activities", activities_path, class: "nav-link", "aria-label": "Browse all activities" %>
             </li>
           </ul>
 
@@ -61,10 +61,10 @@
               </li>
             <% else %>
               <li class="nav-item">
-                <%= link_to "Login", login_path, class: "nav-link" %>
+                <%= link_to "Login", login_path, class: "nav-link", "aria-label": "Log in to your account" %>
               </li>
               <li class="nav-item">
-                <%= link_to "Sign up", signup_path, class: "btn btn-primary btn-sm ms-lg-2" %>
+                <%= link_to "Sign up", signup_path, class: "btn btn-primary btn-sm ms-lg-2", "aria-label": "Create a new account" %>
               </li>
             <% end %>
           </ul>
@@ -100,8 +100,8 @@
 
       <footer class="app-footer mt-5 pt-4 border-top">
         <div class="d-flex flex-column flex-sm-row justify-content-between gap-2">
-          <div class="text-muted small">© <%= Time.current.year %> Activity Finder</div>
-          <div class="text-muted small">Built with Rails • Turbo • Bootstrap</div>
+          <small class="app-footer-note">© <%= Time.current.year %> Activity Finder</small>
+          <small class="app-footer-note">Built with <abbr title="Ruby on Rails">Rails</abbr> · Turbo · Bootstrap</small>
         </div>
       </footer>
     </div>
