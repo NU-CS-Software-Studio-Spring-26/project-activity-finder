@@ -4,6 +4,7 @@ class ActivitiesController < ApplicationController
   before_action :authorize_activity!, only: %i[ edit update destroy ]
 
   def authorize_activity!
+    return if current_user.admin?
     redirect_to root_path, alert: "Not authorized" unless @activity.user == current_user
   end
 

@@ -78,6 +78,35 @@ class ActivitiesControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to activities_url
   end
 
+  test "admin can edit another user's activity" do
+    admin = User.create!(
+      name: "Admin",
+      email: "admin@example.com",
+      password: "Admin",
+      password_confirmation: "Admin",
+      admin: true
+    )
+    other = User.create!(
+      name: "Other",
+      email: "other2@example.com",
+      password: "password",
+      password_confirmation: "password"
+    )
+    foreign = Activity.create!(
+      title: "Theirs",
+      city: "NYC",
+      category: "X",
+      event_date: Date.today,
+      user: other
+    )
+
+    post login_path, params: { email: admin.email, password: "Admin" }
+    assert_redirected_to root_path
+
+    get edit_activity_url(foreign)
+    assert_response :success
+  end
+
   test "cannot edit another user's activity" do
     other = User.create!(
       name: "Other",

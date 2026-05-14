@@ -8,6 +8,17 @@
 #     MovieGenre.find_or_create_by!(name: genre_name)
 #   end
 
+# Bootstrap admin (sign in with email; name is shown as "Admin").
+# Change the password in production after first login.
+admin = User.find_or_initialize_by(email: "admin@activityfinder.local")
+admin.assign_attributes(
+  name: "Admin",
+  password: "Admin",
+  password_confirmation: "Admin",
+  admin: true
+)
+admin.save!
+
 ActivitySignup.destroy_all
 Activity.destroy_all
 
@@ -53,3 +64,4 @@ created.first(3).each do |activity|
 end
 
 puts "Seeded #{Activity.count} activities and #{ActivitySignup.count} signups for #{user.email}"
+puts "Admin user: email #{admin.email}, password from seeds (name: #{admin.name})"
