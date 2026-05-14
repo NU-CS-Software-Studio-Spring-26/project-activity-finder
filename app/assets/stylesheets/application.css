@@ -175,6 +175,25 @@ body {
   border-color: rgba(255, 255, 255, 0.10) !important;
 }
 
+.app-footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.5rem;
+}
+
+.app-footer-links a {
+  color: var(--af-muted);
+  font-size: 0.875rem;
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.app-footer-links a:hover,
+.app-footer-links a:focus-visible {
+  color: var(--af-text);
+  text-decoration: underline;
+}
+
 .activity-meta,
 .image-name,
 .form-text,
@@ -681,4 +700,42 @@ body {
   .activity-info-card {
     padding: 20px;
   }
+}
+
+/* Legal / static pages */
+.legal-page {
+  max-width: 48rem;
+}
+
+.legal-page h1 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+}
+
+.legal-page h2 {
+  font-size: 1.15rem;
+  font-weight: 600;
+  margin-top: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.legal-page p,
+.legal-page li {
+  color: var(--af-text-soft);
+  line-height: 1.7;
+}
+
+.legal-page ul {
+  padding-left: 1.25rem;
+}
+
+.legal-page a {
+  color: var(--af-accent);
+  text-decoration: underline;
+}
+
+.legal-page a:hover,
+.legal-page a:focus-visible {
+  color: var(--af-text);
 }
