@@ -1,4 +1,21 @@
 class Activity < ApplicationRecord
+  CUSTOM_CATEGORY = "__custom__"
+
+  CATEGORIES = [
+    "Hike",
+    "Food Crawl",
+    "Coffee Meetup",
+    "Trivia Night",
+    "Art Walk",
+    "Fitness Class",
+    "Farmers Market",
+    "Sports & Recreation",
+    "Music & Live Events",
+    "Workshop / Class",
+    "Social & Networking",
+    "Volunteer"
+  ].freeze
+
   belongs_to :user
 
   has_many :activity_signups, dependent: :destroy
@@ -7,6 +24,7 @@ class Activity < ApplicationRecord
   validates :title, presence: true
   validates :city, presence: true
   validates :category, presence: true
+  before_validation :normalize_category
   validates :event_date, presence: true
   validates :capacity,
             numericality: { only_integer: true, greater_than: 0 },
@@ -31,7 +49,20 @@ class Activity < ApplicationRecord
     capacity.present? && attendee_count >= capacity
   end
 
+  def self.category_options
+    CATEGORIES
+  end
+
+  def preset_category?
+    category.present? && CATEGORIES.include?(category)
+  end
+
   private
+
+  def normalize_category
+    self.category = category.to_s.strip.presence
+  end
+
   def image_limit
     if images.attachments.length > 10
       errors.add(:images, "maximum is 10 images")
