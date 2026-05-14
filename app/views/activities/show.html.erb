@@ -130,7 +130,7 @@
   </div>
 
   <div class="mt-4 d-flex flex-wrap gap-2">
-    <% if @activity.user == current_user %>
+    <% if @activity.user == current_user || current_user_admin? %>
       <%= link_to "Edit Activity", edit_activity_path(@activity), class: "btn btn-secondary" %>
       <%= button_to "Delete Activity", @activity, method: :delete, class: "btn btn-danger", form: { data: { turbo_confirm: "Are you sure?" } } %>
     <% end %>

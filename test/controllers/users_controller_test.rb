@@ -45,4 +45,24 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
     end
     assert_redirected_to root_path
   end
+
+  test "admin can edit and destroy another user" do
+    admin = User.create!(
+      name: "Admin",
+      email: "admin-user@example.com",
+      password: "Admin",
+      password_confirmation: "Admin",
+      admin: true
+    )
+    post login_path, params: { email: admin.email, password: "Admin" }
+    assert_redirected_to root_path
+
+    get edit_user_url(@bob)
+    assert_response :success
+
+    assert_difference("User.count", -1) do
+      delete user_url(@bob)
+    end
+    assert_redirected_to root_path
+  end
 end

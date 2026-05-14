@@ -4,6 +4,7 @@ class UsersController < ApplicationController
   before_action :authorize_user!, only: [ :edit, :update, :destroy ]
 
   def authorize_user!
+    return if current_user.admin?
     return if @user == current_user
 
     redirect_to root_path, alert: "Not authorized"

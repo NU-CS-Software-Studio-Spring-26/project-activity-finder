@@ -38,9 +38,9 @@ class UserTest < ActiveSupport::TestCase
     assert dup.errors.of_kind?(:email, :taken)
   end
 
-  test "password should be at least 6 characters" do
-    @user.password = "123"
-    @user.password_confirmation = "123"
+  test "password should be at least 5 characters" do
+    @user.password = "1234"
+    @user.password_confirmation = "1234"
     assert_not @user.valid?
   end
 end
