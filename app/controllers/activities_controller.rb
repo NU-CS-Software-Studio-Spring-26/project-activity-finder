@@ -1,5 +1,5 @@
 class ActivitiesController < ApplicationController
-  ACTIVITIES_PER_PAGE_CHOICES = [6, 12, 24, 48].freeze
+  ACTIVITIES_PER_PAGE_CHOICES = [ 6, 12, 24, 48 ].freeze
 
   before_action :require_login
   before_action :set_activity, only: %i[ show edit update destroy join leave ]
@@ -135,7 +135,7 @@ class ActivitiesController < ApplicationController
     def activities_page_param(total_pages)
       p = params[:page].to_i
       p = 1 if p < 1
-      [p, total_pages].min
+      [ p, total_pages ].min
     end
 
     # Use callbacks to share common setup or constraints between actions.
@@ -165,7 +165,7 @@ class ActivitiesController < ApplicationController
     end
 
     def purge_selected_images
-      ids = params.dig(:activity, :remove_image_ids)&.reject(&:blank?) || []
+      ids = params.dig(:activity, :remove_image_ids)&.reject(&:blank?) || [ ]
       ids.each do |id|
         attachment = @activity.images.attachments.find_by(id: id)
         attachment&.purge
@@ -173,7 +173,7 @@ class ActivitiesController < ApplicationController
     end
 
     def update_image_order
-      ordered_ids = params.dig(:activity, :image_order)&.reject(&:blank?) || []
+      ordered_ids = params.dig(:activity, :image_order)&.reject(&:blank?) || [ ]
       ordered_ids.each_with_index do |id, index|
         attachment = @activity.images.attachments.find_by(id: id)
         attachment&.update(position: index + 1)
