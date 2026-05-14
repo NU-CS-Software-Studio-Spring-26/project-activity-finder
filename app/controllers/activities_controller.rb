@@ -1,4 +1,6 @@
 class ActivitiesController < ApplicationController
+  ACTIVITIES_PER_PAGE_CHOICES = [ 6, 12, 24, 48 ].freeze
+
   before_action :require_login
   before_action :set_activity, only: %i[ show edit update destroy join leave ]
   before_action :authorize_activity!, only: %i[ edit update destroy ]
@@ -10,7 +12,21 @@ class ActivitiesController < ApplicationController
 
   # GET /activities or /activities.json
   def index
-    @activities = Activity.all.order(event_date: :asc)
+    per_page = activities_per_page
+    base_scope = Activity.order(event_date: :asc)
+    total = base_scope.count
+    total_pages = total.zero? ? 1 : (total + per_page - 1) / per_page
+    page = activities_page_param(total_pages)
+
+    @activities = base_scope.offset((page - 1) * per_page).limit(per_page)
+    @pagination = {
+      page: page,
+      per_page: per_page,
+      total: total,
+      total_pages: total_pages,
+      first_number: total.zero? ? 0 : (page - 1) * per_page + 1,
+      last_number: (page - 1) * per_page + @activities.size
+    }
 
     activity_ids = @activities.map(&:id)
     @signup_counts = ActivitySignup.where(activity_id: activity_ids).group(:activity_id).count
@@ -112,6 +128,17 @@ class ActivitiesController < ApplicationController
   end
 
   private
+    def activities_per_page
+      n = params[:per_page].to_i
+      ACTIVITIES_PER_PAGE_CHOICES.include?(n) ? n : 12
+    end
+
+    def activities_page_param(total_pages)
+      p = params[:page].to_i
+      p = 1 if p < 1
+      [ p, total_pages ].min
+    end
+
     # Use callbacks to share common setup or constraints between actions.
     def set_activity
       @activity = Activity.find(params.expect(:id))
