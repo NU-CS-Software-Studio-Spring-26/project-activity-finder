@@ -1,4 +1,33 @@
 module ActivitiesHelper
+  POPULAR_ACTIVITY_CITIES = [
+    "Chicago",
+    "Madison",
+    "Milwaukee",
+    "Minneapolis",
+    "Detroit",
+    "Indianapolis",
+    "Columbus",
+    "Cleveland",
+    "St. Louis",
+    "Kansas City",
+    "Denver",
+    "Seattle",
+    "Portland",
+    "San Francisco",
+    "Los Angeles",
+    "San Diego",
+    "Phoenix",
+    "Dallas",
+    "Houston",
+    "Austin",
+    "Atlanta",
+    "Miami",
+    "Boston",
+    "New York",
+    "Philadelphia",
+    "Washington"
+  ].freeze
+
   EXTERNAL_ACTIVITY_IMAGE_FALLBACKS = [
     [ /sunrise ridge hike/i, "https://www.hikeoftheweek.com/wp-content/uploads/2016/07/DSC03218-scaled.jpg" ],
     [ /downtown taco/i, "https://www.statesmanjournal.com/gcdn/-mm-/ff08101970c9b392424972bf0f5861a9adca4d8f/c=0-110-2122-1304/local/-/media/2015/04/30/Salem/B9317155403Z.1_20150430164006_000_GEGALEEKJ.1-0.jpg?width=660&height=372&fit=crop&format=pjpg&auto=webp" ],

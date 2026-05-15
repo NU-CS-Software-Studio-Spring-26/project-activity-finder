@@ -291,7 +291,7 @@ body {
   background: linear-gradient(135deg, rgba(109, 94, 252, 0.16) 0%, rgba(61, 213, 243, 0.10) 60%, rgba(255, 255, 255, 0.04) 100%);
   border: 1px solid rgba(255, 255, 255, 0.10);
   box-shadow: var(--af-shadow);
-  overflow: hidden;
+  overflow: visible;
 }
 
 .page-hero-inner {
@@ -738,4 +738,53 @@ body {
 .legal-page a:hover,
 .legal-page a:focus-visible {
   color: var(--af-text);
+}
+
+/* City picker (activities index) */
+.activity-search-toolbar {
+  width: 100%;
+}
+
+.activity-city-toolbar {
+  justify-content: flex-end;
+}
+
+/* City picker: custom menu (no Bootstrap Dropdown JS) — stack above page content */
+.city-picker-dropdown {
+  position: relative;
+}
+
+.city-picker-dropdown .dropdown-menu {
+  z-index: 1085;
+}
+
+.city-picker-toggle {
+  min-width: 10.5rem;
+  max-width: 16rem;
+}
+
+.city-picker-pin {
+  width: 1.125rem;
+  height: 1.125rem;
+  flex-shrink: 0;
+  opacity: 0.92;
+}
+
+.city-picker-panel {
+  min-width: min(calc(100vw - 2rem), 22rem);
+  max-width: 22rem;
+  border: 1px solid var(--af-border);
+  background: var(--af-surface);
+}
+
+.city-picker-city-list {
+  max-height: 12rem;
+  overflow-y: auto;
+  background: var(--af-bg-2);
+}
+
+.city-picker-city-item {
+  cursor: pointer;
+  overflow-wrap: anywhere;
+  white-space: normal;
 }

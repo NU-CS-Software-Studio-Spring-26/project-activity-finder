@@ -13,7 +13,14 @@ class ActivitiesController < ApplicationController
   # GET /activities or /activities.json
   def index
     per_page = activities_per_page
+    @city_query = params[:city].to_s.strip
+
     base_scope = Activity.order(event_date: :asc)
+    if @city_query.present?
+      pattern = "%#{ActiveRecord::Base.sanitize_sql_like(@city_query)}%"
+      base_scope = base_scope.where("city ILIKE ?", pattern)
+    end
+
     total = base_scope.count
     total_pages = total.zero? ? 1 : (total + per_page - 1) / per_page
     page = activities_page_param(total_pages)
