@@ -25,6 +25,10 @@ Rails.application.routes.draw do
   get "/privacy",  to: "pages#privacy",  as: :privacy
   get "/about",    to: "pages#about",    as: :about
 
+  namespace :advisor do
+    resource :messages, only: :create
+  end
+
   # Defines the root path route ("/")
   # root "posts#index"
 end

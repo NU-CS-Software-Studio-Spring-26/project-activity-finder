@@ -1,0 +1,87 @@
+<div
+  class="advisor-chat"
+  data-controller="advisor-chat"
+  data-advisor-chat-url-value="<%= advisor_messages_path %>"
+  data-advisor-chat-open-value="false"
+  aria-live="polite"
+>
+  <button
+    type="button"
+    class="advisor-chat-fab"
+    data-advisor-chat-target="fab"
+    data-action="advisor-chat#toggle"
+    aria-expanded="false"
+    aria-controls="advisor-chat-panel"
+    aria-label="Open activity advisor"
+  >
+    <svg class="advisor-chat-fab-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M12 3a9 9 0 0 0-9 9v3l2 2h2v-4H5a7 7 0 1 1 14 0h-2v4h2l2-2v-3a9 9 0 0 0-9-9Z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+      <circle cx="9" cy="12" r="1.1" fill="currentColor"/>
+      <circle cx="12" cy="12" r="1.1" fill="currentColor"/>
+      <circle cx="15" cy="12" r="1.1" fill="currentColor"/>
+    </svg>
+    <span class="advisor-chat-fab-label">Advisor</span>
+  </button>
+
+  <div
+    id="advisor-chat-panel"
+    class="advisor-chat-panel"
+    data-advisor-chat-target="panel"
+    hidden
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="advisor-chat-title"
+  >
+    <div class="advisor-chat-panel-glow" aria-hidden="true"></div>
+
+    <header class="advisor-chat-header">
+      <div class="advisor-chat-avatar" aria-hidden="true">
+        <span class="advisor-chat-avatar-ring"></span>
+        <svg viewBox="0 0 24 24" fill="none">
+          <path d="M12 2l2.2 6.8H21l-5.5 4 2.1 6.7L12 15.4 6.4 19.5l2.1-6.7L3 8.8h6.8L12 2Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div class="advisor-chat-header-copy">
+        <h2 id="advisor-chat-title" class="advisor-chat-title">Activity Advisor</h2>
+        <p class="advisor-chat-subtitle">Hi <%= current_user.name %> — let’s find your next event</p>
+      </div>
+      <button
+        type="button"
+        class="advisor-chat-close btn-close btn-close-white"
+        data-action="advisor-chat#close"
+        aria-label="Close advisor"
+      ></button>
+    </header>
+
+    <div class="advisor-chat-messages" data-advisor-chat-target="messages" role="log" aria-relevant="additions">
+      <div class="advisor-chat-message advisor-chat-message--assistant">
+        <div class="advisor-chat-bubble">
+          <p>Hey! I can help you pick activities to join. What city are you in, and what kinds of events do you enjoy?</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="advisor-chat-typing" data-advisor-chat-target="typing" hidden aria-hidden="true">
+      <span></span><span></span><span></span>
+    </div>
+
+    <form class="advisor-chat-form" data-advisor-chat-target="form" data-action="submit->advisor-chat#send">
+      <label class="visually-hidden" for="advisor-chat-input">Message</label>
+      <textarea
+        id="advisor-chat-input"
+        class="advisor-chat-input form-control"
+        rows="1"
+        placeholder="Type your message…"
+        data-advisor-chat-target="input"
+        data-action="keydown->advisor-chat#keydown input->advisor-chat#resize"
+        autocomplete="off"
+        maxlength="2000"
+      ></textarea>
+      <button type="submit" class="advisor-chat-send btn btn-primary" data-advisor-chat-target="send" aria-label="Send message">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </form>
+  </div>
+</div>
