@@ -109,15 +109,26 @@ export default class extends Controller {
     if (recommendations?.length) {
       const list = document.createElement("div")
       list.className = "advisor-chat-recommendations"
+      list.setAttribute("role", "list")
+      list.setAttribute("aria-label", "Recommended activities")
 
       recommendations.forEach((item) => {
-        const card = document.createElement("a")
+        const card = document.createElement("article")
         card.className = "advisor-chat-rec-card"
-        card.href = item.url
+        card.setAttribute("role", "listitem")
+
+        const metaParts = [ item.category, item.city, item.event_date ].filter(Boolean)
+        const meta = metaParts.length
+          ? `<p class="advisor-chat-rec-meta">${metaParts.map((part) => this.escapeHtml(part)).join(" · ")}</p>`
+          : ""
+
         card.innerHTML = `
-          <span class="advisor-chat-rec-title">${this.escapeHtml(item.title)}</span>
-          <span class="advisor-chat-rec-reason">${this.escapeHtml(item.reason)}</span>
-          <span class="advisor-chat-rec-cta">View activity →</span>
+          <div class="advisor-chat-rec-body">
+            <h3 class="advisor-chat-rec-title">${this.escapeHtml(item.title)}</h3>
+            ${meta}
+            <p class="advisor-chat-rec-reason">${this.escapeHtml(item.reason)}</p>
+          </div>
+          <a class="advisor-chat-rec-btn btn btn-sm" href="${this.escapeHtml(item.url)}">View &amp; join</a>
         `
         list.appendChild(card)
       })

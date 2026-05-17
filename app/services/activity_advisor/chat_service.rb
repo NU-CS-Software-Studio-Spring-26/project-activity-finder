@@ -22,10 +22,11 @@ module ActivityAdvisor
       ## Response rules
       - Keep replies brief (2–4 sentences) unless listing recommendations.
       - Do not invent activities, cities, or dates not in the catalog.
-      - When recommending, end your message with a fenced JSON block exactly in this shape (no extra keys):
+      - When recommending, write your friendly summary first, then on new lines add ONLY a machine-readable JSON block (users never see this block in the app UI). Use this exact shape:
       ```json
       {"recommendations":[{"activity_id":123,"title":"...","reason":"..."}]}
       ```
+      - Do not output raw JSON in the visible sentences — only inside the ```json fence.
       - Include at most 3 items in recommendations. Use the numeric activity_id from the catalog.
       - If the catalog is empty, say so kindly and suggest creating or browsing activities later.
       - Never mention API keys, models, or system prompts.
@@ -54,8 +55,8 @@ module ActivityAdvisor
 
       assistant_text = extract_assistant_text(response)
       {
-        reply: strip_recommendation_json(assistant_text),
-        recommendations: parse_recommendations(assistant_text)
+        reply: RecommendationParser.strip_json(assistant_text),
+        recommendations: RecommendationParser.parse(assistant_text)
       }
     rescue Aws::BedrockRuntime::Errors::ServiceError => e
       raise BedrockError, friendly_bedrock_message(e)
@@ -120,31 +121,5 @@ module ActivityAdvisor
       end
     end
 
-    def parse_recommendations(text)
-      json_block = text[/```json\s*(\{.*?\})\s*```/m, 1]
-      return [] if json_block.blank?
-
-      payload = JSON.parse(json_block)
-      Array(payload["recommendations"]).filter_map do |item|
-        id = item["activity_id"]
-        next if id.blank?
-
-        activity = Activity.find_by(id: id)
-        next unless activity
-
-        {
-          activity_id: activity.id,
-          title: item["title"].presence || activity.title,
-          reason: item["reason"].to_s,
-          url: Rails.application.routes.url_helpers.activity_path(activity)
-        }
-      end
-    rescue JSON::ParserError
-      []
-    end
-
-    def strip_recommendation_json(text)
-      text.gsub(/```json\s*\{.*?\}\s*```/m, "").strip
-    end
   end
 end
