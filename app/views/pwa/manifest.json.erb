@@ -1,22 +1,34 @@
 {
-  "name": "ActivityFinder",
+  "id": "/",
+  "name": "Activity Finder",
+  "short_name": "Activities",
+  "description": "Discover local activities, RSVP, and see who's going.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
+  "orientation": "portrait-primary",
+  "theme_color": "#0b1220",
+  "background_color": "#070a14",
+  "categories": ["social", "lifestyle"],
   "icons": [
     {
-      "src": "/icon.png",
+      "src": "/icon-192.png",
+      "sizes": "192x192",
       "type": "image/png",
-      "sizes": "512x512"
+      "purpose": "any"
     },
     {
-      "src": "/icon.png",
-      "type": "image/png",
+      "src": "/icon-512.png",
       "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
       "purpose": "maskable"
     }
-  ],
-  "start_url": "/",
-  "display": "standalone",
-  "scope": "/",
-  "description": "ActivityFinder.",
-  "theme_color": "red",
-  "background_color": "red"
+  ]
 }
