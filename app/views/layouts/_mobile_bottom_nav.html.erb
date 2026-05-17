@@ -1,0 +1,28 @@
+<nav class="app-mobile-nav d-lg-none" aria-label="Mobile navigation">
+  <%= link_to activities_path, class: "app-mobile-nav-item #{'is-active' if controller_name == 'activities' && action_name == 'index'}", "aria-label": "Activities", **(controller_name == 'activities' && action_name == 'index' ? { "aria-current": "page" } : {}) do %>
+    <svg class="app-mobile-nav-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4 6h16v2H4V6zm0 5h16v2H4v-2zm0 5h10v2H4v-2z"/></svg>
+    <span>Activities</span>
+  <% end %>
+
+  <% if logged_in? %>
+    <%= link_to new_activity_path, class: "app-mobile-nav-item #{'is-active' if controller_name == 'activities' && action_name.in?(%w[new create])}", "aria-label": "New activity" do %>
+      <svg class="app-mobile-nav-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+      <span>New</span>
+    <% end %>
+
+    <%= link_to current_user, class: "app-mobile-nav-item #{'is-active' if controller_name == 'users'}", "aria-label": "Your profile" do %>
+      <svg class="app-mobile-nav-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+      <span class="text-truncate" style="max-width: 5rem"><%= current_user.name.split.first %></span>
+    <% end %>
+  <% else %>
+    <%= link_to login_path, class: "app-mobile-nav-item #{'is-active' if controller_name == 'sessions'}", "aria-label": "Log in" do %>
+      <svg class="app-mobile-nav-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M11 7L9.6 8.4l2.6 2.6H2v2h10.2l-2.6 2.6L11 17l6-6-6-6zm9 12h-8v2h8V5h-8v2h8v12z"/></svg>
+      <span>Log in</span>
+    <% end %>
+
+    <%= link_to signup_path, class: "app-mobile-nav-item #{'is-active' if controller_name == 'users' && action_name == 'new'}", "aria-label": "Sign up" do %>
+      <svg class="app-mobile-nav-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M15 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm-9-2V8H4V6h2V4h2v2h2v2H6v2H4zm9 8c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+      <span>Sign up</span>
+    <% end %>
+  <% end %>
+</nav>

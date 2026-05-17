@@ -2,9 +2,11 @@
 <html lang="en" data-bs-theme="dark">
   <head>
     <title><%= content_for(:title) || "Activity Finder" %></title>
-    <%# Allow pinch-zoom and up to 200%+ browser zoom (no maximum-scale / user-scalable=no). %>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <%# Allow pinch-zoom; viewport-fit=cover for notched phones in installed PWA mode. %>
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="Activities">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="application-name" content="Activity Finder">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#0b1220">
@@ -18,19 +20,18 @@
 
     <%= yield :head %>
 
-    <%# Enable PWA manifest for installable apps (make sure to enable in config/routes.rb too!) %>
-    <%#= tag.link rel: "manifest", href: pwa_manifest_path(format: :json) %>
+    <%= tag.link rel: "manifest", href: pwa_manifest_path(format: :json) %>
 
-    <link rel="icon" href="/icon.png" type="image/png">
+    <link rel="icon" href="/icon-192.png" type="image/png" sizes="192x192">
     <link rel="icon" href="/icon.svg" type="image/svg+xml">
-    <link rel="apple-touch-icon" href="/icon.png">
+    <link rel="apple-touch-icon" href="/icon-192.png">
 
     <%# Includes all stylesheet files in app/assets/stylesheets %>
     <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
   </head>
 
-  <body class="app-body">
+  <body class="app-body app-shell">
     <a class="visually-hidden-focusable app-skip-link" href="#main">Skip to main content</a>
 
     <nav class="navbar navbar-expand-lg app-navbar border-bottom">
@@ -74,7 +75,7 @@
 
     <div class="app-gradient" aria-hidden="true"></div>
 
-    <div class="container-xxl my-4 my-lg-5">
+    <div class="container-xxl app-page-wrap my-3 my-lg-5">
       <div class="flash-stack" aria-live="polite" aria-atomic="true">
         <% if notice.present? %>
           <div class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
@@ -112,6 +113,8 @@
         </div>
       </footer>
     </div>
+
+    <%= render "layouts/mobile_bottom_nav" %>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   </body>

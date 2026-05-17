@@ -788,3 +788,113 @@ body {
   overflow-wrap: anywhere;
   white-space: normal;
 }
+
+/* PWA + mobile layout */
+.app-shell {
+  --app-mobile-nav-height: 3.75rem;
+  padding-bottom: calc(var(--app-mobile-nav-height) + env(safe-area-inset-bottom, 0px));
+}
+
+@media (min-width: 992px) {
+  .app-shell {
+    padding-bottom: 0;
+  }
+}
+
+.app-page-wrap {
+  padding-left: max(0.75rem, env(safe-area-inset-left));
+  padding-right: max(0.75rem, env(safe-area-inset-right));
+}
+
+.app-navbar .container-xxl {
+  padding-left: max(0.75rem, env(safe-area-inset-left));
+  padding-right: max(0.75rem, env(safe-area-inset-right));
+}
+
+.app-mobile-nav {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1040;
+  display: flex;
+  align-items: stretch;
+  justify-content: space-around;
+  gap: 0.25rem;
+  min-height: var(--app-mobile-nav-height);
+  padding: 0.35rem max(0.5rem, env(safe-area-inset-left)) calc(0.35rem + env(safe-area-inset-bottom, 0px)) max(0.5rem, env(safe-area-inset-right));
+  background: rgba(11, 18, 32, 0.96);
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.app-mobile-nav-item {
+  flex: 1 1 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.15rem;
+  min-width: 0;
+  padding: 0.25rem 0.35rem;
+  border-radius: 12px;
+  color: var(--af-muted) !important;
+  font-size: 0.7rem;
+  font-weight: 500;
+  text-decoration: none !important;
+  line-height: 1.2;
+}
+
+.app-mobile-nav-item:hover,
+.app-mobile-nav-item:focus-visible {
+  color: var(--af-text) !important;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.app-mobile-nav-item.is-active {
+  color: var(--af-accent) !important;
+  background: rgba(61, 213, 243, 0.1);
+}
+
+.app-mobile-nav-icon {
+  width: 1.35rem;
+  height: 1.35rem;
+  flex-shrink: 0;
+}
+
+@media (max-width: 991.98px) {
+  .page-hero-inner {
+    padding: 1rem 1rem;
+  }
+
+  .app-footer {
+    margin-bottom: 0.5rem;
+  }
+
+  .city-picker-toggle {
+    max-width: 100%;
+    width: 100%;
+  }
+
+  .activity-city-toolbar {
+    width: 100%;
+    justify-content: stretch;
+  }
+
+  .activity-city-toolbar .city-picker-dropdown {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .activity-pagination .surface-card-body {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+}
+
+@media (display-mode: standalone) {
+  .app-navbar {
+    padding-top: env(safe-area-inset-top, 0px);
+  }
+}
