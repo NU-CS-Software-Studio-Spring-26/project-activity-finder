@@ -423,7 +423,7 @@ PLATFORMS
   x86_64-linux-musl
 
 DEPENDENCIES
-  aws-sdk-bedrockruntime (~> 1.76)
+  aws-sdk-bedrockruntime
   aws-sdk-s3
   bcrypt (~> 3.1.7)
   bootsnap
