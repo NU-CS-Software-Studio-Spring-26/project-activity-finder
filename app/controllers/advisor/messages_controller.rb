@@ -25,12 +25,9 @@ module Advisor
     private
 
     def message_params
-      raw = params[:messages]
-      return [] unless raw.is_a?(Array)
-
-      raw.map do |entry|
-        entry = entry.permit(:role, :content) if entry.respond_to?(:permit)
-        { "role" => entry[:role] || entry["role"], "content" => entry[:content] || entry["content"] }
+      permitted = params.permit(messages: [ :role, :content ])
+      Array(permitted[:messages]).map do |entry|
+        { "role" => entry[:role], "content" => entry[:content] }
       end
     end
   end
