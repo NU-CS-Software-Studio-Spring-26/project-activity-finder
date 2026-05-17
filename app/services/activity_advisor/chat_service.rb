@@ -120,6 +120,5 @@ module ActivityAdvisor
         "The advisor is temporarily unavailable. Please try again shortly."
       end
     end
-
   end
 end
