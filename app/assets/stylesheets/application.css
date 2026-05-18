@@ -1142,15 +1142,78 @@ body {
   }
 }
 
-/* Legal / static pages */
-.legal-page {
-  max-width: 48rem;
+/* Empty states */
+.app-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  max-width: 28rem;
+  margin-inline: auto;
+  padding: 0.5rem 0.75rem;
 }
 
-.legal-page h1 {
-  font-size: 1.75rem;
-  font-weight: 700;
-  margin-bottom: 0.25rem;
+.app-empty-state-compact {
+  flex-direction: row;
+  text-align: start;
+  align-items: flex-start;
+  gap: 1rem;
+  max-width: none;
+  margin-inline: 0;
+  padding: 0.75rem 0;
+}
+
+.app-empty-state-compact .app-empty-state-icon {
+  width: 3rem;
+  height: 3rem;
+  margin-bottom: 0;
+  flex-shrink: 0;
+}
+
+.app-empty-state-compact .app-empty-state-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.app-empty-state-compact .app-empty-state-title {
+  font-size: 1rem;
+  margin-bottom: 0.35rem !important;
+}
+
+.app-empty-state-compact .app-empty-state-message {
+  font-size: 0.9rem;
+}
+
+.app-empty-state-compact .app-empty-state-actions {
+  margin-top: 0.75rem !important;
+}
+
+.app-empty-state-icon {
+  width: 4.5rem;
+  height: 4.5rem;
+  margin-bottom: 1rem;
+  color: var(--af-accent);
+}
+
+.app-empty-state-title {
+  color: var(--af-text);
+  font-weight: 600;
+}
+
+.app-empty-state-message {
+  color: var(--af-muted);
+  font-size: 0.95rem;
+  line-height: 1.55;
+}
+
+/* Legal / static pages */
+.legal-page-shell .legal-page-header {
+  border-bottom: 1px solid var(--af-border);
+  padding-bottom: 1rem;
+}
+
+.legal-page {
+  max-width: 48rem;
 }
 
 .legal-page h2 {
