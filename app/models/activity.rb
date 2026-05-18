@@ -4,6 +4,22 @@ class Activity < ApplicationRecord
   CATEGORY_MAX_LENGTH = 80
   LOCATION_MAX_LENGTH = 200
   DESCRIPTION_MAX_LENGTH = 5_000
+  CUSTOM_CATEGORY = "__custom__"
+
+  CATEGORIES = [
+    "Hike",
+    "Food Crawl",
+    "Coffee Meetup",
+    "Trivia Night",
+    "Art Walk",
+    "Fitness Class",
+    "Farmers Market",
+    "Sports & Recreation",
+    "Music & Live Events",
+    "Workshop / Class",
+    "Social & Networking",
+    "Volunteer"
+  ].freeze
 
   belongs_to :user
 
@@ -15,6 +31,7 @@ class Activity < ApplicationRecord
   validates :category, presence: true, length: { maximum: CATEGORY_MAX_LENGTH }
   validates :location, length: { maximum: LOCATION_MAX_LENGTH }, allow_blank: true
   validates :description, length: { maximum: DESCRIPTION_MAX_LENGTH }, allow_blank: true
+  before_validation :normalize_category
   validates :event_date, presence: true
   validates :capacity,
             numericality: { only_integer: true, greater_than: 0 },
@@ -39,7 +56,20 @@ class Activity < ApplicationRecord
     capacity.present? && attendee_count >= capacity
   end
 
+  def self.category_options
+    CATEGORIES
+  end
+
+  def preset_category?
+    category.present? && CATEGORIES.include?(category)
+  end
+
   private
+
+  def normalize_category
+    self.category = category.to_s.strip.presence
+  end
+
   def image_limit
     if images.attachments.length > 10
       errors.add(:images, "maximum is 10 images")

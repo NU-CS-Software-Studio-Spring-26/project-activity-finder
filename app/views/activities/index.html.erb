@@ -86,12 +86,13 @@
                     autocomplete="address-level2"
                     aria-label="Search for a city"
                     data-city-picker-target="searchInput"
-                    data-action="input->city-picker#filterList keydown.enter->city-picker#applySearch"
+                    data-action="input->city-picker#filterList input->city-picker#validateSearchInput keydown.enter->city-picker#applySearch"
                   >
                   <button type="button" class="btn btn-outline-secondary" data-action="city-picker#applySearch" title="Apply city filter">
                     Go
                   </button>
                 </div>
+                <div class="invalid-feedback d-none small" data-city-picker-target="searchFeedback"></div>
 
                 <div
                   class="city-picker-city-list border rounded"
@@ -104,13 +105,38 @@
           </div>
         </div>
 
-        <p class="activity-search-empty d-none mb-0 mt-2" data-search-target="emptyState">
-          No activities match your search.
-        </p>
+        <div class="d-none mt-3" data-search-target="emptyState">
+          <%= render "shared/empty_state",
+                compact: true,
+                icon: :search,
+                title: "No matches",
+                message: "No activities on this page match your search. Try another name or clear the search." %>
+        </div>
       </div>
     </div>
   </section>
 
+  <% if @pagination[:total].zero? %>
+    <div class="surface-card mb-4">
+      <div class="surface-card-body">
+        <% if @city_query.present? %>
+          <%= render "shared/empty_state",
+                icon: :pin,
+                title: "No activities in this city",
+                message: "We couldn’t find any activities matching “#{h(@city_query)}”. Try another city or browse everywhere.",
+                action_path: activities_path(per_page: @pagination[:per_page]),
+                action_label: "Show all cities" %>
+        <% else %>
+          <%= render "shared/empty_state",
+                icon: :calendar,
+                title: "No activities yet",
+                message: "Be the first to host something fun. Create an activity and invite others to join.",
+                action_path: new_activity_path,
+                action_label: "Create activity" %>
+        <% end %>
+      </div>
+    </div>
+  <% else %>
   <nav class="activity-pagination surface-card mb-4" aria-label="Activity list pagination">
     <div class="surface-card-body py-3">
       <div class="d-flex flex-column flex-lg-row flex-wrap align-items-center justify-content-between gap-3">
@@ -213,4 +239,5 @@
       </div>
     <% end %>
   </div>
+  <% end %>
 </div>

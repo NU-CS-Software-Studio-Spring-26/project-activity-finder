@@ -1,11 +1,14 @@
 import { Controller } from "@hotwired/stimulus"
 
+const CITY_MAX_LENGTH = 100
+const CITY_PATTERN = /^[a-zA-Z\s.'-]+$/
+
 /**
  * Custom city menu (no Bootstrap Dropdown JS) — avoids Turbo/Popper lifecycle bugs
  * where the toggle stops responding after submit.
  */
 export default class extends Controller {
-  static targets = ["form", "cityInput", "label", "searchInput", "list", "toggle", "menu", "dropdownRoot"]
+  static targets = ["form", "cityInput", "label", "searchInput", "list", "toggle", "menu", "dropdownRoot", "searchFeedback"]
 
   static values = {
     popularCities: Array,
@@ -23,6 +26,11 @@ export default class extends Controller {
     this.renderLabel()
     this.renderPopularList()
     this.closeMenuOnly()
+
+    if (this.hasSearchInputTarget) {
+      this.searchInputTarget.addEventListener("input", () => this.validateSearchInput())
+      this.searchInputTarget.addEventListener("blur", () => this.validateSearchInput())
+    }
   }
 
   disconnect() {
@@ -167,9 +175,56 @@ export default class extends Controller {
     if (!this.hasSearchInputTarget) return
     const q = this.searchInputTarget.value.trim()
     if (!q) {
+      this.showSearchError("Enter a city name.")
+      this.searchInputTarget.focus()
+      return
+    }
+    if (!this.validateSearchInput()) {
       this.searchInputTarget.focus()
       return
     }
     this.pickCity(q)
+  }
+
+  validateSearchInput() {
+    if (!this.hasSearchInputTarget) return true
+    const q = this.searchInputTarget.value.trim()
+    if (q === "") {
+      this.clearSearchError()
+      return true
+    }
+
+    if (q.length > CITY_MAX_LENGTH) {
+      this.showSearchError(`City must be ${CITY_MAX_LENGTH} characters or fewer.`)
+      return false
+    }
+
+    if (!CITY_PATTERN.test(q)) {
+      this.showSearchError("Use letters, spaces, and common punctuation only.")
+      return false
+    }
+
+    this.clearSearchError()
+    return true
+  }
+
+  showSearchError(message) {
+    if (!this.hasSearchInputTarget) return
+    this.searchInputTarget.classList.add("is-invalid")
+    this.searchInputTarget.setAttribute("aria-invalid", "true")
+    if (this.hasSearchFeedbackTarget) {
+      this.searchFeedbackTarget.textContent = message
+      this.searchFeedbackTarget.classList.remove("d-none")
+    }
+  }
+
+  clearSearchError() {
+    if (!this.hasSearchInputTarget) return
+    this.searchInputTarget.classList.remove("is-invalid")
+    this.searchInputTarget.setAttribute("aria-invalid", "false")
+    if (this.hasSearchFeedbackTarget) {
+      this.searchFeedbackTarget.textContent = ""
+      this.searchFeedbackTarget.classList.add("d-none")
+    }
   }
 }

@@ -5,7 +5,15 @@
     <h1 class="auth-title mb-1" id="auth-heading">Create your account</h1>
     <p class="text-muted text-center mb-4" id="auth-intro">Join activities, host events, and invite friends.</p>
 
-    <%= form_with model: @user, html: { "aria-labelledby": "auth-heading", "aria-describedby": "auth-intro" } do |f| %>
+    <%= form_with model: @user,
+          html: {
+            "aria-labelledby": "auth-heading",
+            "aria-describedby": "auth-intro",
+            data: {
+              controller: "signup-validation",
+              signup_validation_check_email_url_value: check_email_signup_path
+            }
+          } do |f| %>
       <% if @user.errors.any? %>
         <div class="alert alert-danger">
           <ul class="mb-0">
@@ -18,25 +26,45 @@
 
       <div class="mb-3">
         <%= f.label :name, class: "form-label" %>
-        <%= f.text_field :name, class: "form-control", maxlength: User::NAME_MAX_LENGTH %>
+        <%= f.text_field :name,
+              class: "form-control",
+              maxlength: User::NAME_MAX_LENGTH,
+              autocomplete: "name",
+              data: { signup_validation_target: "name" } %>
+        <div class="invalid-feedback d-none" data-signup-validation-target="nameFeedback"></div>
       </div>
 
       <div class="mb-3">
         <%= f.label :email, class: "form-label" %>
-        <%= f.email_field :email, class: "form-control", maxlength: User::EMAIL_MAX_LENGTH %>
+        <%= f.email_field :email,
+              class: "form-control",
+              maxlength: User::EMAIL_MAX_LENGTH,
+              autocomplete: "email",
+              data: { signup_validation_target: "email" } %>
+        <div class="form-text d-none" data-signup-validation-target="emailHint"></div>
+        <div class="invalid-feedback d-none" data-signup-validation-target="emailFeedback"></div>
       </div>
 
       <div class="mb-3">
         <%= f.label :password, class: "form-label" %>
-        <%= f.password_field :password, class: "form-control" %>
+        <%= f.password_field :password,
+              class: "form-control",
+              autocomplete: "new-password",
+              data: { signup_validation_target: "password" } %>
+        <div class="form-text">At least 5 characters.</div>
+        <div class="invalid-feedback d-none" data-signup-validation-target="passwordFeedback"></div>
       </div>
 
       <div class="mb-3">
         <%= f.label :password_confirmation, class: "form-label" %>
-        <%= f.password_field :password_confirmation, class: "form-control" %>
+        <%= f.password_field :password_confirmation,
+              class: "form-control",
+              autocomplete: "new-password",
+              data: { signup_validation_target: "confirmation" } %>
+        <div class="invalid-feedback d-none" data-signup-validation-target="confirmationFeedback"></div>
       </div>
 
-      <%= f.submit "Create Account", class: "btn btn-primary btn-auth" %>
+      <%= f.submit "Create Account", class: "btn btn-primary btn-auth", data: { signup_validation_target: "submit" }, disabled: true %>
     <% end %>
 
     <% if google_oauth_configured? %>

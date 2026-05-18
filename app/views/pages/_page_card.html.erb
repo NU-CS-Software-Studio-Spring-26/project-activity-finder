@@ -1,0 +1,11 @@
+<div class="surface-card legal-page-shell mb-4">
+  <div class="surface-card-header legal-page-header">
+    <h1 class="h2 mb-0"><%= title %></h1>
+    <% if local_assigns[:subtitle].present? %>
+      <p class="text-muted small mb-0 mt-2"><%= subtitle %></p>
+    <% end %>
+  </div>
+  <article class="surface-card-body legal-page">
+    <%= yield %>
+  </article>
+</div>
