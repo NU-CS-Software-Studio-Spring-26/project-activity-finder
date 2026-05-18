@@ -49,6 +49,12 @@ module ActivitiesHelper
     asset_path("activity_finder_default_thumbnail.jpg")
   end
 
+  def activity_link_params(return_to: nil)
+    return {} if return_to.blank?
+
+    { from: "profile", return_to: return_to }
+  end
+
   def activity_image_alt(activity)
     return activity.title.to_s if activity.thumbnail.present?
 

@@ -34,41 +34,39 @@
   <body class="app-body app-shell">
     <a class="visually-hidden-focusable app-skip-link" href="#main">Skip to main content</a>
 
-    <nav class="navbar navbar-expand-lg app-navbar border-bottom">
-      <div class="container-xxl">
-        <%= link_to root_path, class: "navbar-brand d-flex align-items-center gap-2", "aria-label": "Activity Finder — home" do %>
+    <nav class="navbar navbar-expand-lg app-navbar">
+      <div class="container-xxl app-navbar-inner">
+        <%= link_to root_path, class: "app-navbar-brand", "aria-label": "Activity Finder — home" do %>
           <span class="app-mark" aria-hidden="true"></span>
-          <span class="navbar-brand-text">Activity Finder</span>
+          <span class="app-navbar-brand-text">Activity Finder</span>
         <% end %>
 
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#topNav" aria-controls="topNav" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-
-        <div class="collapse navbar-collapse" id="topNav">
-          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-            <li class="nav-item">
-              <%= link_to "Activities", activities_path, class: "nav-link", "aria-label": "Browse all activities" %>
-            </li>
-          </ul>
-
-          <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-            <% if logged_in? %>
-              <li class="nav-item">
-                <%= link_to current_user.name, current_user, class: "nav-link" %>
-              </li>
-              <li class="nav-item">
-                <%= button_to "Logout", logout_path, method: :delete, class: "btn btn-outline-secondary btn-sm ms-lg-2", form: { class: "d-inline" } %>
-              </li>
-            <% else %>
-              <li class="nav-item">
-                <%= link_to "Login", login_path, class: "nav-link", "aria-label": "Log in to your account" %>
-              </li>
-              <li class="nav-item">
-                <%= link_to "Sign up", signup_path, class: "btn btn-primary btn-sm ms-lg-2", "aria-label": "Create a new account" %>
-              </li>
+        <div class="app-navbar-actions">
+          <% if logged_in? %>
+            <%= link_to current_user, class: "app-nav-avatar-link", "aria-label": "Your profile (#{current_user.name})" do %>
+              <%= render "users/avatar", user: current_user, size: :sm %>
             <% end %>
-          </ul>
+            <%= button_to logout_path,
+                  method: :delete,
+                  class: "app-nav-signout-btn",
+                  form: { class: "d-inline" },
+                  title: "Log out",
+                  "aria-label": "Log out" do %>
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H9m4 4v1a2 2 0 01-2 2H6a2 2 0 01-2-2V7a2 2 0 012-2h5a2 2 0 012 2v1" />
+              </svg>
+            <% end %>
+          <% else %>
+            <button class="navbar-toggler app-navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#guestNav" aria-controls="guestNav" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="guestNav">
+              <div class="app-navbar-guest-actions">
+                <%= link_to "Log in", login_path, class: "app-nav-text-btn" %>
+                <%= link_to "Sign up", signup_path, class: "app-nav-pill-btn" %>
+              </div>
+            </div>
+          <% end %>
         </div>
       </div>
     </nav>

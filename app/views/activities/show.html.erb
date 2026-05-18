@@ -1,6 +1,23 @@
 <% content_for :title, @activity.title %>
 
 <div class="activity-detail-page">
+  <div class="activity-detail-actions mb-4 d-flex flex-wrap gap-2">
+    <%= link_to(@from_profile ? "Back to profile" : "Back to Activities", @return_to, class: "btn btn-outline-secondary") %>
+    <% if @show_manage_actions %>
+      <%= link_to "Edit Activity",
+            edit_activity_path(@activity, from: "profile", return_to: params[:return_to]),
+            class: "btn btn-activity-edit" %>
+      <%= button_to "Delete Activity",
+            @activity,
+            method: :delete,
+            class: "btn btn-danger",
+            form: {
+              data: { turbo_confirm: "Are you sure?" },
+              params: { from: "profile", return_to: params[:return_to] }
+            } %>
+    <% end %>
+  </div>
+
   <div class="activity-hero-card mb-4">
     <% if @activity.images.attached? %>
       <div id="activityImagesCarousel" class="carousel slide">
@@ -127,13 +144,5 @@
         </div>
       <% end %>
     </aside>
-  </div>
-
-  <div class="mt-4 d-flex flex-wrap gap-2">
-    <% if @activity.user == current_user || current_user_admin? %>
-      <%= link_to "Edit Activity", edit_activity_path(@activity), class: "btn btn-secondary" %>
-      <%= button_to "Delete Activity", @activity, method: :delete, class: "btn btn-danger", form: { data: { turbo_confirm: "Are you sure?" } } %>
-    <% end %>
-    <%= link_to "Back to Activities", activities_path, class: "btn btn-outline-secondary" %>
   </div>
 </div>

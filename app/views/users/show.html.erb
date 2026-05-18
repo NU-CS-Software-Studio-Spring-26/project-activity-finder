@@ -1,30 +1,158 @@
 <% content_for :title, @user.name %>
 
-<div class="surface-card">
-  <div class="surface-card-body">
-    <div class="d-flex flex-column flex-md-row justify-content-between align-items-start gap-3">
-      <div class="d-flex align-items-center gap-3">
-        <div class="rounded-circle d-inline-flex align-items-center justify-content-center user-avatar-mark">
-          <span class="fw-semibold"><%= @user.name.to_s.first&.upcase || "U" %></span>
-        </div>
-        <div>
-          <h1 class="h3 mb-1"><%= @user.name %></h1>
-          <div class="text-muted"><%= @user.email %></div>
-        </div>
-      </div>
+<div class="profile-page">
+  <header class="profile-header surface-card">
+    <div class="surface-card-body profile-header-body">
+      <div class="profile-toolbar">
+        <%= link_to activities_path, class: "profile-back-link" do %>
+          <svg class="profile-back-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+          </svg>
+          <span>Back</span>
+        <% end %>
 
-      <div class="d-flex flex-wrap gap-2">
-        <%= link_to "Activities", activities_path, class: "btn btn-outline-secondary btn-sm" %>
         <% if logged_in? && (@user == current_user || current_user_admin?) %>
-          <% if @user == current_user %>
-            <%= link_to "Edit profile", edit_user_path(@user), class: "btn btn-secondary btn-sm" %>
-            <%= button_to "Delete account", @user, method: :delete, class: "btn btn-outline-danger btn-sm", form: { data: { turbo_confirm: "Delete your account? This cannot be undone." } } %>
-          <% else %>
-            <%= link_to "Edit user", edit_user_path(@user), class: "btn btn-secondary btn-sm" %>
-            <%= button_to "Delete user", @user, method: :delete, class: "btn btn-outline-danger btn-sm", form: { data: { turbo_confirm: "Delete this user account? This cannot be undone." } } %>
-          <% end %>
+          <div class="profile-actions">
+            <% if @user == current_user %>
+              <%= link_to "Edit profile", edit_user_path(@user), class: "profile-action-btn profile-action-btn-primary" %>
+              <%= button_to "Delete account",
+                    @user,
+                    method: :delete,
+                    class: "profile-action-btn profile-action-btn-destructive",
+                    form: { data: { turbo_confirm: "Delete your account? This cannot be undone." } } %>
+            <% else %>
+              <%= link_to "Edit user", edit_user_path(@user), class: "profile-action-btn profile-action-btn-primary" %>
+              <%= button_to "Delete user",
+                    @user,
+                    method: :delete,
+                    class: "profile-action-btn profile-action-btn-destructive",
+                    form: { data: { turbo_confirm: "Delete this user account? This cannot be undone." } } %>
+            <% end %>
+          </div>
         <% end %>
       </div>
+
+      <div class="profile-hero">
+        <%= render "users/avatar", user: @user, size: :xl, class_name: "profile-avatar" %>
+        <h1 class="profile-name"><%= @user.name %></h1>
+      </div>
     </div>
-  </div>
+  </header>
+
+  <section class="profile-section"
+           data-controller="profile-activities"
+           data-profile-activities-initial-tab-value="<%= @profile_tab %>">
+    <div class="profile-activities-bar">
+      <div class="profile-activities-tabs" role="tablist" aria-label="Activity lists">
+        <button type="button"
+                class="profile-activities-tab<%= " profile-activities-tab-active" if @profile_tab == "created" %>"
+                role="tab"
+                id="profile-tab-created"
+                aria-controls="profile-panel-created"
+                aria-selected="<%= @profile_tab == "created" %>"
+                data-profile-activities-target="tab"
+                data-panel="created"
+                data-action="profile-activities#showCreated">
+          Created
+        </button>
+        <button type="button"
+                class="profile-activities-tab<%= " profile-activities-tab-active" if @profile_tab == "joined" %>"
+                role="tab"
+                id="profile-tab-joined"
+                aria-controls="profile-panel-joined"
+                aria-selected="<%= @profile_tab == "joined" %>"
+                data-profile-activities-target="tab"
+                data-panel="joined"
+                data-action="profile-activities#showJoined">
+          Joined
+        </button>
+      </div>
+
+      <% if @user == current_user %>
+        <%= link_to new_activity_path, class: "profile-create-activity-btn" do %>
+          <svg class="profile-create-activity-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 5v14M5 12h14" />
+          </svg>
+          <span>Create activity</span>
+        <% end %>
+      <% end %>
+    </div>
+
+    <% created_empty_message = @user == current_user ? "You haven’t created any activities yet." : "#{@user.name} hasn’t created any activities yet." %>
+    <% joined_empty_message = @user == current_user ? "You haven’t joined any activities yet." : "#{@user.name} hasn’t joined any activities yet." %>
+
+    <div id="profile-panel-created"
+         class="profile-activities-panel"
+         role="tabpanel"
+         aria-labelledby="profile-tab-created"
+         <%= "hidden" unless @profile_tab == "created" %>
+         data-profile-activities-target="panel"
+         data-panel="created">
+      <%= render "shared/activity_pagination",
+            pagination: @created_pagination,
+            form_url: user_path(@user),
+            form_hidden_fields: {
+              created_page: 1,
+              joined_page: @joined_pagination[:page],
+              tab: "created"
+            },
+            path_for: ->(page) {
+              user_path(@user,
+                tab: "created",
+                created_page: page,
+                joined_page: @joined_pagination[:page],
+                per_page: @created_pagination[:per_page])
+            },
+            select_id: "profile-created-per-page",
+            empty_message: created_empty_message,
+            aria_label: "Created activities pagination" %>
+
+      <% if @hosted_activities.any? %>
+        <div class="activity-grid">
+          <% @hosted_activities.each do |activity| %>
+            <%= render "activities/card", activity: activity, return_to: request.original_url %>
+          <% end %>
+        </div>
+      <% elsif @created_pagination[:total].positive? %>
+        <p class="profile-empty-state">No activities on this page.</p>
+      <% end %>
+    </div>
+
+    <div id="profile-panel-joined"
+         class="profile-activities-panel"
+         role="tabpanel"
+         aria-labelledby="profile-tab-joined"
+         <%= "hidden" unless @profile_tab == "joined" %>
+         data-profile-activities-target="panel"
+         data-panel="joined">
+      <%= render "shared/activity_pagination",
+            pagination: @joined_pagination,
+            form_url: user_path(@user),
+            form_hidden_fields: {
+              created_page: @created_pagination[:page],
+              joined_page: 1,
+              tab: "joined"
+            },
+            path_for: ->(page) {
+              user_path(@user,
+                tab: "joined",
+                created_page: @created_pagination[:page],
+                joined_page: page,
+                per_page: @joined_pagination[:per_page])
+            },
+            select_id: "profile-joined-per-page",
+            empty_message: joined_empty_message,
+            aria_label: "Joined activities pagination" %>
+
+      <% if @joined_activities.any? %>
+        <div class="activity-grid">
+          <% @joined_activities.each do |activity| %>
+            <%= render "activities/card", activity: activity, show_host: true, return_to: request.original_url %>
+          <% end %>
+        </div>
+      <% elsif @joined_pagination[:total].positive? %>
+        <p class="profile-empty-state">No activities on this page.</p>
+      <% end %>
+    </div>
+  </section>
 </div>

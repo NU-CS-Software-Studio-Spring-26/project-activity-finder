@@ -1,4 +1,6 @@
 class UsersController < ApplicationController
+  include ActivityListPagination
+
   before_action :set_user, only: [ :show, :edit, :update, :destroy ]
   before_action :require_login, except: [ :new, :create ]
   before_action :authorize_user!, only: [ :edit, :update, :destroy ]
@@ -11,6 +13,17 @@ class UsersController < ApplicationController
   end
 
   def show
+    @profile_tab = %w[created joined].include?(params[:tab]) ? params[:tab] : "created"
+
+    hosted_scope = @user.activities.order(event_date: :asc)
+    hosted_result = paginate_activity_scope(hosted_scope, page_param: :created_page)
+    @hosted_activities = hosted_result[:records]
+    @created_pagination = hosted_result[:pagination]
+
+    joined_scope = @user.joined_activities.includes(:user).order(event_date: :asc)
+    joined_result = paginate_activity_scope(joined_scope, page_param: :joined_page)
+    @joined_activities = joined_result[:records]
+    @joined_pagination = joined_result[:pagination]
   end
 
   def new
@@ -18,7 +31,7 @@ class UsersController < ApplicationController
   end
 
   def create
-    @user = User.new(user_params)
+    @user = User.new(signup_params)
 
     if @user.save
       reset_session
@@ -33,8 +46,10 @@ class UsersController < ApplicationController
   end
 
   def update
-    if @user.update(user_params)
-      redirect_to @user, notice: "User updated successfully."
+    @user.avatar.purge if params.dig(:user, :remove_avatar) == "1"
+
+    if @user.update(profile_params)
+      redirect_to @user, notice: "Profile updated successfully."
     else
       render :edit, status: :unprocessable_entity
     end
@@ -51,12 +66,11 @@ class UsersController < ApplicationController
     @user = User.find(params[:id])
   end
 
-  def user_params
-    params.require(:user).permit(
-      :name,
-      :email,
-      :password,
-      :password_confirmation
-    )
+  def signup_params
+    params.require(:user).permit(:name, :email, :password, :password_confirmation)
+  end
+
+  def profile_params
+    params.require(:user).permit(:name, :password, :password_confirmation, :avatar)
   end
 end

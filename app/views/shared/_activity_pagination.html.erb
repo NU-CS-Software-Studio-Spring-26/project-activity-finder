@@ -1,0 +1,54 @@
+<% pagination = local_assigns.fetch(:pagination) %>
+<% form_url = local_assigns.fetch(:form_url) %>
+<% form_hidden_fields = local_assigns.fetch(:form_hidden_fields) %>
+<% path_for = local_assigns.fetch(:path_for) %>
+<% select_id = local_assigns.fetch(:select_id) %>
+<% empty_message = local_assigns.fetch(:empty_message, "No activities yet.") %>
+<% aria_label = local_assigns.fetch(:aria_label, "Activity list pagination") %>
+
+<nav class="activity-pagination surface-card mb-4" aria-label="<%= aria_label %>">
+  <div class="surface-card-body py-3">
+    <div class="d-flex flex-column flex-lg-row flex-wrap align-items-center justify-content-between gap-3">
+      <div class="d-flex flex-wrap align-items-center gap-2">
+        <%= form_with url: form_url, method: :get, local: true, class: "d-flex flex-wrap align-items-center gap-2 m-0" do %>
+          <% form_hidden_fields.each do |key, value| %>
+            <%= hidden_field_tag key, value unless value.nil? %>
+          <% end %>
+          <label for="<%= select_id %>" class="form-label mb-0 text-nowrap small text-muted">Per page</label>
+          <%= select_tag :per_page,
+                options_for_select(
+                  ActivityListPagination::PER_PAGE_CHOICES.map { |n| [ n.to_s, n ] },
+                  pagination[:per_page]
+                ),
+                id: select_id,
+                class: "form-select form-select-sm w-auto",
+                onchange: "this.form.requestSubmit()" %>
+        <% end %>
+      </div>
+
+      <p class="small text-muted mb-0 align-self-center">
+        <% if pagination[:total].zero? %>
+          <%= empty_message %>
+        <% else %>
+          Showing <%= pagination[:first_number] %>–<%= pagination[:last_number] %>
+          of <%= pagination[:total] %>
+          (page <%= pagination[:page] %> of <%= pagination[:total_pages] %>)
+        <% end %>
+      </p>
+
+      <div class="d-flex flex-wrap align-items-center gap-2 justify-content-lg-end">
+        <% p = pagination %>
+        <% if p[:page] <= 1 %>
+          <span class="btn btn-outline-secondary btn-sm disabled" aria-disabled="true">Previous</span>
+        <% else %>
+          <%= link_to "Previous", path_for.call(p[:page] - 1), class: "btn btn-outline-secondary btn-sm" %>
+        <% end %>
+        <% if p[:page] >= p[:total_pages] %>
+          <span class="btn btn-outline-secondary btn-sm disabled" aria-disabled="true">Next</span>
+        <% else %>
+          <%= link_to "Next", path_for.call(p[:page] + 1), class: "btn btn-outline-secondary btn-sm" %>
+        <% end %>
+      </div>
+    </div>
+    </div>
+</nav>

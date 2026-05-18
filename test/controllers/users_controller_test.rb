@@ -23,6 +23,41 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
     assert_match @bob.name, response.body
   end
 
+  test "profile paginates created activities" do
+    7.times do |i|
+      Activity.create!(
+        title: "Alice activity #{i}",
+        city: "Seattle",
+        category: "Test",
+        event_date: Date.today + i.days,
+        user: @alice
+      )
+    end
+
+    get user_url(@alice, per_page: 6, created_page: 2, tab: "created")
+    assert_response :success
+    assert_match(/page 2 of 2/, response.body)
+    assert_select "#profile-panel-created .activity-card", count: 1
+  end
+
+  test "profile paginates joined activities on joined tab" do
+    7.times do |i|
+      activity = Activity.create!(
+        title: "Joinable #{i}",
+        city: "Seattle",
+        category: "Test",
+        event_date: Date.today + i.days,
+        user: @bob
+      )
+      activity.activity_signups.create!(user: @alice)
+    end
+
+    get user_url(@alice, per_page: 6, joined_page: 2, tab: "joined")
+    assert_response :success
+    assert_match(/page 2 of 2/, response.body)
+    assert_select "#profile-panel-joined .activity-card", count: 1
+  end
+
   test "cannot edit another user" do
     get edit_user_url(@bob)
     assert_redirected_to root_path
