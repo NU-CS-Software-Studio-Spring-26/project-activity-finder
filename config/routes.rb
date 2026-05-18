@@ -27,6 +27,7 @@ Rails.application.routes.draw do
   post "/login", to: "sessions#create"
   delete "/logout", to: "sessions#destroy", as: :logout
   get "/signup", to: "users#new"
+  get "/signup/check_email", to: "users#check_email", as: :check_email_signup
 
   get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
   get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker

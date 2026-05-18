@@ -30,9 +30,26 @@
     <%= form.text_field :location, class: "form-control" %>
   </div>
 
-  <div class="mb-3">
+  <div
+    class="mb-3"
+    data-controller="city-field"
+    data-city-field-popular-cities-value='<%= ActivitiesHelper::POPULAR_ACTIVITY_CITIES.to_json %>'
+    data-city-field-max-length-value="100"
+  >
     <%= form.label :city, "City *", class: "form-label" %>
-    <%= form.text_field :city, class: "form-control", required: true %>
+    <%= form.text_field :city,
+          class: "form-control",
+          required: true,
+          list: "activity-city-suggestions",
+          autocomplete: "address-level2",
+          data: { city_field_target: "input" } %>
+    <datalist id="activity-city-suggestions">
+      <% ActivitiesHelper::POPULAR_ACTIVITY_CITIES.each do |city| %>
+        <option value="<%= city %>"></option>
+      <% end %>
+    </datalist>
+    <div class="form-text d-none" data-city-field-target="hint"></div>
+    <div class="invalid-feedback d-none" data-city-field-target="feedback"></div>
   </div>
 
   <div class="mb-3">

@@ -86,12 +86,13 @@
                     autocomplete="address-level2"
                     aria-label="Search for a city"
                     data-city-picker-target="searchInput"
-                    data-action="input->city-picker#filterList keydown.enter->city-picker#applySearch"
+                    data-action="input->city-picker#filterList input->city-picker#validateSearchInput keydown.enter->city-picker#applySearch"
                   >
                   <button type="button" class="btn btn-outline-secondary" data-action="city-picker#applySearch" title="Apply city filter">
                     Go
                   </button>
                 </div>
+                <div class="invalid-feedback d-none small" data-city-picker-target="searchFeedback"></div>
 
                 <div
                   class="city-picker-city-list border rounded"
