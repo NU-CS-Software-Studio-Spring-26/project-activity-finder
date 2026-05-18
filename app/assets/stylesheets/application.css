@@ -702,6 +702,17 @@ body {
   filter: drop-shadow(0 8px 18px rgba(0, 0, 0, 0.45));
 }
 
+.badge-dot-red {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #ff0000;
+  margin-right: 5px;
+  vertical-align: middle;
+  flex-shrink: 0;
+}
+
 .badge.text-bg-light.border {
   background: rgba(255, 255, 255, 0.10) !important;
   color: rgba(255, 255, 255, 0.85) !important;

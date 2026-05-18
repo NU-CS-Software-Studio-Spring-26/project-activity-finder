@@ -14,13 +14,13 @@
             <div class="activity-search-input-wrap">
               <label for="activity-search" class="visually-hidden">Search activities by name</label>
               <input
-                type="search"
+                type="text"
                 id="activity-search"
                 name="q"
                 class="form-control activity-search-input"
                 placeholder="Search by activity name"
                 data-search-target="input"
-                data-action="input->search#filter search->search#filter"
+                data-action="input->search#filter"
               >
               <button
                 type="button"
@@ -213,8 +213,11 @@
           <% taken = @signup_counts[activity.id] || 0 %>
           <% if activity.capacity.present? %>
             <% full = taken >= activity.capacity %>
-            <span class="badge <%= full ? "text-bg-warning" : "text-bg-light border" %>">
-              <%= taken %>/<%= activity.capacity %> spots<%= full ? " (full)" : "" %>
+            <span class="badge d-inline-flex align-items-center <%= full ? "text-bg-danger" : "text-bg-light border" %>">
+              <% if full %>
+                <span class="badge-dot-red"></span>
+              <% end %>
+              <%= taken %>/<%= activity.capacity %> going<%= full ? " (full)" : "" %>
             </span>
           <% else %>
             <span class="badge text-bg-light border"><%= taken %> going</span>
