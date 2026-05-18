@@ -1,4 +1,7 @@
 class User < ApplicationRecord
+  NAME_MAX_LENGTH = 100
+  EMAIL_MAX_LENGTH = 255
+
   has_secure_password validations: false
 
   has_one_attached :avatar
@@ -11,11 +14,12 @@ class User < ApplicationRecord
 
   validate :acceptable_avatar
 
-  validates :name, presence: true
+  validates :name, presence: true, length: { maximum: NAME_MAX_LENGTH }
 
   validates :email,
             presence: true,
             uniqueness: true,
+            length: { maximum: EMAIL_MAX_LENGTH },
             format: { with: URI::MailTo::EMAIL_REGEXP }
 
   validates :password, presence: true, confirmation: true, length: { minimum: 5 },

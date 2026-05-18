@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_14_120000) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_18_120000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -45,13 +45,13 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_14_120000) do
 
   create_table "activities", force: :cascade do |t|
     t.integer "capacity"
-    t.string "category"
-    t.string "city"
+    t.string "category", limit: 80
+    t.string "city", limit: 100
     t.datetime "created_at", null: false
     t.text "description"
     t.date "event_date"
-    t.string "location"
-    t.string "title"
+    t.string "location", limit: 200
+    t.string "title", limit: 120
     t.datetime "updated_at", null: false
     t.bigint "user_id"
     t.index ["user_id"], name: "index_activities_on_user_id"
@@ -70,8 +70,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_14_120000) do
   create_table "users", force: :cascade do |t|
     t.boolean "admin", default: false, null: false
     t.datetime "created_at", null: false
-    t.string "email"
-    t.string "name"
+    t.string "email", limit: 255
+    t.string "name", limit: 100
     t.string "password_digest"
     t.string "provider"
     t.string "uid"

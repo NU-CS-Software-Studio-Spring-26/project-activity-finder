@@ -44,6 +44,19 @@ class UserTest < ActiveSupport::TestCase
     assert_not @user.valid?
   end
 
+  test "name should not exceed maximum length" do
+    @user.name = "a" * (User::NAME_MAX_LENGTH + 1)
+    assert_not @user.valid?
+    assert @user.errors.of_kind?(:name, :too_long)
+  end
+
+  test "email should not exceed maximum length" do
+    local = "a" * (User::EMAIL_MAX_LENGTH - 11)
+    @user.email = "#{local}@example.com"
+    assert_not @user.valid?
+    assert @user.errors.of_kind?(:email, :too_long)
+  end
+
   test "from_omniauth creates user" do
     auth = OmniAuth::AuthHash.new(
       provider: "google_oauth2",
