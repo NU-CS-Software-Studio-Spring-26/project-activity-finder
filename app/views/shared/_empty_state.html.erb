@@ -1,0 +1,40 @@
+<%# locals: icon (:calendar, :pin, :search), title, message, action_path (optional), action_label (optional), compact (optional) %>
+<% compact = local_assigns.fetch(:compact, false) %>
+<% icon = local_assigns.fetch(:icon, :calendar).to_sym %>
+
+<div class="app-empty-state<%= " app-empty-state-compact" if compact %>" role="status">
+  <div class="app-empty-state-icon" aria-hidden="true">
+    <% case icon %>
+    <% when :pin %>
+      <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="32" cy="28" r="18" stroke="currentColor" stroke-width="2.5" opacity="0.35"/>
+        <path d="M32 46v14M24 54h16" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" opacity="0.5"/>
+        <circle cx="32" cy="28" r="7" fill="currentColor" opacity="0.85"/>
+      </svg>
+    <% when :search %>
+      <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="28" cy="28" r="16" stroke="currentColor" stroke-width="2.5" opacity="0.4"/>
+        <path d="M40 40l14 14" stroke="currentColor" stroke-width="3" stroke-linecap="round" opacity="0.7"/>
+      </svg>
+    <% else %>
+      <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="10" y="14" width="44" height="40" rx="6" stroke="currentColor" stroke-width="2.5" opacity="0.35"/>
+        <path d="M10 24h44M22 10v8M42 10v8" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" opacity="0.5"/>
+        <circle cx="24" cy="36" r="3" fill="currentColor" opacity="0.7"/>
+        <circle cx="32" cy="42" r="3" fill="currentColor" opacity="0.5"/>
+        <circle cx="40" cy="34" r="3" fill="currentColor" opacity="0.85"/>
+      </svg>
+    <% end %>
+  </div>
+
+  <div class="app-empty-state-body">
+    <h2 class="app-empty-state-title h5 mb-2"><%= title %></h2>
+    <p class="app-empty-state-message mb-0"><%= message %></p>
+
+    <% if local_assigns[:action_path].present? && local_assigns[:action_label].present? %>
+      <div class="app-empty-state-actions mt-3">
+        <%= link_to action_label, action_path, class: "btn btn-primary" %>
+      </div>
+    <% end %>
+  </div>
+</div>

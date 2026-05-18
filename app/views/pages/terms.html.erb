@@ -1,9 +1,6 @@
 <% content_for :title, "Terms of Service" %>
 
-<article class="legal-page">
-  <h1>Terms of Service</h1>
-  <p class="text-muted">Last updated: <%= Date.today.strftime("%B %d, %Y") %></p>
-
+<%= render layout: "pages/page_card", locals: { title: "Terms of Service", subtitle: "Last updated: #{Date.today.strftime('%B %d, %Y')}" } do %>
   <section>
     <h2>1. Acceptance of Terms</h2>
     <p>
@@ -84,4 +81,4 @@
       our <%= link_to "GitHub repository", "https://github.com/mzzhong/project-avtivity-finder", target: "_blank", rel: "noopener noreferrer" %>.
     </p>
   </section>
-</article>
+<% end %>
