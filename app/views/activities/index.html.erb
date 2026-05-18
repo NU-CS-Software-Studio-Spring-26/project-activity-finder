@@ -3,15 +3,9 @@
 <div data-controller="search">
   <section class="page-hero mb-4">
     <div class="page-hero-inner">
-      <div class="d-flex flex-column flex-md-row justify-content-between align-items-start gap-3">
-        <div>
-          <h1 class="mb-1">Find your next plan</h1>
-          <p class="text-muted mb-0">Browse activities, RSVP in one click, and see who’s going.</p>
-        </div>
-
-        <div class="d-flex gap-2">
-          <%= link_to "New Activity", new_activity_path, class: "btn btn-primary" %>
-        </div>
+      <div>
+        <h1 class="mb-1">Find your next plan</h1>
+        <p class="text-muted mb-0">Browse activities, RSVP in one click, and see who’s going.</p>
       </div>
 
       <div class="activity-search mt-3">
@@ -127,7 +121,7 @@
             <label for="activities-per-page" class="form-label mb-0 text-nowrap small text-muted">Per page</label>
             <%= select_tag :per_page,
                   options_for_select(
-                    ActivitiesController::ACTIVITIES_PER_PAGE_CHOICES.map { |n| [n.to_s, n] },
+                    ActivityListPagination::PER_PAGE_CHOICES.map { |n| [n.to_s, n] },
                     @pagination[:per_page]
                   ),
                   id: "activities-per-page",
@@ -179,7 +173,9 @@
         data-activity-title="<%= activity.title.to_s.downcase %>"
       >
         <div class="activity-card-img">
-          <%= image_tag activity_image(activity), class: "img-fluid", alt: activity_image_alt(activity) %>
+          <%= link_to activity do %>
+            <%= image_tag activity_image(activity), class: "img-fluid", alt: activity_image_alt(activity) %>
+          <% end %>
         </div>
 
       <div class="activity-card-body">

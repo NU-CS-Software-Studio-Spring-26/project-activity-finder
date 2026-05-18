@@ -10,9 +10,9 @@
       <span>New</span>
     <% end %>
 
-    <%= link_to current_user, class: "app-mobile-nav-item #{'is-active' if controller_name == 'users'}", "aria-label": "Your profile" do %>
-      <svg class="app-mobile-nav-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
-      <span class="text-truncate" style="max-width: 5rem"><%= current_user.name.split.first %></span>
+    <%= link_to current_user, class: "app-mobile-nav-item app-mobile-nav-item-avatar #{'is-active' if controller_name == 'users'}", "aria-label": "Your profile" do %>
+      <%= render "users/avatar", user: current_user, size: :sm, class_name: "app-mobile-nav-avatar" %>
+      <span>Profile</span>
     <% end %>
   <% else %>
     <%= link_to login_path, class: "app-mobile-nav-item #{'is-active' if controller_name == 'sessions'}", "aria-label": "Log in" do %>

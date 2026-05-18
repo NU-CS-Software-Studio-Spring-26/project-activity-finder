@@ -1,0 +1,31 @@
+<%# locals: (activity:, show_host: false, return_to: nil) %>
+<% show_host = local_assigns.fetch(:show_host, false) %>
+<% link_params = activity_link_params(return_to: local_assigns[:return_to]) %>
+<div class="activity-card">
+  <div class="activity-card-img">
+    <%= link_to activity_path(activity, **link_params) do %>
+      <%= image_tag activity_image(activity), class: "img-fluid", alt: activity_image_alt(activity) %>
+    <% end %>
+  </div>
+
+  <div class="activity-card-body">
+    <h2 class="activity-title h5 mb-1">
+      <%= link_to activity.title, activity_path(activity, **link_params) %>
+    </h2>
+
+    <p class="activity-meta mb-1">
+      <%= activity.city %>
+      <% if activity.event_date.present? %>
+        • <%= activity.event_date.strftime("%b %d, %Y") %>
+      <% end %>
+    </p>
+
+    <p class="activity-category mb-0">
+      <%= activity.category %>
+    </p>
+
+    <% if show_host && activity.user.present? %>
+      <p class="activity-meta small mb-0 mt-1">Hosted by <%= activity.user.name %></p>
+    <% end %>
+  </div>
+</div>

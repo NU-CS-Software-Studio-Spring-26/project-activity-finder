@@ -1,26 +1,36 @@
-<%= form_with(model: @user) do |form| %>
-  <% if @user.errors.any? %>
+<%= form_with(model: user, html: { multipart: true }) do |form| %>
+  <% if user.errors.any? %>
     <div class="alert alert-danger">
       <div class="fw-semibold mb-1">
-        <%= pluralize(@user.errors.count, "error") %> prohibited this profile from being saved:
+        <%= pluralize(user.errors.count, "error") %> prohibited this profile from being saved:
       </div>
       <ul class="mb-0">
-        <% @user.errors.full_messages.each do |message| %>
+        <% user.errors.full_messages.each do |message| %>
           <li><%= message %></li>
         <% end %>
       </ul>
     </div>
   <% end %>
 
+  <div class="profile-form-avatar mb-4">
+    <%= render "users/avatar", user: user, size: :lg, class_name: "profile-form-avatar-preview" %>
+    <div class="profile-form-avatar-fields">
+      <%= form.label :avatar, "Profile photo", class: "form-label" %>
+      <%= form.file_field :avatar, class: "form-control", accept: "image/jpeg,image/png,image/webp,image/gif" %>
+      <div class="form-text">JPEG, PNG, WebP, or GIF. Max 5 MB. Leave empty to keep your current photo.</div>
+      <% if user.avatar.attached? %>
+        <div class="form-check mt-2">
+          <%= check_box_tag "user[remove_avatar]", "1", false, class: "form-check-input", id: "user_remove_avatar" %>
+          <%= label_tag "user_remove_avatar", "Remove current photo", class: "form-check-label" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
   <div class="row g-3">
-    <div class="col-12 col-md-6">
+    <div class="col-12">
       <%= form.label :name, class: "form-label" %>
       <%= form.text_field :name, class: "form-control", autocomplete: "name" %>
-    </div>
-
-    <div class="col-12 col-md-6">
-      <%= form.label :email, class: "form-label" %>
-      <%= form.email_field :email, class: "form-control", autocomplete: "email" %>
     </div>
 
     <div class="col-12 col-md-6">
@@ -34,9 +44,9 @@
       <%= form.password_field :password_confirmation, class: "form-control", autocomplete: "new-password" %>
     </div>
 
-    <div class="col-12 d-flex gap-2 pt-2">
+    <div class="col-12 d-flex flex-wrap gap-2 pt-2">
       <%= form.submit "Save changes", class: "btn btn-primary" %>
-      <%= link_to "Cancel", @user, class: "btn btn-outline-secondary" %>
+      <%= link_to "Cancel", user, class: "btn btn-outline-secondary" %>
     </div>
   </div>
 <% end %>

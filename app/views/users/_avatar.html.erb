@@ -1,0 +1,19 @@
+<%# locals: (user:, size: :md, class_name: nil) %>
+<% pixels = user_avatar_pixels(size) %>
+<% extra_class = local_assigns[:class_name] %>
+<div
+  class="user-avatar user-avatar--<%= size %><%= " #{extra_class}" if extra_class.present? %>"
+  style="--avatar-size: <%= pixels %>px"
+>
+  <% if user.avatar.attached? %>
+    <%= image_tag(
+          user.avatar.variant(resize_to_fill: [ pixels * 2, pixels * 2 ]),
+          class: "user-avatar-img",
+          alt: "#{user.name} profile photo",
+          loading: "lazy",
+          decoding: "async"
+        ) %>
+  <% else %>
+    <span class="user-avatar-initial" aria-hidden="true"><%= user_avatar_initial(user) %></span>
+  <% end %>
+</div>

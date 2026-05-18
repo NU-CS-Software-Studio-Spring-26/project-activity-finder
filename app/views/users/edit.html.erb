@@ -1,20 +1,23 @@
 <% content_for :title, "Edit profile" %>
 
-<div class="surface-card">
-  <div class="surface-card-header">
-    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
-      <div>
-        <h1 class="h3 mb-1">Edit profile</h1>
-        <div class="text-muted">Update your name, email, or password.</div>
-      </div>
-      <div class="d-flex gap-2">
-        <%= link_to "Profile", @user, class: "btn btn-outline-secondary btn-sm" %>
-        <%= link_to "Back", activities_path, class: "btn btn-outline-secondary btn-sm" %>
-      </div>
-    </div>
-  </div>
+<div class="profile-page">
+  <header class="profile-header surface-card mb-4">
+    <div class="surface-card-body profile-header-body">
+      <%= link_to @user, class: "profile-back-link" do %>
+        <svg class="profile-back-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+        </svg>
+        <span>Back</span>
+      <% end %>
 
-  <div class="surface-card-body">
-    <%= render "form", user: @user %>
+      <h1 class="profile-name mb-1">Edit profile</h1>
+      <p class="profile-edit-subtitle mb-0">Update your photo, name, or password.</p>
+    </div>
+  </header>
+
+  <div class="surface-card">
+    <div class="surface-card-body">
+      <%= render "form", user: @user %>
+    </div>
   </div>
 </div>

@@ -1,4 +1,9 @@
 <%= form_with(model: activity) do |form| %>
+  <% if params[:from] == "profile" %>
+    <%= hidden_field_tag :from, "profile" %>
+    <%= hidden_field_tag :return_to, params[:return_to] if params[:return_to].present? %>
+  <% end %>
+
   <% if activity.errors.any? %>
     <div class="alert alert-danger">
       <h2 class="h5"><%= pluralize(activity.errors.count, "error") %> prohibited this activity from being saved:</h2>

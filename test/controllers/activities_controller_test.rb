@@ -107,22 +107,54 @@ class ActivitiesControllerTest < ActionDispatch::IntegrationTest
     assert_match %r{hikeoftheweek\.com}, response.body
   end
 
-  test "should get edit" do
-    get edit_activity_url(@activity)
+  test "should get edit from profile" do
+    get edit_activity_url(@activity, from: "profile", return_to: user_path(@user))
     assert_response :success
   end
 
-  test "should update activity" do
-    patch activity_url(@activity), params: { activity: { category: @activity.category, city: @activity.city, description: @activity.description, event_date: @activity.event_date, location: @activity.location, title: @activity.title } }
-    assert_redirected_to activities_path
+  test "cannot edit without profile source" do
+    get edit_activity_url(@activity)
+    assert_redirected_to activity_path(@activity)
   end
 
-  test "should destroy activity" do
+  test "host show hides management actions when not from profile" do
+    get activity_url(@activity)
+    assert_response :success
+    assert_no_match "Edit Activity", response.body
+    assert_no_match "Delete Activity", response.body
+  end
+
+  test "host show shows management actions when from profile" do
+    get activity_url(@activity, from: "profile", return_to: user_path(@user))
+    assert_response :success
+    assert_match "Edit Activity", response.body
+    assert_match "Delete Activity", response.body
+    assert_match "Back to profile", response.body
+  end
+
+  test "should update activity from profile" do
+    patch activity_url(@activity),
+      params: {
+        from: "profile",
+        return_to: user_path(@user),
+        activity: {
+          category: @activity.category,
+          city: @activity.city,
+          description: @activity.description,
+          event_date: @activity.event_date,
+          location: @activity.location,
+          title: @activity.title
+        }
+      }
+    assert_redirected_to user_path(@user)
+  end
+
+  test "should destroy activity from profile" do
     assert_difference("Activity.count", -1) do
-      delete activity_url(@activity)
+      delete activity_url(@activity, from: "profile", return_to: user_path(@user))
     end
 
-    assert_redirected_to activities_url
+    assert_redirected_to user_path(@user)
   end
 
   test "admin can edit another user's activity" do

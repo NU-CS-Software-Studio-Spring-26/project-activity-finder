@@ -1,9 +1,11 @@
 class ActivitiesController < ApplicationController
-  ACTIVITIES_PER_PAGE_CHOICES = [ 6, 12, 24, 48 ].freeze
+  include ActivityListPagination
+  include ActivityNavigation
 
   before_action :require_login
   before_action :set_activity, only: %i[ show edit update destroy join leave ]
   before_action :authorize_activity!, only: %i[ edit update destroy ]
+  before_action :require_profile_management_context!, only: %i[ edit update destroy ]
 
   def authorize_activity!
     return if current_user.admin?
@@ -12,7 +14,6 @@ class ActivitiesController < ApplicationController
 
   # GET /activities or /activities.json
   def index
-    per_page = activities_per_page
     @city_query = params[:city].to_s.strip
 
     base_scope = Activity.order(event_date: :asc)
@@ -21,19 +22,9 @@ class ActivitiesController < ApplicationController
       base_scope = base_scope.where("city ILIKE ?", pattern)
     end
 
-    total = base_scope.count
-    total_pages = total.zero? ? 1 : (total + per_page - 1) / per_page
-    page = activities_page_param(total_pages)
-
-    @activities = base_scope.offset((page - 1) * per_page).limit(per_page)
-    @pagination = {
-      page: page,
-      per_page: per_page,
-      total: total,
-      total_pages: total_pages,
-      first_number: total.zero? ? 0 : (page - 1) * per_page + 1,
-      last_number: (page - 1) * per_page + @activities.size
-    }
+    result = paginate_activity_scope(base_scope, page_param: :page)
+    @activities = result[:records]
+    @pagination = result[:pagination]
 
     activity_ids = @activities.map(&:id)
     @signup_counts = ActivitySignup.where(activity_id: activity_ids).group(:activity_id).count
@@ -42,6 +33,9 @@ class ActivitiesController < ApplicationController
 
   # GET /activities/1 or /activities/1.json
   def show
+    @from_profile = from_profile?
+    @return_to = activity_list_return_path
+    @show_manage_actions = show_activity_management?
     @joined = @activity.attendees.exists?(current_user.id)
     @attendees = @activity.attendees.order(:name)
     @signup_count = @activity.activity_signups.count
@@ -96,6 +90,8 @@ class ActivitiesController < ApplicationController
 
   # GET /activities/1/edit
   def edit
+    @from_profile = from_profile?
+    @return_to = activity_list_return_path
   end
 
   # POST /activities or /activities.json
@@ -118,7 +114,7 @@ class ActivitiesController < ApplicationController
       attach_new_images
       update_image_order
       normalize_image_positions
-      redirect_to activities_path, notice: "Activity updated successfully."
+      redirect_to activity_list_return_path, notice: "Activity updated successfully."
     else
       render :edit, status: :unprocessable_entity
     end
@@ -129,23 +125,12 @@ class ActivitiesController < ApplicationController
     @activity.destroy!
 
     respond_to do |format|
-      format.html { redirect_to activities_path, notice: "Activity was successfully destroyed.", status: :see_other }
+      format.html { redirect_to activity_list_return_path, notice: "Activity was successfully destroyed.", status: :see_other }
       format.json { head :no_content }
     end
   end
 
   private
-    def activities_per_page
-      n = params[:per_page].to_i
-      ACTIVITIES_PER_PAGE_CHOICES.include?(n) ? n : 12
-    end
-
-    def activities_page_param(total_pages)
-      p = params[:page].to_i
-      p = 1 if p < 1
-      [ p, total_pages ].min
-    end
-
     # Use callbacks to share common setup or constraints between actions.
     def set_activity
       @activity = Activity.find(params.expect(:id))

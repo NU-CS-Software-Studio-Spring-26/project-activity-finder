@@ -8,8 +8,9 @@
         <div class="text-muted">Update details, manage images, and keep your attendees informed.</div>
       </div>
       <div class="d-flex gap-2">
-        <%= link_to "View", @activity, class: "btn btn-outline-secondary btn-sm" %>
-        <%= link_to "Back", activities_path, class: "btn btn-outline-secondary btn-sm" %>
+        <% activity_nav = @from_profile ? { from: "profile", return_to: params[:return_to] } : {} %>
+        <%= link_to "View", activity_path(@activity, **activity_nav), class: "btn btn-outline-secondary btn-sm" %>
+        <%= link_to(@from_profile ? "Back to profile" : "Back", @return_to, class: "btn btn-outline-secondary btn-sm") %>
       </div>
     </div>
   </div>
