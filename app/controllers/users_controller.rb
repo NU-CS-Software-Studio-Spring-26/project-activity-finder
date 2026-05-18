@@ -2,7 +2,7 @@ class UsersController < ApplicationController
   include ActivityListPagination
 
   before_action :set_user, only: [ :show, :edit, :update, :destroy ]
-  before_action :require_login, except: [ :new, :create ]
+  before_action :require_login, except: [ :new, :create, :check_email ]
   before_action :authorize_user!, only: [ :edit, :update, :destroy ]
 
   def authorize_user!
@@ -28,6 +28,18 @@ class UsersController < ApplicationController
 
   def new
     @user = User.new
+  end
+
+  def check_email
+    email = params[:email].to_s.strip.downcase
+
+    if email.blank? || !email.match?(URI::MailTo::EMAIL_REGEXP)
+      render json: { available: false, error: "invalid" }
+      return
+    end
+
+    available = !User.exists?(email: email)
+    render json: { available: available }
   end
 
   def create
