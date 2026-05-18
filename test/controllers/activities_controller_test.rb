@@ -93,6 +93,20 @@ class ActivitiesControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
+  test "show page uses same image fallback as index when no uploads" do
+    activity = Activity.create!(
+      title: "Sunrise Ridge Hike",
+      city: "Seattle",
+      category: "Hike",
+      event_date: Date.today,
+      user: @user
+    )
+
+    get activity_url(activity)
+    assert_response :success
+    assert_match %r{hikeoftheweek\.com}, response.body
+  end
+
   test "should get edit" do
     get edit_activity_url(@activity)
     assert_response :success

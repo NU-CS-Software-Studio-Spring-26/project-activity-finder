@@ -23,7 +23,7 @@
         <% end %>
       </div>
     <% else %>
-      <%= image_tag "activity_finder_default_thumbnail.jpg", class: "activity-carousel-image", alt: "default image" %>
+      <%= image_tag activity_image(@activity), class: "activity-carousel-image", alt: activity_image_alt(@activity) %>
     <% end %>
   </div>
 
