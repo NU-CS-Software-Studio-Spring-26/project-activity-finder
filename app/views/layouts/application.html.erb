@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html lang="en" data-bs-theme="dark">
   <head>
-    <title><%= content_for(:title) || "Activity Finder" %></title>
+    <title><%= content_for(:title) || "Open Scene" %></title>
     <%# Allow pinch-zoom; viewport-fit=cover for notched phones in installed PWA mode. %>
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-title" content="Activities">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="application-name" content="Activity Finder">
+    <meta name="application-name" content="Open Scene">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#0b1220">
 
@@ -36,9 +36,9 @@
 
     <nav class="navbar navbar-expand-lg app-navbar">
       <div class="container-xxl app-navbar-inner">
-        <%= link_to root_path, class: "app-navbar-brand", "aria-label": "Activity Finder — home" do %>
-          <span class="app-mark" aria-hidden="true"></span>
-          <span class="app-navbar-brand-text">Activity Finder</span>
+        <%= link_to root_path, class: "app-navbar-brand", "aria-label": "Open Scene — home" do %>
+          <%= image_tag "logo.png", height: 32, alt: "Open Scene logo" %>
+          <span class="app-navbar-brand-text">Open Scene</span>
         <% end %>
 
         <div class="app-navbar-actions">
@@ -106,7 +106,7 @@
         </div>
 
         <div class="d-flex flex-column flex-sm-row justify-content-between gap-2 mt-3">
-          <small class="app-footer-note">&copy; <%= Time.current.year %> Activity Finder</small>
+          <small class="app-footer-note">&copy; <%= Time.current.year %> Open Scene</small>
           <small class="app-footer-note">Built with <abbr title="Ruby on Rails">Rails</abbr> &middot; Turbo &middot; Bootstrap</small>
         </div>
       </footer>
