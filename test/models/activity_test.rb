@@ -29,4 +29,29 @@ class ActivityTest < ActiveSupport::TestCase
     assert_not activity.valid?
     assert_includes activity.errors[:city], "can't be blank"
   end
+
+  test "preset_category? is true for listed categories" do
+    activity = Activity.new(category: "Hike")
+
+    assert activity.preset_category?
+  end
+
+  test "preset_category? is false for custom categories" do
+    activity = Activity.new(category: "Book Club")
+
+    assert_not activity.preset_category?
+  end
+
+  test "strips whitespace from category" do
+    activity = Activity.new(
+      title: "City Walk",
+      city: "Seattle",
+      category: "  Hike  ",
+      event_date: Date.today,
+      user: @user
+    )
+
+    assert activity.valid?
+    assert_equal "Hike", activity.category
+  end
 end

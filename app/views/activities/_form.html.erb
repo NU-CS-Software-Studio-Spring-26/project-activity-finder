@@ -1,4 +1,11 @@
-<%= form_with(model: activity) do |form| %>
+<%= form_with(model: activity,
+              html: {
+                data: {
+                  controller: "category-picker",
+                  category_picker_presets_value: Activity::CATEGORIES,
+                  action: "submit->category-picker#beforeSubmit"
+                }
+              }) do |form| %>
   <% if params[:from] == "profile" %>
     <%= hidden_field_tag :from, "profile" %>
     <%= hidden_field_tag :return_to, params[:return_to] if params[:return_to].present? %>
@@ -54,7 +61,35 @@
 
   <div class="mb-3">
     <%= form.label :category, "Category *", class: "form-label" %>
-    <%= form.text_field :category, class: "form-control", required: true %>
+
+    <select class="form-select mb-2"
+            data-category-picker-target="select"
+            data-custom-value="<%= Activity::CUSTOM_CATEGORY %>"
+            data-action="change->category-picker#toggle"
+            required
+            aria-describedby="category-help">
+      <option value="" disabled <%= activity.category.blank? ? "selected" : "" %>>Select a category</option>
+      <% Activity.category_options.each do |category_name| %>
+        <option value="<%= category_name %>" <%= "selected" if activity.category == category_name %>><%= category_name %></option>
+      <% end %>
+      <option value="<%= Activity::CUSTOM_CATEGORY %>"
+              <%= "selected" if activity.category.present? && !activity.preset_category? %>>
+        Other (add your own)
+      </option>
+    </select>
+
+    <div class="<%= activity.preset_category? || activity.category.blank? ? "d-none" : "" %>"
+         data-category-picker-target="customWrap">
+      <%= label_tag nil, "Custom category *", class: "form-label" %>
+      <%= text_field_tag nil,
+            activity.preset_category? ? nil : activity.category,
+            class: "form-control",
+            placeholder: "e.g. Book club, beach cleanup…",
+            data: { category_picker_target: "custom", action: "input->category-picker#sync" } %>
+    </div>
+
+    <%= form.hidden_field :category, data: { category_picker_target: "output" } %>
+    <div id="category-help" class="form-text">Pick a common category or choose Other to type your own.</div>
   </div>
 
   <div class="mb-3">
