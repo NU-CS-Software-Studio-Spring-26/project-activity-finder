@@ -799,6 +799,23 @@ body {
   margin-top: 12px;
 }
 
+/* Google Sign-In (login) — high contrast on dark auth card */
+.btn-google-signin {
+  --bs-btn-color: #1f1f1f;
+  --bs-btn-bg: #ffffff;
+  --bs-btn-border-color: #dadce0;
+  --bs-btn-hover-color: #1f1f1f;
+  --bs-btn-hover-bg: #f8f9fa;
+  --bs-btn-hover-border-color: #dadce0;
+  --bs-btn-focus-shadow-rgb: 66, 133, 244;
+  font-weight: 600;
+  padding-block: 0.55rem;
+}
+
+.btn-google-signin:focus-visible {
+  box-shadow: 0 0 0 0.2rem rgba(66, 133, 244, 0.45);
+}
+
 /* Activities Pages */
 .activity-search-controls {
   display: flex;
