@@ -1,5 +1,5 @@
 class User < ApplicationRecord
-  has_secure_password
+  has_secure_password validations: false
 
   has_one_attached :avatar
 
@@ -18,12 +18,56 @@ class User < ApplicationRecord
             uniqueness: true,
             format: { with: URI::MailTo::EMAIL_REGEXP }
 
-  validates :password,
-            length: { minimum: 5 },
+  validates :password, presence: true, confirmation: true, length: { minimum: 5 },
+            on: :create,
+            if: -> { provider.blank? }
+
+  validates :password, confirmation: true, allow_blank: true, length: { minimum: 5 },
             if: -> { password.present? }
 
   def avatar_initial
     name.to_s.strip.first&.upcase || "U"
+  end
+
+  # Returns [user, :new] when a User row was created, or [user, :returning] for an existing account
+  # (including email/password accounts linked to Google on first OAuth sign-in).
+  def self.from_omniauth(auth)
+    info = auth.info
+    email = info.email.to_s.strip.downcase.presence
+    raise ArgumentError, "Google did not return an email address" if email.blank?
+
+    raw = auth.extra&.[]("raw_info") || auth.extra&.[](:raw_info)
+    if raw.respond_to?(:[])
+      ev = raw["email_verified"] if raw.respond_to?(:key?) && raw.key?("email_verified")
+      ev = raw[:email_verified] if ev.nil? && raw.respond_to?(:key?) && raw.key?(:email_verified)
+      raise ArgumentError, "Google email is not verified" if ev == false
+    end
+
+    user = find_by(provider: auth.provider, uid: auth.uid)
+    return [ user, :returning ] if user
+
+    if (existing = find_by(email: email))
+      if existing.provider.blank? && existing.uid.blank?
+        existing.update!(provider: auth.provider, uid: auth.uid)
+        return [ existing, :returning ]
+      end
+      if existing.provider == auth.provider && existing.uid == auth.uid
+        return [ existing, :returning ]
+      end
+
+      raise ArgumentError, "An account with this email already exists"
+    end
+
+    random = SecureRandom.hex(32)
+    user = create!(
+      provider: auth.provider,
+      uid: auth.uid,
+      email: email,
+      name: info.name.presence || email.split("@").first,
+      password: random,
+      password_confirmation: random
+    )
+    [ user, :new ]
   end
 
   private

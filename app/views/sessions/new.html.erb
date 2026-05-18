@@ -19,6 +19,20 @@
       <%= submit_tag "Login", class: "btn btn-primary btn-auth" %>
     <% end %>
 
+    <p class="text-muted text-center small mb-2 mt-3" id="google-auth-divider">or</p>
+    <%= button_to google_oauth_authorize_path,
+                  method: :post,
+                  class: "btn btn-google-signin w-100 mb-2",
+                  form: { class: "d-grid", data: { turbo: false } },
+                  aria: { label: "Sign in with Google" } do %>
+      Sign in with Google
+    <% end %>
+    <% unless google_oauth_configured? %>
+      <p class="form-text text-center small mb-0" id="google-oauth-setup-hint">
+        Add <code class="small">GOOGLE_CLIENT_ID</code> and <code class="small">GOOGLE_CLIENT_SECRET</code> to <code class="small">.env</code> (see <code class="small">.env.example</code>) for this button to work.
+      </p>
+    <% end %>
+
     <div class="auth-links">
       <span class="auth-links-prompt">Don't have an account?</span>
       <%= link_to "Sign up", signup_path, "aria-label": "Sign up for a new Activity Finder account" %>

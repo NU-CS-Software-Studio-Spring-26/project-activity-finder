@@ -39,6 +39,15 @@
       <%= f.submit "Create Account", class: "btn btn-primary btn-auth" %>
     <% end %>
 
+    <% if google_oauth_configured? %>
+      <p class="text-muted text-center small mb-2" id="google-signup-divider">or</p>
+      <%= button_to "Sign up with Google",
+                    google_oauth_authorize_path,
+                    method: :post,
+                    class: "btn btn-outline-light w-100 mb-2",
+                    form: { class: "d-grid", data: { turbo: false } } %>
+    <% end %>
+
     <div class="auth-links">
       <span class="auth-links-prompt">Already have an account?</span>
       <%= link_to "Login", login_path, "aria-label": "Go to login for an existing account" %>
