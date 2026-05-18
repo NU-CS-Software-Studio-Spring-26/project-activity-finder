@@ -220,7 +220,7 @@ body {
   text-decoration: none !important;
   color: var(--af-text) !important;
   font-weight: 600;
-  font-size: 1.05rem;
+  font-size: 1.25rem;
   letter-spacing: -0.02em;
 }
 
@@ -576,6 +576,24 @@ body {
   border-color: rgba(255, 255, 255, 0.14);
 }
 
+/* Flash alerts — cyan theme */
+.flash-stack .alert-success {
+  background: rgba(110, 240, 248, 0.08);
+  border-color: #6ef0f8;
+  color: #6ef0f8;
+}
+
+.flash-stack .alert-danger {
+  background: rgba(255, 138, 154, 0.08);
+  border-color: #ff8a9a;
+  color: #ff8a9a;
+}
+
+/* Fix close button color to match */
+.flash-stack .btn-close {
+  filter: invert(1);
+}
+
 .app-footer {
   border-color: rgba(255, 255, 255, 0.10) !important;
 }
@@ -754,7 +772,7 @@ body {
   text-align: center;
   margin-bottom: 24px;
   font-weight: 600;
-  color: var(--af-text) !important;
+  /* color: #6ef0f8 !important; */
 }
 
 .auth-links {
