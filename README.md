@@ -41,6 +41,25 @@ Things you may want to cover:
 # Heroku Deployment
 - https://activity-finder-8073ba70e16c.herokuapp.com/activities
 
+### Google Sign-In on Heroku
+
+Google OAuth fails on Heroku when the callback URL does not match what is registered in Google Cloud.
+
+1. **Heroku Config Vars** (Settings → Config Vars):
+   - `GOOGLE_CLIENT_ID` — same Web client as local dev (or a separate production client)
+   - `GOOGLE_CLIENT_SECRET`
+   - `APP_HOST` — your public app URL with **https**, no trailing slash, e.g. `https://activity-finder-8073ba70e16c.herokuapp.com`  
+     Do **not** leave `APP_HOST` as `http://localhost:3000` on Heroku.  
+     If `APP_HOST` is omitted, the app falls back to `https://<HEROKU_APP_NAME>.herokuapp.com` (Heroku sets `HEROKU_APP_NAME` automatically).
+
+2. **Google Cloud Console** → Credentials → your OAuth 2.0 Web client → add for production:
+   - **Authorized JavaScript origins:** `https://activity-finder-8073ba70e16c.herokuapp.com`
+   - **Authorized redirect URIs:** `https://activity-finder-8073ba70e16c.herokuapp.com/auth/google_oauth2/callback`
+
+3. **Redeploy** after changing config vars (`heroku restart` or push a new release).
+
+4. If sign-in still fails, check logs: `heroku logs --tail` and look for `redirect_uri_mismatch` or OmniAuth warnings.
+
 
 ## Communication
 For the remainder of the class, our team agrees to the following communication and decision-making rules:
