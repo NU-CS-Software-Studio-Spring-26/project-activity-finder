@@ -1,18 +1,31 @@
-# Google OAuth — load credentials from `.env` (dotenv-rails in development/test).
-# Google Cloud Console → OAuth 2.0 Client (Web):
-#   Authorized JavaScript origins: e.g. http://localhost:3000
-#   Authorized redirect URIs:       e.g. http://localhost:3000/auth/google_oauth2/callback
+# Google OAuth — credentials via ENV (dotenv-rails in development/test; Heroku Config Vars in production).
 #
-# Set APP_HOST to the same origin you use in the browser (scheme + host + port).
+# Google Cloud Console → APIs & Services → Credentials → OAuth 2.0 Client (Web application):
+#   Authorized JavaScript origins:  APP_HOST origin (e.g. http://localhost:3000)
+#   Authorized redirect URIs:     APP_HOST + /auth/google_oauth2/callback
+#
+# Production (Heroku): set Config Vars:
+#   APP_HOST=https://your-app.herokuapp.com   (recommended; must use https)
+#   GOOGLE_CLIENT_ID=...
+#   GOOGLE_CLIENT_SECRET=...
+#
+# If APP_HOST is unset on Heroku, HEROKU_APP_NAME is used automatically.
 
 require "omniauth"
+require_relative "../../lib/omniauth_host"
 
 OmniAuth.config.allowed_request_methods = %i[get post]
 OmniAuth.config.silence_get_warning = true
 
-OmniAuth.config.full_host =
-  ENV["APP_HOST"].presence ||
-  (Rails.env.development? ? "http://localhost:3000" : nil)
+full_host = OmniauthHost.resolve
+if full_host.blank? && Rails.env.production?
+  Rails.logger.warn(
+    "[OmniAuth] APP_HOST is not set and HEROKU_APP_NAME is missing. " \
+    "Google sign-in redirect URLs will be wrong. " \
+    "Set APP_HOST to your public URL (e.g. https://your-app.herokuapp.com)."
+  )
+end
+OmniAuth.config.full_host = full_host
 
 if ENV["GOOGLE_CLIENT_ID"].present? && ENV["GOOGLE_CLIENT_SECRET"].present?
   Rails.application.config.middleware.use OmniAuth::Builder do
@@ -26,5 +39,5 @@ if ENV["GOOGLE_CLIENT_ID"].present? && ENV["GOOGLE_CLIENT_SECRET"].present?
              }
   end
 elsif Rails.env.local?
-  Rails.logger.info "[OmniAuth] Google OAuth disabled: set GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET in .env"
+  Rails.logger.info "[OmniAuth] Google OAuth disabled: set GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET"
 end
