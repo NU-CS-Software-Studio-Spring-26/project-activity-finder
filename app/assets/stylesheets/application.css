@@ -64,10 +64,11 @@ body {
 
 .app-body {
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
-  background:  
+  background:
     radial-gradient(1200px 600px at 10% 10%, rgba(109, 94, 252, 0.25), transparent 55%),
     radial-gradient(900px 500px at 90% 0%, rgba(61, 213, 243, 0.18), transparent 60%),
-    linear-gradient(180deg, var(--af-bg) 0%, var(--af-bg-2) 100%);
+    var(--af-bg);
+  background-attachment: fixed;
   color: var(--af-text);
   overflow-wrap: anywhere;
 }
@@ -76,16 +77,6 @@ body {
   max-width: 100%;
 }
 
-.app-gradient {
-  position: fixed;
-  inset: -120px -100px auto -100px;
-  height: 420px;
-  pointer-events: none;
-  z-index: -1;
-  background: radial-gradient(650px 260px at 30% 40%, rgba(109, 94, 252, 0.22), transparent 65%),
-    radial-gradient(520px 220px at 75% 35%, rgba(61, 213, 243, 0.16), transparent 60%);
-  filter: blur(1px);
-}
 
 /* Skip link: high contrast when focused (≥3:1); overrides Bootstrap focus visibility */
 .app-skip-link:focus,
