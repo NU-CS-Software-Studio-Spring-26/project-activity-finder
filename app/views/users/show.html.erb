@@ -40,119 +40,14 @@
   </header>
 
   <section class="profile-section"
-           data-controller="profile-activities"
-           data-profile-activities-initial-tab-value="<%= @profile_tab %>">
-    <div class="profile-activities-bar">
-      <div class="profile-activities-tabs" role="tablist" aria-label="Activity lists">
-        <button type="button"
-                class="profile-activities-tab<%= " profile-activities-tab-active" if @profile_tab == "created" %>"
-                role="tab"
-                id="profile-tab-created"
-                aria-controls="profile-panel-created"
-                aria-selected="<%= @profile_tab == "created" %>"
-                data-profile-activities-target="tab"
-                data-panel="created"
-                data-action="profile-activities#showCreated">
-          Created
-        </button>
-        <button type="button"
-                class="profile-activities-tab<%= " profile-activities-tab-active" if @profile_tab == "joined" %>"
-                role="tab"
-                id="profile-tab-joined"
-                aria-controls="profile-panel-joined"
-                aria-selected="<%= @profile_tab == "joined" %>"
-                data-profile-activities-target="tab"
-                data-panel="joined"
-                data-action="profile-activities#showJoined">
-          Joined
-        </button>
-      </div>
-
-      <% if @user == current_user %>
-        <%= link_to new_activity_path, class: "profile-create-activity-btn" do %>
-          <svg class="profile-create-activity-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M12 5v14M5 12h14" />
-          </svg>
-          <span>Create activity</span>
-        <% end %>
-      <% end %>
-    </div>
-
-    <% created_empty_message = @user == current_user ? "You haven’t created any activities yet." : "#{@user.name} hasn’t created any activities yet." %>
-    <% joined_empty_message = @user == current_user ? "You haven’t joined any activities yet." : "#{@user.name} hasn’t joined any activities yet." %>
-
-    <div id="profile-panel-created"
-         class="profile-activities-panel"
-         role="tabpanel"
-         aria-labelledby="profile-tab-created"
-         <%= "hidden" unless @profile_tab == "created" %>
-         data-profile-activities-target="panel"
-         data-panel="created">
-      <%= render "shared/activity_pagination",
-            pagination: @created_pagination,
-            form_url: user_path(@user),
-            form_hidden_fields: {
-              created_page: 1,
-              joined_page: @joined_pagination[:page],
-              tab: "created"
-            },
-            path_for: ->(page) {
-              user_path(@user,
-                tab: "created",
-                created_page: page,
-                joined_page: @joined_pagination[:page],
-                per_page: @created_pagination[:per_page])
-            },
-            select_id: "profile-created-per-page",
-            empty_message: created_empty_message,
-            aria_label: "Created activities pagination" %>
-
-      <% if @hosted_activities.any? %>
-        <div class="activity-grid">
-          <% @hosted_activities.each do |activity| %>
-            <%= render "activities/card", activity: activity, return_to: request.original_url %>
-          <% end %>
-        </div>
-      <% elsif @created_pagination[:total].positive? %>
-        <p class="profile-empty-state">No activities on this page.</p>
-      <% end %>
-    </div>
-
-    <div id="profile-panel-joined"
-         class="profile-activities-panel"
-         role="tabpanel"
-         aria-labelledby="profile-tab-joined"
-         <%= "hidden" unless @profile_tab == "joined" %>
-         data-profile-activities-target="panel"
-         data-panel="joined">
-      <%= render "shared/activity_pagination",
-            pagination: @joined_pagination,
-            form_url: user_path(@user),
-            form_hidden_fields: {
-              created_page: @created_pagination[:page],
-              joined_page: 1,
-              tab: "joined"
-            },
-            path_for: ->(page) {
-              user_path(@user,
-                tab: "joined",
-                created_page: @created_pagination[:page],
-                joined_page: page,
-                per_page: @joined_pagination[:per_page])
-            },
-            select_id: "profile-joined-per-page",
-            empty_message: joined_empty_message,
-            aria_label: "Joined activities pagination" %>
-
-      <% if @joined_activities.any? %>
-        <div class="activity-grid">
-          <% @joined_activities.each do |activity| %>
-            <%= render "activities/card", activity: activity, show_host: true, return_to: request.original_url %>
-          <% end %>
-        </div>
-      <% elsif @joined_pagination[:total].positive? %>
-        <p class="profile-empty-state">No activities on this page.</p>
-      <% end %>
-    </div>
+           <% unless @admin_profile %>
+             data-controller="profile-activities"
+             data-profile-activities-initial-tab-value="<%= @profile_tab %>"
+           <% end %>>
+    <% if @admin_profile %>
+      <%= render "users/profile_activities_admin" %>
+    <% else %>
+      <%= render "users/profile_activities_regular" %>
+    <% end %>
   </section>
 </div>

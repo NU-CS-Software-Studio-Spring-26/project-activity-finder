@@ -13,17 +13,11 @@ class UsersController < ApplicationController
   end
 
   def show
-    @profile_tab = %w[created joined].include?(params[:tab]) ? params[:tab] : "created"
-
-    hosted_scope = @user.activities.order(event_date: :asc)
-    hosted_result = paginate_activity_scope(hosted_scope, page_param: :created_page)
-    @hosted_activities = hosted_result[:records]
-    @created_pagination = hosted_result[:pagination]
-
-    joined_scope = @user.joined_activities.includes(:user).order(event_date: :asc)
-    joined_result = paginate_activity_scope(joined_scope, page_param: :joined_page)
-    @joined_activities = joined_result[:records]
-    @joined_pagination = joined_result[:pagination]
+    if admin_profile_view?
+      load_admin_profile_activities
+    else
+      load_regular_profile_activities
+    end
   end
 
   def new
@@ -84,5 +78,44 @@ class UsersController < ApplicationController
 
   def profile_params
     params.require(:user).permit(:name, :password, :password_confirmation, :avatar)
+  end
+
+  def admin_profile_view?
+    @user.admin? && @user == current_user
+  end
+
+  def load_admin_profile_activities
+    @admin_profile = true
+    @search_query = params[:q].to_s.strip
+    @city_query = params[:city].to_s.strip
+
+    scope = Activity.includes(:user).order(event_date: :asc)
+    if @search_query.present?
+      title_pattern = "%#{ActiveRecord::Base.sanitize_sql_like(@search_query)}%"
+      scope = scope.where("title ILIKE ?", title_pattern)
+    end
+    if @city_query.present?
+      city_pattern = "%#{ActiveRecord::Base.sanitize_sql_like(@city_query)}%"
+      scope = scope.where("city ILIKE ?", city_pattern)
+    end
+
+    result = paginate_activity_scope(scope, page_param: :page)
+    @all_activities = result[:records]
+    @activities_pagination = result[:pagination]
+  end
+
+  def load_regular_profile_activities
+    @admin_profile = false
+    @profile_tab = %w[created joined].include?(params[:tab]) ? params[:tab] : "created"
+
+    hosted_scope = @user.activities.order(event_date: :asc)
+    hosted_result = paginate_activity_scope(hosted_scope, page_param: :created_page)
+    @hosted_activities = hosted_result[:records]
+    @created_pagination = hosted_result[:pagination]
+
+    joined_scope = @user.joined_activities.includes(:user).order(event_date: :asc)
+    joined_result = paginate_activity_scope(joined_scope, page_param: :joined_page)
+    @joined_activities = joined_result[:records]
+    @joined_pagination = joined_result[:pagination]
   end
 end

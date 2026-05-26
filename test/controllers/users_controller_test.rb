@@ -81,6 +81,102 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to root_path
   end
 
+  test "admin profile shows all activities with search and without create button" do
+    admin = User.create!(
+      name: "Admin",
+      email: "admin-profile@example.com",
+      password: "AdminPass1",
+      password_confirmation: "AdminPass1",
+      admin: true
+    )
+    post login_path, params: { email: admin.email, password: "AdminPass1" }
+
+    alice_activity = Activity.create!(
+      title: "Alice hike",
+      city: "Seattle",
+      category: "Hike",
+      event_date: Date.today,
+      user: @alice
+    )
+    bob_activity = Activity.create!(
+      title: "Bob trivia",
+      city: "Portland",
+      category: "Trivia Night",
+      event_date: Date.today + 1.day,
+      user: @bob
+    )
+
+    get user_url(admin)
+    assert_response :success
+    assert_select "h2.profile-activities-heading", text: "All activities"
+    assert_select ".profile-activities-tab", count: 0
+    assert_select ".profile-create-activity-btn", count: 0
+    assert_select "#profile-panel-all .activity-card", count: 2
+    assert_select "button", text: "Delete", count: 2
+
+    get user_url(admin, q: "trivia")
+    assert_response :success
+    assert_select "#profile-panel-all .activity-card", count: 1
+    assert_match bob_activity.title, response.body
+    assert_no_match alice_activity.title, response.body
+
+    get user_url(admin, city: "Seattle")
+    assert_response :success
+    assert_select "#profile-panel-all .activity-card", count: 1
+    assert_match alice_activity.title, response.body
+  end
+
+  test "admin profile paginates all activities" do
+    admin = User.create!(
+      name: "Admin",
+      email: "admin-paginate@example.com",
+      password: "AdminPass1",
+      password_confirmation: "AdminPass1",
+      admin: true
+    )
+    post login_path, params: { email: admin.email, password: "AdminPass1" }
+
+    7.times do |i|
+      Activity.create!(
+        title: "Listed #{i}",
+        city: "Seattle",
+        category: "Test",
+        event_date: Date.today + i.days,
+        user: @alice
+      )
+    end
+
+    get user_url(admin, per_page: 6, page: 2)
+    assert_response :success
+    assert_match(/page 2 of 2/, response.body)
+    assert_select "#profile-panel-all .activity-card", count: 1
+  end
+
+  test "admin can delete any activity from profile" do
+    admin = User.create!(
+      name: "Admin",
+      email: "admin-delete@example.com",
+      password: "AdminPass1",
+      password_confirmation: "AdminPass1",
+      admin: true
+    )
+    post login_path, params: { email: admin.email, password: "AdminPass1" }
+
+    activity = Activity.create!(
+      title: "To remove",
+      city: "Seattle",
+      category: "Test",
+      event_date: Date.today,
+      user: @bob
+    )
+
+    assert_difference("Activity.count", -1) do
+      delete activity_url(activity),
+        params: { from: "profile", return_to: user_path(admin) }
+    end
+    assert_redirected_to user_path(admin)
+  end
+
   test "admin can edit and destroy another user" do
     admin = User.create!(
       name: "Admin",
