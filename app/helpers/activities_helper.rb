@@ -1,4 +1,6 @@
 module ActivitiesHelper
+  NON_MAP_LOCATION_PATTERN = /\A(online|virtual|remote|zoom|teams|google\s*meet|webex|n\/a|tbd|none|—|-)\z/i.freeze
+
   POPULAR_ACTIVITY_CITIES = [
     "Chicago",
     "Madison",
@@ -53,6 +55,14 @@ module ActivitiesHelper
     return {} if return_to.blank?
 
     { from: "profile", return_to: return_to }
+  end
+
+  def activity_location_map_showable?(activity)
+    location = activity.location.to_s.strip
+    return false if location.blank?
+    return false if location.match?(NON_MAP_LOCATION_PATTERN)
+
+    true
   end
 
   def activity_image_alt(activity)

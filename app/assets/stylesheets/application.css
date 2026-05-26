@@ -872,6 +872,22 @@ body {
   flex-wrap: wrap;
   gap: 10px;
   align-items: center;
+  min-width: 0;
+}
+
+.activity-search-controls .activity-search-form {
+  flex: 1 1 18rem;
+  min-width: 0;
+}
+
+.activity-search-actions {
+  flex-shrink: 0;
+}
+
+.activity-search-action-btn {
+  flex-shrink: 0;
+  white-space: nowrap;
+  min-width: 5.25rem;
 }
 
 .activity-search-input-wrap {
@@ -1139,6 +1155,30 @@ body {
   color: rgba(255, 255, 255, 0.76);
   line-height: 1.7;
   margin-bottom: 0;
+}
+
+.activity-map-panel {
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  border-radius: 12px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.activity-map-loading,
+.activity-map-unavailable,
+.activity-map-unavailable-text {
+  color: rgba(255, 255, 255, 0.62);
+  padding: 1rem 1.25rem;
+}
+
+.activity-map-container {
+  width: 100%;
+  min-height: 18rem;
+  z-index: 0;
+}
+
+.activity-map-container .leaflet-control-zoom a {
+  color: #111 !important;
 }
 
 .activity-info-row {

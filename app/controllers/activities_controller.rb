@@ -16,11 +16,19 @@ class ActivitiesController < ApplicationController
   # GET /activities or /activities.json
   def index
     @city_query = params[:city].to_s.strip
+    @title_query = params[:q].to_s.strip
 
     base_scope = Activity.publicly_visible.order(event_date: :asc)
     if @city_query.present?
       pattern = "%#{ActiveRecord::Base.sanitize_sql_like(@city_query)}%"
       base_scope = base_scope.where("city ILIKE ?", pattern)
+    end
+    if @title_query.present?
+      pattern = "%#{ActiveRecord::Base.sanitize_sql_like(@title_query)}%"
+      base_scope = base_scope.where(
+        "title ILIKE :q OR COALESCE(description, '') ILIKE :q OR COALESCE(category, '') ILIKE :q",
+        q: pattern
+      )
     end
 
     result = paginate_activity_scope(base_scope, page_param: :page)
@@ -41,7 +49,11 @@ class ActivitiesController < ApplicationController
     @attendees = @activity.attendees.order(:name)
     @signup_count = @activity.activity_signups.count
     @full = @activity.capacity.present? && @signup_count >= @activity.capacity
-    @share_url = join_activity_via_token_url(@activity.share_token) if @activity.user == current_user
+    @map_coordinates = geocode_activity_location if helpers.activity_location_map_showable?(@activity)
+    if @activity.user == current_user
+      token = ensure_share_token!(@activity)
+      @share_url = join_activity_via_token_url(token: token)
+    end
   end
 
   # GET /join/:token
@@ -217,5 +229,21 @@ class ActivitiesController < ApplicationController
       @activity.images.attachments.order(:position, :created_at).each_with_index do |attachment, index|
         attachment.update(position: index + 1)
       end
+    end
+
+    def geocode_activity_location
+      LocationGeocoder.coordinates(@activity.location, city: @activity.city)
+    end
+
+    def ensure_share_token!(activity)
+      return activity.share_token if activity.share_token.present?
+
+      token = loop do
+        candidate = SecureRandom.urlsafe_base64(16)
+        break candidate unless Activity.exists?(share_token: candidate)
+      end
+
+      activity.update_column(:share_token, token)
+      token
     end
 end
