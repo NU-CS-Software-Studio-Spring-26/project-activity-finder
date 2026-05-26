@@ -4,6 +4,7 @@ class ActivitiesController < ApplicationController
 
   before_action :require_login
   before_action :set_activity, only: %i[ show edit update destroy join leave ]
+  before_action :check_activity_access!, only: %i[ show join leave ]
   before_action :authorize_activity!, only: %i[ edit update destroy ]
   before_action :require_profile_management_context!, only: %i[ edit update destroy ]
 
@@ -16,7 +17,7 @@ class ActivitiesController < ApplicationController
   def index
     @city_query = params[:city].to_s.strip
 
-    base_scope = Activity.order(event_date: :asc)
+    base_scope = Activity.publicly_visible.order(event_date: :asc)
     if @city_query.present?
       pattern = "%#{ActiveRecord::Base.sanitize_sql_like(@city_query)}%"
       base_scope = base_scope.where("city ILIKE ?", pattern)
@@ -40,6 +41,25 @@ class ActivitiesController < ApplicationController
     @attendees = @activity.attendees.order(:name)
     @signup_count = @activity.activity_signups.count
     @full = @activity.capacity.present? && @signup_count >= @activity.capacity
+    @share_url = join_activity_via_token_url(@activity.share_token) if @activity.user == current_user
+  end
+
+  # GET /join/:token
+  def join_via_token
+    @activity = Activity.find_by(share_token: params[:token])
+
+    unless @activity
+      redirect_to root_path, alert: "Invalid or expired invitation link."
+      return
+    end
+
+    grant_token_access(@activity)
+
+    if @activity.public?
+      redirect_to @activity, notice: "Welcome! You can join this activity below."
+    else
+      redirect_to @activity, notice: "You've been granted access to this private activity. Join below!"
+    end
   end
 
   # POST /activities/1/join
@@ -145,8 +165,28 @@ class ActivitiesController < ApplicationController
           :city,
           :category,
           :event_date,
-          :capacity
+          :capacity,
+          :visibility
         ])
+    end
+
+    def check_activity_access!
+      return unless @activity.private?
+      return if @activity.user == current_user
+      return if @activity.attendees.exists?(current_user.id)
+      return if token_access_granted?(@activity)
+
+      redirect_to root_path, alert: "This activity is private. You need an invitation link to view it."
+    end
+
+    def grant_token_access(activity)
+      session[:activity_access_tokens] ||= {}
+      session[:activity_access_tokens][activity.id.to_s] = activity.share_token
+    end
+
+    def token_access_granted?(activity)
+      stored = session.dig(:activity_access_tokens, activity.id.to_s)
+      stored.present? && stored == activity.share_token
     end
 
     def attach_new_images

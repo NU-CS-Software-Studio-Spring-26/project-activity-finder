@@ -1,5 +1,6 @@
 class Activity < ApplicationRecord
   CUSTOM_CATEGORY = "__custom__"
+  VISIBILITY_OPTIONS = %w[public private].freeze
 
   CATEGORIES = [
     "Hike",
@@ -21,10 +22,14 @@ class Activity < ApplicationRecord
   has_many :activity_signups, dependent: :destroy
   has_many :attendees, through: :activity_signups, source: :user
 
+  scope :publicly_visible, -> { where(visibility: "public") }
+
   validates :title, presence: true
   validates :city, presence: true
   validates :category, presence: true
+  validates :visibility, inclusion: { in: VISIBILITY_OPTIONS }
   before_validation :normalize_category
+  before_create :generate_share_token
   validates :event_date, presence: true
   validates :capacity,
             numericality: { only_integer: true, greater_than: 0 },
@@ -57,10 +62,25 @@ class Activity < ApplicationRecord
     category.present? && CATEGORIES.include?(category)
   end
 
+  def private?
+    visibility == "private"
+  end
+
+  def public?
+    visibility == "public"
+  end
+
   private
 
   def normalize_category
     self.category = category.to_s.strip.presence
+  end
+
+  def generate_share_token
+    self.share_token = loop do
+      token = SecureRandom.urlsafe_base64(16)
+      break token unless Activity.exists?(share_token: token)
+    end
   end
 
   def image_limit

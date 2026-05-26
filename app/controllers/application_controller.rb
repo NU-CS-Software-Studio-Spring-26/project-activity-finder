@@ -20,6 +20,7 @@ class ApplicationController < ActionController::Base
 
   def require_login
     unless logged_in?
+      session[:return_to] = request.url
       redirect_to login_path, alert: "You must be logged in"
     end
   end

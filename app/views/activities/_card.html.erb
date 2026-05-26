@@ -11,6 +11,14 @@
   </div>
 
   <div class="activity-card-body">
+    <% if activity.private? %>
+      <span class="badge text-bg-secondary d-inline-flex align-items-center gap-1 mb-1">
+        <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
+          <path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2zm3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/>
+        </svg>
+        Private
+      </span>
+    <% end %>
     <h2 class="activity-title h5 mb-1">
       <%= link_to activity.title, activity_path(activity, **link_params) %>
     </h2>

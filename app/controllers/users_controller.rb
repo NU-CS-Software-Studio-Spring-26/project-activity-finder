@@ -108,13 +108,15 @@ class UsersController < ApplicationController
     @admin_profile = false
     @profile_tab = %w[created joined].include?(params[:tab]) ? params[:tab] : "created"
 
-    hosted_scope = @user.activities.order(event_date: :asc)
-    hosted_result = paginate_activity_scope(hosted_scope, page_param: :created_page)
+    viewing_own_profile = current_user == @user
+
+    hosted_base = viewing_own_profile ? @user.activities : @user.activities.publicly_visible
+    hosted_result = paginate_activity_scope(hosted_base.order(event_date: :asc), page_param: :created_page)
     @hosted_activities = hosted_result[:records]
     @created_pagination = hosted_result[:pagination]
 
-    joined_scope = @user.joined_activities.includes(:user).order(event_date: :asc)
-    joined_result = paginate_activity_scope(joined_scope, page_param: :joined_page)
+    joined_base = viewing_own_profile ? @user.joined_activities : @user.joined_activities.publicly_visible
+    joined_result = paginate_activity_scope(joined_base.includes(:user).order(event_date: :asc), page_param: :joined_page)
     @joined_activities = joined_result[:records]
     @joined_pagination = joined_result[:pagination]
   end
