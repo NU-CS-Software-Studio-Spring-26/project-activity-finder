@@ -82,6 +82,9 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "admin profile shows all activities with search and without create button" do
+    ActivitySignup.delete_all
+    Activity.delete_all
+
     admin = User.create!(
       name: "Admin",
       email: "admin-profile@example.com",
@@ -127,6 +130,9 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "admin profile paginates all activities" do
+    ActivitySignup.delete_all
+    Activity.delete_all
+
     admin = User.create!(
       name: "Admin",
       email: "admin-paginate@example.com",
