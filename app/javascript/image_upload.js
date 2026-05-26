@@ -82,9 +82,24 @@ function setupNewImageUpload() {
         nameDiv.className = "image-name";
         nameDiv.textContent = file.name;
 
+        const removeBtn = document.createElement("button");
+        removeBtn.type = "button";
+        removeBtn.className = "btn btn-sm btn-outline-danger mt-2 w-100";
+        removeBtn.textContent = "Remove";
+        removeBtn.addEventListener("click", (event) => {
+          event.preventDefault();
+          event.stopPropagation();
+          const fileIndex = files.indexOf(file);
+          if (fileIndex === -1) return;
+          files.splice(fileIndex, 1);
+          updateInputFiles();
+          renderPreviews();
+        });
+
         item.appendChild(badge);
         item.appendChild(img);
         item.appendChild(nameDiv);
+        item.appendChild(removeBtn);
 
         item.addEventListener("dragstart", handleDragStart);
         item.addEventListener("dragover", handleDragOver);
