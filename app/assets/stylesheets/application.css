@@ -872,6 +872,22 @@ body {
   flex-wrap: wrap;
   gap: 10px;
   align-items: center;
+  min-width: 0;
+}
+
+.activity-search-controls .activity-search-form {
+  flex: 1 1 18rem;
+  min-width: 0;
+}
+
+.activity-search-actions {
+  flex-shrink: 0;
+}
+
+.activity-search-action-btn {
+  flex-shrink: 0;
+  white-space: nowrap;
+  min-width: 5.25rem;
 }
 
 .activity-search-input-wrap {
@@ -1162,7 +1178,7 @@ body {
 }
 
 .activity-map-container .leaflet-control-zoom a {
-  color: #333;
+  color: #111 !important;
 }
 
 .activity-info-row {

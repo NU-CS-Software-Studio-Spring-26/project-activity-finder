@@ -11,35 +11,52 @@
       <div class="activity-search mt-3">
         <div class="activity-search-toolbar d-flex flex-column flex-lg-row gap-3 align-items-stretch align-items-lg-center justify-content-lg-between">
           <div class="activity-search-controls flex-grow-1 order-1" style="min-width: 0; max-width: 42rem;">
-            <div class="activity-search-input-wrap">
-              <label for="activity-search" class="visually-hidden">Search activities by name</label>
-              <input
-                type="text"
-                id="activity-search"
-                name="q"
-                class="form-control activity-search-input"
-                placeholder="Search by activity name"
-                data-search-target="input"
-                data-action="input->search#filter"
-              >
-              <button
-                type="button"
-                class="activity-search-input-clear"
-                aria-label="Clear search"
-                data-search-target="inputClearButton"
-                data-action="search#clear"
-              >
-                ×
-              </button>
-            </div>
-            <button
-              type="button"
-              class="btn btn-outline-secondary"
-              data-search-target="clearButton"
-              data-action="search#clear"
-            >
-              Clear
-            </button>
+            <%= form_with url: activities_path, method: :get, local: true, class: "activity-search-form d-flex flex-column flex-lg-row gap-2 align-items-stretch align-items-lg-center m-0", data: { search_target: "form" } do %>
+              <%= hidden_field_tag :page, 1 %>
+              <%= hidden_field_tag :per_page, @pagination[:per_page] %>
+              <%= hidden_field_tag :city, @city_query if @city_query.present? %>
+
+              <div class="activity-search-input-wrap flex-grow-1">
+                <label for="activity-search" class="visually-hidden">Search activities by name</label>
+                <input
+                  type="text"
+                  id="activity-search"
+                  name="q"
+                  value="<%= h(@title_query) %>"
+                  class="form-control activity-search-input"
+                  placeholder="Search by activity name"
+                  data-search-target="input"
+                  data-action="input->search#filter"
+                >
+                <button
+                  type="button"
+                  class="activity-search-input-clear"
+                  aria-label="Clear search"
+                  data-search-target="inputClearButton"
+                  data-action="search#clear"
+                >
+                  ×
+                </button>
+              </div>
+
+              <div class="activity-search-actions d-flex flex-row flex-nowrap gap-2 align-items-center">
+                <button
+                  type="submit"
+                  class="btn btn-outline-secondary activity-search-action-btn"
+                >
+                  Search
+                </button>
+
+                <button
+                  type="button"
+                  class="btn btn-outline-secondary activity-search-action-btn"
+                  data-search-target="clearButton"
+                  data-action="search#clear"
+                >
+                  Clear
+                </button>
+              </div>
+            <% end %>
           </div>
 
           <div
@@ -52,6 +69,7 @@
               <%= hidden_field_tag :page, 1 %>
               <%= hidden_field_tag :per_page, @pagination[:per_page] %>
               <%= hidden_field_tag :city, @city_query.to_s, data: { city_picker_target: "cityInput" } %>
+              <%= hidden_field_tag :q, @title_query if @title_query.present? %>
             <% end %>
 
             <div class="dropdown city-picker-dropdown" data-city-picker-target="dropdownRoot">
@@ -110,7 +128,7 @@
                 compact: true,
                 icon: :search,
                 title: "No matches",
-                message: "No activities on this page match your search. Try another name or clear the search." %>
+                message: "No activities on this page match what you typed. Click Search or press Enter to search the full list, or clear the search." %>
         </div>
       </div>
     </div>
@@ -119,13 +137,20 @@
   <% if @pagination[:total].zero? %>
     <div class="surface-card mb-4">
       <div class="surface-card-body">
-        <% if @city_query.present? %>
+        <% if @city_query.present? && @title_query.blank? %>
           <%= render "shared/empty_state",
                 icon: :pin,
                 title: "No activities in this city",
                 message: "We couldn’t find any activities matching “#{h(@city_query)}”. Try another city or browse everywhere.",
                 action_path: activities_path(per_page: @pagination[:per_page]),
                 action_label: "Show all cities" %>
+        <% elsif @title_query.present? %>
+          <%= render "shared/empty_state",
+                icon: :search,
+                title: "No matching activities",
+                message: "No public activities matched “#{h(@title_query)}”#{@city_query.present? ? " in #{h(@city_query)}" : ""}. Private activities never appear in this list—open them from your profile or an invite link. Try a shorter search, clear the city filter, or create a new activity.",
+                action_path: activities_path(per_page: @pagination[:per_page]),
+                action_label: "Clear search & show all" %>
         <% else %>
           <%= render "shared/empty_state",
                 icon: :calendar,
@@ -144,6 +169,7 @@
           <%= form_with url: activities_path, method: :get, local: true, class: "d-flex flex-wrap align-items-center gap-2 m-0" do %>
             <%= hidden_field_tag :page, 1 %>
             <%= hidden_field_tag :city, @city_query if @city_query.present? %>
+            <%= hidden_field_tag :q, @title_query if @title_query.present? %>
             <label for="activities-per-page" class="form-label mb-0 text-nowrap small text-muted">Per page</label>
             <%= select_tag :per_page,
                   options_for_select(
@@ -174,6 +200,7 @@
           <% p = @pagination %>
           <% pagination_opts = { per_page: p[:per_page] } %>
           <% pagination_opts[:city] = @city_query if @city_query.present? %>
+          <% pagination_opts[:q] = @title_query if @title_query.present? %>
           <% path_prev = activities_path(pagination_opts.merge(page: p[:page] - 1)) %>
           <% path_next = activities_path(pagination_opts.merge(page: p[:page] + 1)) %>
           <% if p[:page] <= 1 %>

@@ -42,6 +42,23 @@ class ActivitiesControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
+  test "index filters by search query across title description and category" do
+    Activity.create!(
+      title: "Weekly Mahjong Meetup",
+      city: "Seattle",
+      category: "Social",
+      description: "Beginners welcome.",
+      event_date: Date.today,
+      user: @user,
+      visibility: "public"
+    )
+
+    get activities_url(q: "Mahjong")
+    assert_response :success
+    assert_select ".activity-card", count: 1
+    assert_match(/Weekly Mahjong Meetup/, response.body)
+  end
+
   test "index paginates by per_page and page" do
     4.times do |i|
       Activity.create!(
@@ -91,6 +108,15 @@ class ActivitiesControllerTest < ActionDispatch::IntegrationTest
   test "should show activity" do
     get activity_url(@activity)
     assert_response :success
+  end
+
+  test "show generates missing share token for host" do
+    @activity.update_column(:share_token, nil)
+
+    get activity_url(@activity)
+    assert_response :success
+    assert @activity.reload.share_token.present?
+    assert_match "/join/", response.body
   end
 
   test "show page uses same image fallback as index when no uploads" do

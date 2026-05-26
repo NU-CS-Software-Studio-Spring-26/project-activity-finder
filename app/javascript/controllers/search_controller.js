@@ -1,7 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["input", "card", "emptyState", "clearButton", "inputClearButton"]
+  static targets = ["input", "card", "emptyState", "clearButton", "inputClearButton", "form"]
 
   connect() {
     this.filter()
@@ -27,6 +27,11 @@ export default class extends Controller {
   clear() {
     this.inputTarget.value = ""
     this.filter()
+
+    if (this.hasFormTarget) {
+      this.formTarget.requestSubmit()
+    }
+
     this.inputTarget.focus()
   }
 }
