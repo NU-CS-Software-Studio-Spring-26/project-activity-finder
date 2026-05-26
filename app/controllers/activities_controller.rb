@@ -40,6 +40,7 @@ class ActivitiesController < ApplicationController
     @attendees = @activity.attendees.order(:name)
     @signup_count = @activity.activity_signups.count
     @full = @activity.capacity.present? && @signup_count >= @activity.capacity
+    @map_coordinates = geocode_activity_location if helpers.activity_location_map_showable?(@activity)
   end
 
   # POST /activities/1/join
@@ -177,5 +178,9 @@ class ActivitiesController < ApplicationController
       @activity.images.attachments.order(:position, :created_at).each_with_index do |attachment, index|
         attachment.update(position: index + 1)
       end
+    end
+
+    def geocode_activity_location
+      LocationGeocoder.coordinates(@activity.location, city: @activity.city)
     end
 end

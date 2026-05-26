@@ -1,5 +1,9 @@
 <% content_for :title, @activity.title %>
 
+<% content_for :head do %>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+<% end %>
+
 <div class="activity-detail-page">
   <div class="activity-detail-actions mb-4 d-flex flex-wrap gap-2">
     <%= link_to(@from_profile ? "Back to profile" : "Back to Activities", @return_to, class: "btn btn-outline-secondary") %>
@@ -55,6 +59,28 @@
           <%= simple_format(@activity.description) %>
         </section>
       <% end %>
+
+      <section class="activity-section">
+        <h2>Location map</h2>
+        <% if activity_location_map_showable?(@activity) %>
+          <% if @map_coordinates %>
+            <div class="activity-map-panel"
+                 data-controller="activity-map"
+                 data-activity-map-lat-value="<%= @map_coordinates[:lat] %>"
+                 data-activity-map-lon-value="<%= @map_coordinates[:lon] %>">
+              <div class="activity-map-container" data-activity-map-target="map" role="region" aria-label="Map showing activity location"></div>
+            </div>
+          <% else %>
+            <p class="activity-map-unavailable-text text-muted mb-0">
+              Map view is not available for this location.
+            </p>
+          <% end %>
+        <% else %>
+          <p class="activity-map-unavailable-text text-muted mb-0">
+            Map view is not available for this location.
+          </p>
+        <% end %>
+      </section>
     </main>
 
     <aside class="activity-detail-sidebar">

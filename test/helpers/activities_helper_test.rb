@@ -24,6 +24,22 @@ class ActivitiesHelperTest < ActionView::TestCase
     assert_match %r{hikeoftheweek\.com}, activity_image(activity)
   end
 
+  test "activity_location_map_showable? is false for blank or virtual locations" do
+    online_activity = Activity.new(location: "Online")
+    virtual_activity = Activity.new(location: "Virtual")
+    blank_activity = Activity.new(location: "")
+
+    assert_not activity_location_map_showable?(online_activity)
+    assert_not activity_location_map_showable?(virtual_activity)
+    assert_not activity_location_map_showable?(blank_activity)
+  end
+
+  test "activity_location_map_showable? is true for physical addresses" do
+    activity = Activity.new(location: "123 Main St")
+
+    assert activity_location_map_showable?(activity)
+  end
+
   test "activity_image uses default asset when no uploads or title match" do
     activity = Activity.create!(
       title: "Neighborhood Board Game Night",
