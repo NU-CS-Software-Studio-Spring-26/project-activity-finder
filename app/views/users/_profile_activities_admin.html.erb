@@ -1,0 +1,76 @@
+<% profile_filter_params = {} %>
+<% profile_filter_params[:q] = @search_query if @search_query.present? %>
+<% profile_filter_params[:city] = @city_query if @city_query.present? %>
+
+<div class="profile-activities-bar">
+  <h2 class="profile-activities-heading">All activities</h2>
+</div>
+
+<%= form_with url: user_path(@user), method: :get, local: true, class: "profile-admin-filters surface-card mb-4" do %>
+  <%= hidden_field_tag :page, 1 %>
+  <%= hidden_field_tag :per_page, @activities_pagination[:per_page] %>
+
+  <div class="surface-card-body">
+    <div class="profile-admin-filters-row">
+      <div class="profile-admin-filter">
+        <label for="profile-admin-search" class="form-label">Search by title</label>
+        <%= text_field_tag :q,
+              @search_query,
+              id: "profile-admin-search",
+              class: "form-control",
+              placeholder: "Activity name" %>
+      </div>
+
+      <div class="profile-admin-filter">
+        <label for="profile-admin-city" class="form-label">Filter by city</label>
+        <%= text_field_tag :city,
+              @city_query,
+              id: "profile-admin-city",
+              class: "form-control",
+              placeholder: "City name" %>
+      </div>
+
+      <div class="profile-admin-filter-actions">
+        <%= submit_tag "Apply", class: "btn btn-primary" %>
+        <% if @search_query.present? || @city_query.present? %>
+          <%= link_to "Clear",
+                user_path(@user, per_page: @activities_pagination[:per_page]),
+                class: "btn btn-outline-secondary" %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+<% end %>
+
+<div id="profile-panel-all" class="profile-activities-panel">
+  <% empty_message = if @search_query.present? || @city_query.present?
+       "No activities match your search."
+     else
+       "No activities yet."
+     end %>
+
+  <%= render "shared/activity_pagination",
+        pagination: @activities_pagination,
+        form_url: user_path(@user),
+        form_hidden_fields: profile_filter_params.merge(page: 1),
+        path_for: ->(page) {
+          user_path(@user, profile_filter_params.merge(page: page, per_page: @activities_pagination[:per_page]))
+        },
+        select_id: "profile-all-per-page",
+        empty_message: empty_message,
+        aria_label: "All activities pagination" %>
+
+  <% if @all_activities.any? %>
+    <div class="activity-grid">
+      <% @all_activities.each do |activity| %>
+        <%= render "activities/card",
+              activity: activity,
+              show_host: true,
+              show_delete: true,
+              return_to: request.original_url %>
+      <% end %>
+    </div>
+  <% elsif @activities_pagination[:total].positive? %>
+    <p class="profile-empty-state">No activities on this page.</p>
+  <% end %>
+</div>

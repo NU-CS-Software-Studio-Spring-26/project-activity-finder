@@ -1,6 +1,8 @@
-<%# locals: (activity:, show_host: false, return_to: nil) %>
+<%# locals: (activity:, show_host: false, show_delete: false, return_to: nil) %>
 <% show_host = local_assigns.fetch(:show_host, false) %>
-<% link_params = activity_link_params(return_to: local_assigns[:return_to]) %>
+<% show_delete = local_assigns.fetch(:show_delete, false) %>
+<% return_to = local_assigns[:return_to] %>
+<% link_params = activity_link_params(return_to: return_to) %>
 <div class="activity-card">
   <div class="activity-card-img">
     <%= link_to activity_path(activity, **link_params) do %>
@@ -26,6 +28,19 @@
 
     <% if show_host && activity.user.present? %>
       <p class="activity-meta small mb-0 mt-1">Hosted by <%= activity.user.name %></p>
+    <% end %>
+
+    <% if show_delete %>
+      <div class="activity-card-actions mt-2">
+        <%= button_to "Delete",
+              activity_path(activity),
+              method: :delete,
+              class: "btn btn-sm btn-danger",
+              form: {
+                data: { turbo_confirm: "Delete this activity? This cannot be undone." },
+                params: { from: "profile", return_to: return_to }
+              } %>
+      </div>
     <% end %>
   </div>
 </div>

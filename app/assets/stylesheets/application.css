@@ -414,6 +414,36 @@ body {
   margin-bottom: 1.75rem;
 }
 
+.profile-activities-heading {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.profile-admin-filters-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 1rem 1.25rem;
+}
+
+.profile-admin-filter {
+  flex: 1 1 12rem;
+  min-width: 10rem;
+}
+
+.profile-admin-filter-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.activity-card-actions form {
+  margin: 0;
+}
+
 .profile-activities-tabs {
   display: inline-flex;
   padding: 0.3rem;
