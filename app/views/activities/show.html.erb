@@ -50,7 +50,17 @@
 
   <div class="activity-detail-content">
     <main class="activity-main-info">
-      <span class="activity-category-badge"><%= @activity.category %></span>
+      <div class="d-flex flex-wrap align-items-center gap-2 mb-1">
+        <span class="activity-category-badge"><%= @activity.category %></span>
+        <% if @activity.private? %>
+          <span class="badge text-bg-secondary d-inline-flex align-items-center gap-1">
+            <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
+              <path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2zm3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/>
+            </svg>
+            Private
+          </span>
+        <% end %>
+      </div>
       <h1 class="activity-detail-title mt-2"><%= @activity.title %></h1>
 
       <% if @activity.description.present? %>
@@ -166,7 +176,32 @@
       <% else %>
         <div class="activity-info-card mt-3">
           <h2>RSVP</h2>
-          <p class="text-muted mb-0">You’re the host for this activity.</p>
+          <p class="text-muted mb-0">You're the host for this activity.</p>
+        </div>
+      <% end %>
+
+      <% if @share_url.present? %>
+        <div class="activity-info-card mt-3" data-controller="share-link">
+          <h2>Share link</h2>
+          <% if @activity.private? %>
+            <p class="text-muted small mb-2">Anyone with this link can view and join your private activity.</p>
+          <% else %>
+            <p class="text-muted small mb-2">Share this link so others can find this activity directly.</p>
+          <% end %>
+          <div class="input-group input-group-sm">
+            <input type="text"
+                   class="form-control font-monospace"
+                   value="<%= @share_url %>"
+                   readonly
+                   data-share-link-target="input"
+                   aria-label="Shareable link">
+            <button class="btn btn-outline-secondary"
+                    type="button"
+                    data-action="share-link#copy"
+                    data-share-link-target="button">
+              Copy
+            </button>
+          </div>
         </div>
       <% end %>
     </aside>

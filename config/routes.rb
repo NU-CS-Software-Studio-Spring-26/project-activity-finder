@@ -23,6 +23,8 @@ Rails.application.routes.draw do
     end
   end
 
+  get "/join/:token", to: "activities#join_via_token", as: :join_activity_via_token
+
   get  "/login", to: "sessions#new"
   post "/login", to: "sessions#create"
   delete "/logout", to: "sessions#destroy", as: :logout
