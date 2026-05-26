@@ -10,9 +10,10 @@ class SessionsController < ApplicationController
     user = User.find_by(email: email)
 
     if user&.authenticate(params[:password])
+      return_to = session[:return_to]
       reset_session
       session[:user_id] = user.id
-      redirect_to root_path, notice: "Logged in successfully"
+      redirect_to return_to.presence || root_path, notice: "Logged in successfully"
     else
       flash.now[:alert] = "Invalid email or password"
       render :new, status: :unprocessable_entity
@@ -32,6 +33,7 @@ class SessionsController < ApplicationController
     end
 
     user, sign_in_kind = User.from_omniauth(auth)
+    return_to = session[:return_to]
     reset_session
     session[:user_id] = user.id
     notice =
@@ -43,7 +45,7 @@ class SessionsController < ApplicationController
       else
         "Signed in with Google."
       end
-    redirect_to root_path, notice: notice
+    redirect_to return_to.presence || root_path, notice: notice
   rescue ArgumentError, ActiveRecord::RecordInvalid => e
     message =
       if e.is_a?(ActiveRecord::RecordInvalid)

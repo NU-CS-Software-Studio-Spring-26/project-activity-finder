@@ -103,6 +103,35 @@
     <div class="form-text">Maximum attendees (not including the host). Leave blank for no limit.</div>
   </div>
 
+  <div class="mb-3">
+    <%= form.label :visibility, "Visibility", class: "form-label d-block" %>
+    <div class="btn-group" role="group" aria-label="Activity visibility">
+      <% Activity::VISIBILITY_OPTIONS.each do |option| %>
+        <%= form.radio_button :visibility, option,
+              class: "btn-check",
+              id: "activity_visibility_#{option}" %>
+        <%= form.label :visibility, class: "btn btn-outline-secondary",
+              for: "activity_visibility_#{option}" do %>
+          <% if option == "public" %>
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="me-1" viewBox="0 0 16 16" aria-hidden="true">
+              <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"/>
+            </svg>
+            Public
+          <% else %>
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="me-1" viewBox="0 0 16 16" aria-hidden="true">
+              <path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2zm3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/>
+            </svg>
+            Private
+          <% end %>
+        <% end %>
+      <% end %>
+    </div>
+    <div class="form-text">
+      <strong>Public</strong> activities appear in the browse list for everyone.
+      <strong>Private</strong> activities are invite-only — share the link to let people join.
+    </div>
+  </div>
+
   <div class="mb-3 image-upload-area">
     <%= form.label :images, "Activity Images", class: "form-label" %>
 
