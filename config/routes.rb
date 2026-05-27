@@ -31,6 +31,11 @@ Rails.application.routes.draw do
   get "/signup", to: "users#new"
   get "/signup/check_email", to: "users#check_email", as: :check_email_signup
 
+  get  "/password/forgot",        to: "passwords#new",    as: :forgot_password
+  post "/password/forgot",        to: "passwords#create"
+  get  "/password/reset/:token",  to: "passwords#edit",   as: :edit_password_reset
+  patch "/password/reset/:token", to: "passwords#update"
+
   get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
   get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
 
