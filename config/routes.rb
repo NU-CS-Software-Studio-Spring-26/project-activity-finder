@@ -20,6 +20,7 @@ Rails.application.routes.draw do
     member do
       post :join
       delete :leave
+      get :export_pdf
     end
   end
 

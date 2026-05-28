@@ -45,14 +45,14 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_27_202305) do
 
   create_table "activities", force: :cascade do |t|
     t.integer "capacity"
-    t.string "category"
-    t.string "city"
+    t.string "category", limit: 80
+    t.string "city", limit: 100
     t.datetime "created_at", null: false
     t.text "description"
     t.date "event_date"
-    t.string "location"
+    t.string "location", limit: 200
     t.string "share_token"
-    t.string "title"
+    t.string "title", limit: 120
     t.datetime "updated_at", null: false
     t.bigint "user_id"
     t.string "visibility", default: "public", null: false
@@ -73,8 +73,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_27_202305) do
   create_table "users", force: :cascade do |t|
     t.boolean "admin", default: false, null: false
     t.datetime "created_at", null: false
-    t.string "email"
-    t.string "name"
+    t.string "email", limit: 255
+    t.string "name", limit: 100
     t.string "password_digest"
     t.datetime "password_reset_expires_at"
     t.string "password_reset_token"
