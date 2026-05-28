@@ -34,11 +34,13 @@ Rails.application.configure do
   # Open sent emails in the browser (letter_opener gem) rather than delivering via SMTP.
   # config/environments/production.rb
   config.action_mailer.delivery_method = :smtp
+  config.action_mailer.perform_deliveries = true
+  config.action_mailer.default_url_options = { host: 'localhost', port: 3000 }
   config.action_mailer.smtp_settings = {
     address:              "smtp.sendgrid.net",
     port:                 587,
-    user_name:            ENV["SENDGRID_USERNAME"],
-    password:             ENV["SENDGRID_PASSWORD"],
+    user_name:            "apikey",
+    password:             ENV["SENDGRID_API_KEY"],
     authentication:       :plain,
     enable_starttls_auto: true
   }
