@@ -40,6 +40,11 @@ class ActivityPdfExporter
       else
         pdf.text "No attendees yet."
       end
+
+      pdf.number_pages "Generated on #{Time.current.strftime('%B %d, %Y %H:%M')} - Page <page>/<total>",
+                       at: [ pdf.bounds.left, 0 ],
+                       align: :right,
+                       size: 8
     end.render
   end
 

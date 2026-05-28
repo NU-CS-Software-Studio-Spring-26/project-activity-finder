@@ -118,7 +118,8 @@ class ActivitiesController < ApplicationController
 
   # GET /activities/1/export_pdf
   def export_pdf
-    send_data ActivityPdfExporter.new(@activity).render,
+    pdf_data = ActivityPdfExporter.new(@activity).render
+    send_data pdf_data,
               filename: "activity-#{@activity.id}-report.pdf",
               type: "application/pdf",
               disposition: "attachment"

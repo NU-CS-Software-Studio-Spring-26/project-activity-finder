@@ -405,4 +405,21 @@ class ActivitiesControllerTest < ActionDispatch::IntegrationTest
     follow_redirect!
     assert_match "Only the host or joined attendees can export this activity report.", flash[:alert]
   end
+
+  test "admin can export another user's activity PDF report" do
+    admin = User.create!(
+      name: "Pdf Admin",
+      email: "pdf.admin@example.com",
+      password: "AdminPass",
+      password_confirmation: "AdminPass",
+      admin: true
+    )
+    post login_path, params: { email: admin.email, password: "AdminPass" }
+
+    get export_pdf_activity_url(@activity)
+
+    assert_response :success
+    assert_equal "application/pdf", response.media_type
+    assert_match "%PDF", response.body
+  end
 end
