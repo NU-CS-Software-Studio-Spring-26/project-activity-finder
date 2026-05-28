@@ -1,6 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+const ALLOWED_CHARS = /^[a-zA-Z0-9.]*$/
 const MIN_PASSWORD_LENGTH = 5
 const EMAIL_CHECK_DELAY_MS = 400
 
@@ -14,7 +15,9 @@ export default class extends Controller {
     "nameFeedback",
     "emailFeedback",
     "emailHint",
+    "emailCharFeedback",
     "passwordFeedback",
+    "passwordCharFeedback",
     "confirmationFeedback"
   ]
 
@@ -80,7 +83,9 @@ export default class extends Controller {
     return (
       this.validateName() &&
       this.validateEmail() &&
+      this.validateEmailChars() &&
       this.validatePassword() &&
+      this.validatePasswordChars() &&
       this.validateConfirmation() &&
       this.emailAvailabilityChecked()
     )
@@ -89,7 +94,9 @@ export default class extends Controller {
   validateAll() {
     this.validateName()
     this.validateEmail()
+    this.validateEmailChars()
     this.validatePassword()
+    this.validatePasswordChars()
     this.validateConfirmation()
     if (this.hasSubmitTarget) {
       this.submitTarget.disabled = !this.formValid()
@@ -160,6 +167,45 @@ export default class extends Controller {
       return this.setInvalid(this.nameTarget, this.nameFeedbackTarget, "Name is required.")
     }
     return this.setValid(this.nameTarget, this.nameFeedbackTarget)
+  }
+
+  validateEmailChars() {
+    const value = this.emailTarget.value.trim()
+    if (value === "") return true // let validateEmail handle empty case
+    if (!ALLOWED_CHARS.test(value)) {
+      this.setCharInvalid(this.emailTarget, this.emailCharFeedbackTarget)
+      return false
+    }
+    this.clearCharFeedback(this.emailTarget, this.emailCharFeedbackTarget)
+    return true
+  }
+
+  validatePasswordChars() {
+    const value = this.passwordTarget.value
+    if (value === "") return true // let validatePassword handle empty case
+    if (!ALLOWED_CHARS.test(value)) {
+      this.setCharInvalid(this.passwordTarget, this.passwordCharFeedbackTarget)
+      return false
+    }
+    this.clearCharFeedback(this.passwordTarget, this.passwordCharFeedbackTarget)
+    return true
+  }
+
+  setCharInvalid(field, feedbackTarget) {
+    field.classList.add("is-invalid")
+    field.classList.remove("is-valid")
+    field.setAttribute("aria-invalid", "true")
+    if (feedbackTarget) {
+      feedbackTarget.textContent = "Only letters (a-z), numbers (0-9), and periods (.) are allowed."
+      feedbackTarget.classList.remove("d-none")
+    }
+  }
+
+  clearCharFeedback(field, feedbackTarget) {
+    if (feedbackTarget) {
+      feedbackTarget.textContent = ""
+      feedbackTarget.classList.add("d-none")
+    }
   }
 
   validateEmail() {
