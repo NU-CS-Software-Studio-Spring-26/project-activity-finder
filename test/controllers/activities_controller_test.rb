@@ -326,6 +326,43 @@ class ActivitiesControllerTest < ActionDispatch::IntegrationTest
     assert_match "hosting", flash[:alert]
   end
 
+  test "can export activity as calendar file" do
+    get export_ics_activity_url(@activity)
+
+    assert_response :success
+    assert_equal "text/calendar", response.media_type
+    assert_includes response.headers["Content-Disposition"], "attachment"
+    assert_includes response.headers["Content-Disposition"], "activity-#{@activity.id}.ics"
+    assert_match "BEGIN:VCALENDAR", response.body
+    assert_match "BEGIN:VEVENT", response.body
+    assert_match "SUMMARY:Running", response.body
+  end
+
+  test "cannot export private activity calendar without access" do
+    private_activity = Activity.create!(
+      title: "Private Event",
+      city: "Seattle",
+      category: "Test",
+      event_date: Date.today,
+      visibility: "private",
+      user: @user
+    )
+
+    outsider = User.create!(
+      name: "Outsider",
+      email: "calendar.outsider@example.com",
+      password: "password",
+      password_confirmation: "password"
+    )
+    post login_path, params: { email: outsider.email, password: "password" }
+
+    get export_ics_activity_url(private_activity)
+
+    assert_redirected_to root_path
+    follow_redirect!
+    assert_match "This activity is private. You need an invitation link to view it.", flash[:alert]
+  end
+
   test "host can export activity PDF report" do
     get export_pdf_activity_url(@activity)
 
