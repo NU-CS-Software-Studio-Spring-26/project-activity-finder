@@ -26,9 +26,9 @@ class ActivityPdfExporter
 
       attendees = @activity.attendees.order(:name)
       if attendees.any?
-        rows = [["#", "Name", "Email"]]
+        rows = [ [ "#", "Name", "Email" ] ]
         attendees.each_with_index do |attendee, index|
-          rows << [index + 1, attendee.name.to_s, attendee.email.to_s]
+          rows << [ index + 1, attendee.name.to_s, attendee.email.to_s ]
         end
 
         pdf.table(rows, header: true, width: pdf.bounds.width) do
@@ -42,7 +42,7 @@ class ActivityPdfExporter
       end
 
       pdf.number_pages "Generated on #{Time.current.strftime('%B %d, %Y %H:%M')} - Page <page>/<total>",
-                       at: [pdf.bounds.left, 0],
+                       at: [ pdf.bounds.left, 0 ],
                        align: :right,
                        size: 8
     end.render
