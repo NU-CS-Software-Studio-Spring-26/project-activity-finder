@@ -38,7 +38,7 @@ class PasswordsControllerTest < ActionDispatch::IntegrationTest
 
     mail = ActionMailer::Base.deliveries.last
     assert_equal [ @user.email ], mail.to
-    assert_match "Reset your Activity Finder password", mail.subject
+    assert_match "Reset your Open Scene password", mail.subject
   end
 
   test "reset email contains a valid reset link" do

@@ -1,5 +1,5 @@
 class PasswordsController < ApplicationController
-  before_action :redirect_if_logged_in
+  before_action :redirect_if_logged_in, only: [ :new, :create ]
   before_action :find_user_by_token, only: [ :edit, :update ]
 
   def new
@@ -8,21 +8,12 @@ class PasswordsController < ApplicationController
   def create
     email = params[:email].to_s.strip.downcase
     user  = User.find_by(email: email)
-
+  
     if user
-      token = user.password_reset_token
-      # #region agent log
-      begin
-        UserMailer.password_reset(user, token).deliver_now
-        File.open("/Users/gracehe/project-avtivity-finder/.cursor/debug-27e15a.log","a"){|f|f.puts({sessionId:"27e15a",hypothesisId:"H-B/H-C/H-D",location:"passwords_controller.rb:14",message:"deliver_now succeeded",data:{user_id:user.id},timestamp:Time.now.to_i*1000}.to_json)}
-      rescue => e
-        File.open("/Users/gracehe/project-avtivity-finder/.cursor/debug-27e15a.log","a"){|f|f.puts({sessionId:"27e15a",hypothesisId:"H-B/H-C/H-D",location:"passwords_controller.rb:14",message:"deliver_now raised",data:{error_class:e.class.to_s,error_message:e.message.to_s.slice(0,300)},timestamp:Time.now.to_i*1000}.to_json)}
-        raise
-      end
-      # #endregion
+      token = user.generate_token_for(:password_reset)  # generate fresh token
+      UserMailer.password_reset(user, token).deliver_now
     end
-
-    # Always show the same message to prevent account enumeration.
+  
     redirect_to login_path,
                 notice: "If that email is registered, you'll receive password reset instructions shortly."
   end

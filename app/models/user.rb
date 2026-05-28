@@ -34,7 +34,9 @@ class User < ApplicationRecord
   end
 
   def password_reset_token
-    generate_token_for(:password_reset)
+    generates_token_for :password_reset, expires_in: 15.minutes do
+      password_digest
+    end
   end
 
   # Returns [user, :new] when a User row was created, or [user, :returning] for an existing account
