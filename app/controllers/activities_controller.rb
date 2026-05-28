@@ -3,9 +3,10 @@ class ActivitiesController < ApplicationController
   include ActivityNavigation
 
   before_action :require_login
-  before_action :set_activity, only: %i[ show edit update destroy join leave ]
-  before_action :check_activity_access!, only: %i[ show join leave ]
+  before_action :set_activity, only: %i[ show edit update destroy join leave export_ics export_pdf ]
+  before_action :check_activity_access!, only: %i[ show join leave export_ics ]
   before_action :authorize_activity!, only: %i[ edit update destroy ]
+  before_action :authorize_pdf_export!, only: :export_pdf
   before_action :require_profile_management_context!, only: %i[ edit update destroy ]
 
   def authorize_activity!
@@ -113,6 +114,22 @@ class ActivitiesController < ApplicationController
     else
       redirect_to @activity, alert: "You weren’t signed up for this activity."
     end
+  end
+
+  # GET /activities/1/export_pdf
+  def export_pdf
+    send_data ActivityPdfExporter.new(@activity).render,
+              filename: "activity-#{@activity.id}-report.pdf",
+              type: "application/pdf",
+              disposition: "attachment"
+  end
+
+  # GET /activities/1/export_ics
+  def export_ics
+    send_data ActivityCalendarExporter.new(@activity).render,
+              filename: "activity-#{@activity.id}.ics",
+              type: "text/calendar; charset=utf-8",
+              disposition: "attachment"
   end
 
   # GET /activities/new
@@ -233,6 +250,14 @@ class ActivitiesController < ApplicationController
 
     def geocode_activity_location
       LocationGeocoder.coordinates(@activity.location, city: @activity.city)
+    end
+
+    def authorize_pdf_export!
+      return if current_user.admin?
+      return if @activity.user == current_user
+      return if @activity.attendees.exists?(current_user.id)
+
+      redirect_to @activity, alert: "Only the host or joined attendees can export this activity report."
     end
 
     def ensure_share_token!(activity)

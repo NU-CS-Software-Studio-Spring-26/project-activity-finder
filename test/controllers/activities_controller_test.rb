@@ -325,4 +325,84 @@ class ActivitiesControllerTest < ActionDispatch::IntegrationTest
     follow_redirect!
     assert_match "hosting", flash[:alert]
   end
+
+  test "can export activity as calendar file" do
+    get export_ics_activity_url(@activity)
+
+    assert_response :success
+    assert_equal "text/calendar", response.media_type
+    assert_includes response.headers["Content-Disposition"], "attachment"
+    assert_includes response.headers["Content-Disposition"], "activity-#{@activity.id}.ics"
+    assert_match "BEGIN:VCALENDAR", response.body
+    assert_match "BEGIN:VEVENT", response.body
+    assert_match "SUMMARY:Running", response.body
+  end
+
+  test "cannot export private activity calendar without access" do
+    private_activity = Activity.create!(
+      title: "Private Event",
+      city: "Seattle",
+      category: "Test",
+      event_date: Date.today,
+      visibility: "private",
+      user: @user
+    )
+
+    outsider = User.create!(
+      name: "Outsider",
+      email: "calendar.outsider@example.com",
+      password: "password",
+      password_confirmation: "password"
+    )
+    post login_path, params: { email: outsider.email, password: "password" }
+
+    get export_ics_activity_url(private_activity)
+
+    assert_redirected_to root_path
+    follow_redirect!
+    assert_match "This activity is private. You need an invitation link to view it.", flash[:alert]
+  end
+
+  test "host can export activity PDF report" do
+    get export_pdf_activity_url(@activity)
+
+    assert_response :success
+    assert_equal "application/pdf", response.media_type
+    assert_includes response.headers["Content-Disposition"], "attachment"
+    assert_includes response.headers["Content-Disposition"], "activity-#{@activity.id}-report.pdf"
+    assert_match "%PDF", response.body
+  end
+
+  test "joined attendee can export activity PDF report" do
+    attendee = User.create!(
+      name: "Joined User",
+      email: "joined.pdf@example.com",
+      password: "password",
+      password_confirmation: "password"
+    )
+    ActivitySignup.create!(activity: @activity, user: attendee)
+    post login_path, params: { email: attendee.email, password: "password" }
+
+    get export_pdf_activity_url(@activity)
+
+    assert_response :success
+    assert_equal "application/pdf", response.media_type
+    assert_match "%PDF", response.body
+  end
+
+  test "non host non attendee cannot export activity PDF report" do
+    non_host = User.create!(
+      name: "Guest User",
+      email: "guest.pdf@example.com",
+      password: "password",
+      password_confirmation: "password"
+    )
+    post login_path, params: { email: non_host.email, password: "password" }
+
+    get export_pdf_activity_url(@activity)
+
+    assert_redirected_to activity_url(@activity)
+    follow_redirect!
+    assert_match "Only the host or joined attendees can export this activity report.", flash[:alert]
+  end
 end

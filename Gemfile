@@ -77,3 +77,8 @@ group :test do
 end
 
 gem "dotenv-rails", "~> 3.2", groups: %i[ development test ]
+
+gem "icalendar", "~> 2.12"
+
+gem "prawn", "~> 2.4"
+gem "prawn-table", "~> 0.2.2"
