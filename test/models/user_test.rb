@@ -77,6 +77,19 @@ class UserTest < ActiveSupport::TestCase
     end
   end
 
+  test "password_reset_token resolves to the user" do
+    @user.save!
+    token = @user.password_reset_token
+    assert_equal @user, User.find_by_token_for(:password_reset, token)
+  end
+
+  test "password_reset_token is invalid after password change" do
+    @user.save!
+    token = @user.password_reset_token
+    @user.update!(password: "newpass", password_confirmation: "newpass")
+    assert_nil User.find_by_token_for(:password_reset, token)
+  end
+
   test "from_omniauth returns returning for existing google user" do
     auth = OmniAuth::AuthHash.new(
       provider: "google_oauth2",

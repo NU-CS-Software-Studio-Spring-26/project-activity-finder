@@ -68,6 +68,9 @@ end
 group :development do
   # Use console on exceptions pages [https://github.com/rails/web-console]
   gem "web-console"
+
+  # Open sent emails in the browser instead of trying to deliver them
+  gem "letter_opener"
 end
 
 group :test do
@@ -78,6 +81,9 @@ end
 
 gem "dotenv-rails", "~> 3.2", groups: %i[ development test ]
 
+gem "icalendar", "~> 2.12"
+
+gem "prawn", "~> 2.4"
 gem "prawn", "~> 2.4"
 
 gem "prawn-table", "~> 0.2.2"

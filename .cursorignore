@@ -1,0 +1,27 @@
+# Secrets and credentials
+.env
+.env.local
+.env.*.local
+config/*.key
+config/credentials.yml.enc
+config/master.key
+
+# Dependencies
+vendor/bundle/
+
+# Generated / build output
+public/assets/
+public/packs/
+
+# Logs and temp files
+log/
+tmp/
+
+# Uploaded files (development storage)
+storage/
+
+# Test coverage
+coverage/
+
+# macOS noise
+.DS_Store

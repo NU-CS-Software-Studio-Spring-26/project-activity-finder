@@ -29,6 +29,10 @@ class User < ApplicationRecord
     name.to_s.strip.first&.upcase || "U"
   end
 
+  generates_token_for :password_reset, expires_in: 15.minutes do
+    password_digest
+  end
+
   # Returns [user, :new] when a User row was created, or [user, :returning] for an existing account
   # (including email/password accounts linked to Google on first OAuth sign-in).
   def self.from_omniauth(auth)
