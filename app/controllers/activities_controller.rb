@@ -3,7 +3,7 @@ class ActivitiesController < ApplicationController
   include ActivityNavigation
 
   before_action :require_login
-  before_action :set_activity, only: %i[ show edit update destroy join leave export_ics export_pdf ]
+  before_action :set_activity, only: %i[ show edit update destroy join leave export_pdf export_ics ]
   before_action :check_activity_access!, only: %i[ show join leave export_ics ]
   before_action :authorize_activity!, only: %i[ edit update destroy ]
   before_action :authorize_pdf_export!, only: :export_pdf
