@@ -8,12 +8,12 @@ class PasswordsController < ApplicationController
   def create
     email = params[:email].to_s.strip.downcase
     user  = User.find_by(email: email)
-  
+
     if user
       token = user.generate_token_for(:password_reset)  # generate fresh token
       UserMailer.password_reset(user, token).deliver_now
     end
-  
+
     redirect_to login_path,
                 notice: "If that email is registered, you'll receive password reset instructions shortly."
   end
