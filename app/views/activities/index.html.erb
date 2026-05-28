@@ -3,9 +3,18 @@
 <div data-controller="search">
   <section class="page-hero mb-4">
     <div class="page-hero-inner">
-      <div>
-        <h1 class="mb-1">Find your next plan</h1>
-        <p class="text-muted mb-0">Browse activities, RSVP in one click, and see who’s going.</p>
+      <div class="page-hero-header d-flex flex-column flex-sm-row flex-wrap gap-3 align-items-sm-center justify-content-sm-between">
+        <div>
+          <h1 class="mb-1">Find your next plan</h1>
+          <p class="text-muted mb-0">Browse activities, RSVP in one click, and see who’s going.</p>
+        </div>
+
+        <%= link_to new_activity_path, class: "profile-create-activity-btn" do %>
+          <svg class="profile-create-activity-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 5v14M5 12h14" />
+          </svg>
+          <span>Create activity</span>
+        <% end %>
       </div>
 
       <div class="activity-search mt-3">
