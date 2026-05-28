@@ -1,0 +1,2 @@
+{"sessionId":"27e15a","hypothesisId":"H-A","location":"user_mailer.rb:4","message":"reset_url generated","data":{"reset_url":"http://localhost:3000/password/reset/\u003ctoken\u003e"},"timestamp":1779926784000}
+{"sessionId":"27e15a","hypothesisId":"H-B/H-C/H-D","location":"passwords_controller.rb:14","message":"deliver_now raised","data":{"error_class":"ArgumentError","error_message":"SMTP-AUTH requested but missing user name"},"timestamp":1779926784000}

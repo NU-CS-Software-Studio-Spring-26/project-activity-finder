@@ -32,8 +32,17 @@ Rails.application.configure do
   config.active_storage.service = :local
 
   # Open sent emails in the browser (letter_opener gem) rather than delivering via SMTP.
-  config.action_mailer.delivery_method = :letter_opener
-  config.action_mailer.perform_deliveries = true
+  # config/environments/production.rb
+  config.action_mailer.delivery_method = :smtp
+  config.action_mailer.smtp_settings = {
+    address:              "smtp.sendgrid.net",
+    port:                 587,
+    user_name:            ENV["SENDGRID_USERNAME"],
+    password:             ENV["SENDGRID_PASSWORD"],
+    authentication:       :plain,
+    enable_starttls_auto: true
+  }
+  # config.action_mailer.perform_deliveries = true
   config.action_mailer.raise_delivery_errors = true
 
   # Make template changes take effect immediately.

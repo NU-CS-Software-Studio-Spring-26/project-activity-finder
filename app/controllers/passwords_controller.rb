@@ -11,7 +11,15 @@ class PasswordsController < ApplicationController
 
     if user
       token = user.password_reset_token
-      UserMailer.password_reset(user, token).deliver_now
+      # #region agent log
+      begin
+        UserMailer.password_reset(user, token).deliver_now
+        File.open("/Users/gracehe/project-avtivity-finder/.cursor/debug-27e15a.log","a"){|f|f.puts({sessionId:"27e15a",hypothesisId:"H-B/H-C/H-D",location:"passwords_controller.rb:14",message:"deliver_now succeeded",data:{user_id:user.id},timestamp:Time.now.to_i*1000}.to_json)}
+      rescue => e
+        File.open("/Users/gracehe/project-avtivity-finder/.cursor/debug-27e15a.log","a"){|f|f.puts({sessionId:"27e15a",hypothesisId:"H-B/H-C/H-D",location:"passwords_controller.rb:14",message:"deliver_now raised",data:{error_class:e.class.to_s,error_message:e.message.to_s.slice(0,300)},timestamp:Time.now.to_i*1000}.to_json)}
+        raise
+      end
+      # #endregion
     end
 
     # Always show the same message to prevent account enumeration.
