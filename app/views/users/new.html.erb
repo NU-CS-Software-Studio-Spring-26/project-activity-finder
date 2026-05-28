@@ -38,9 +38,13 @@
         <%= f.email_field :email,
               class: "form-control",
               autocomplete: "email",
-              data: { signup_validation_target: "email" } %>
+              data: {
+                signup_validation_target: "email",
+                action: "input->signup-validation#validateChars"
+              } %>
         <div class="form-text d-none" data-signup-validation-target="emailHint"></div>
         <div class="invalid-feedback d-none" data-signup-validation-target="emailFeedback"></div>
+        <div class="invalid-feedback d-none" data-signup-validation-target="emailCharFeedback"></div>
       </div>
 
       <div class="mb-3">
@@ -48,9 +52,13 @@
         <%= f.password_field :password,
               class: "form-control",
               autocomplete: "new-password",
-              data: { signup_validation_target: "password" } %>
+              data: {
+                signup_validation_target: "password",
+                action: "input->signup-validation#validateChars"
+              } %>
         <div class="form-text">At least 5 characters.</div>
         <div class="invalid-feedback d-none" data-signup-validation-target="passwordFeedback"></div>
+        <div class="invalid-feedback d-none" data-signup-validation-target="passwordCharFeedback"></div>
       </div>
 
       <div class="mb-3">
