@@ -3,8 +3,8 @@ class ActivitiesController < ApplicationController
   include ActivityNavigation
 
   before_action :require_login
-  before_action :set_activity, only: %i[ show edit update destroy join leave export_pdf ]
-  before_action :check_activity_access!, only: %i[ show join leave ]
+  before_action :set_activity, only: %i[ show edit update destroy join leave export_pdf export_ics ]
+  before_action :check_activity_access!, only: %i[ show join leave export_ics ]
   before_action :authorize_activity!, only: %i[ edit update destroy ]
   before_action :authorize_pdf_export!, only: :export_pdf
   before_action :require_profile_management_context!, only: %i[ edit update destroy ]
@@ -122,6 +122,14 @@ class ActivitiesController < ApplicationController
     send_data pdf_data,
               filename: "activity-#{@activity.id}-report.pdf",
               type: "application/pdf",
+              disposition: "attachment"
+  end
+
+  # GET /activities/1/export_ics
+  def export_ics
+    send_data ActivityCalendarExporter.new(@activity).render,
+              filename: "activity-#{@activity.id}.ics",
+              type: "text/calendar; charset=utf-8",
               disposition: "attachment"
   end
 

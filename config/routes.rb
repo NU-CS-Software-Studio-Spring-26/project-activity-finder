@@ -21,6 +21,7 @@ Rails.application.routes.draw do
       post :join
       delete :leave
       get :export_pdf
+      get :export_ics
     end
   end
 
