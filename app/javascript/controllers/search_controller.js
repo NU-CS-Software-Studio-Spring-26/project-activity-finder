@@ -1,37 +1,62 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["input", "card", "emptyState", "clearButton", "inputClearButton", "form"]
+  static targets = ["input", "form", "clearButton", "inputClearButton"]
 
   connect() {
-    this.filter()
+    this.submitTimeout = null
+    this.debounceMs = 200
+    this.updateButtons()
+    this.restoreInputFocus()
   }
 
   filter() {
-    const query = this.inputTarget.value.trim().toLowerCase()
-    let visibleCount = 0
+    const query = this.inputTarget.value.trim()
+    this.updateButtons()
 
-    this.cardTargets.forEach((card) => {
-      const title = card.dataset.activityTitle || ""
-      const isMatch = query === "" || title.includes(query)
-      card.classList.toggle("d-none", !isMatch)
+    if (!this.hasFormTarget) return
 
-      if (isMatch) visibleCount += 1
-    })
-
-    this.emptyStateTarget.classList.toggle("d-none", visibleCount > 0)
-    this.clearButtonTarget.disabled = query === ""
-    this.inputClearButtonTarget.classList.toggle("d-none", query === "")
+    // Debounce form submission so we still search on every
+    // keystroke, but avoid firing a request per character typed.
+    clearTimeout(this.submitTimeout)
+    const scheduledQuery = query
+    this.submitTimeout = setTimeout(() => {
+      // Only submit if the input hasn't changed since we scheduled.
+      if (this.inputTarget.value.trim() !== scheduledQuery) return
+      this.formTarget.requestSubmit()
+    }, this.debounceMs)
   }
 
   clear() {
     this.inputTarget.value = ""
-    this.filter()
+    this.updateButtons()
 
     if (this.hasFormTarget) {
+      // Always reset to a clean search when clearing.
+      const pageInput = this.formTarget.querySelector('input[name="page"]')
+      if (pageInput) pageInput.value = "1"
       this.formTarget.requestSubmit()
     }
 
     this.inputTarget.focus()
+  }
+
+  updateButtons() {
+    const query = this.inputTarget.value.trim()
+
+    if (this.hasClearButtonTarget) {
+      this.clearButtonTarget.disabled = query === ""
+    }
+    if (this.hasInputClearButtonTarget) {
+      this.inputClearButtonTarget.classList.toggle("d-none", query === "")
+    }
+  }
+
+  restoreInputFocus() {
+    const query = this.inputTarget.value
+
+    this.inputTarget.focus({ preventScroll: true })
+    const cursorPosition = query.length
+    this.inputTarget.setSelectionRange(cursorPosition, cursorPosition)
   }
 }
