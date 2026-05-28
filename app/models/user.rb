@@ -1,10 +1,6 @@
 class User < ApplicationRecord
   has_secure_password validations: false
 
-  generates_token_for :password_reset, expires_in: 15.minutes do
-    password_salt&.last(10)
-  end
-
   has_one_attached :avatar
 
   has_many :activities, dependent: :destroy
@@ -33,10 +29,8 @@ class User < ApplicationRecord
     name.to_s.strip.first&.upcase || "U"
   end
 
-  def password_reset_token
-    generates_token_for :password_reset, expires_in: 15.minutes do
-      password_digest
-    end
+  generates_token_for :password_reset, expires_in: 15.minutes do
+    password_digest
   end
 
   # Returns [user, :new] when a User row was created, or [user, :returning] for an existing account
