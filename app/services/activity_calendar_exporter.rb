@@ -26,7 +26,7 @@ class ActivityCalendarExporter
   private
 
   def location_value
-    parts = [@activity.location, @activity.city].map { |part| part.to_s.strip.presence }.compact
+    parts = [ @activity.location, @activity.city ].map { |part| part.to_s.strip.presence }.compact
     parts.join(", ").presence || "TBD"
   end
 end

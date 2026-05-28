@@ -26,9 +26,9 @@ class ActivityPdfExporter
 
       attendees = @activity.attendees.order(:name)
       if attendees.any?
-        rows = [["#", "Name", "Email"]]
+        rows = [ [ "#", "Name", "Email" ] ]
         attendees.each_with_index do |attendee, index|
-          rows << [index + 1, attendee.name.to_s, attendee.email.to_s]
+          rows << [ index + 1, attendee.name.to_s, attendee.email.to_s ]
         end
 
         pdf.table(rows, header: true, width: pdf.bounds.width) do
