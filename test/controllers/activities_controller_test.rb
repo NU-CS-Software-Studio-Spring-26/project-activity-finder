@@ -325,4 +325,64 @@ class ActivitiesControllerTest < ActionDispatch::IntegrationTest
     follow_redirect!
     assert_match "hosting", flash[:alert]
   end
+
+  test "host can export activity PDF report" do
+    get export_pdf_activity_url(@activity)
+
+    assert_response :success
+    assert_equal "application/pdf", response.media_type
+    assert_includes response.headers["Content-Disposition"], "attachment"
+    assert_includes response.headers["Content-Disposition"], "activity-#{@activity.id}-report.pdf"
+    assert_match "%PDF", response.body
+  end
+
+  test "joined attendee can export activity PDF report" do
+    attendee = User.create!(
+      name: "Joined User",
+      email: "joined.pdf@example.com",
+      password: "password",
+      password_confirmation: "password"
+    )
+    ActivitySignup.create!(activity: @activity, user: attendee)
+    post login_path, params: { email: attendee.email, password: "password" }
+
+    get export_pdf_activity_url(@activity)
+
+    assert_response :success
+    assert_equal "application/pdf", response.media_type
+    assert_match "%PDF", response.body
+  end
+
+  test "non host non attendee cannot export activity PDF report" do
+    non_host = User.create!(
+      name: "Guest User",
+      email: "guest.pdf@example.com",
+      password: "password",
+      password_confirmation: "password"
+    )
+    post login_path, params: { email: non_host.email, password: "password" }
+
+    get export_pdf_activity_url(@activity)
+
+    assert_redirected_to activity_url(@activity)
+    follow_redirect!
+    assert_match "Only the host or joined attendees can export this activity report.", flash[:alert]
+  end
+
+  test "admin can export another user's activity PDF report" do
+    admin = User.create!(
+      name: "Pdf Admin",
+      email: "pdf.admin@example.com",
+      password: "AdminPass",
+      password_confirmation: "AdminPass",
+      admin: true
+    )
+    post login_path, params: { email: admin.email, password: "AdminPass" }
+
+    get export_pdf_activity_url(@activity)
+
+    assert_response :success
+    assert_equal "application/pdf", response.media_type
+    assert_match "%PDF", response.body
+  end
 end
