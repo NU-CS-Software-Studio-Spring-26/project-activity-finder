@@ -1,0 +1,29 @@
+<% content_for :title, "Forgot password" %>
+
+<div class="auth-container">
+  <div class="auth-card">
+    <h1 class="auth-title mb-1" id="auth-heading">Reset your password</h1>
+    <p class="text-muted text-center mb-4" id="auth-intro">
+      Enter the email address on your account and we'll send you a reset link.
+    </p>
+
+    <%= form_with url: forgot_password_path, method: :post,
+          html: { "aria-labelledby": "auth-heading", "aria-describedby": "auth-intro" } do %>
+      <div class="mb-3">
+        <%= label_tag :email, "Email", class: "form-label" %>
+        <%= email_field_tag :email, nil,
+              class: "form-control",
+              autocomplete: "email",
+              autofocus: true,
+              required: true %>
+      </div>
+
+      <%= submit_tag "Send reset link", class: "btn btn-primary btn-auth" %>
+    <% end %>
+
+    <div class="auth-links">
+      <span class="auth-links-prompt">Remember your password?</span>
+      <%= link_to "Log in", login_path, "aria-label": "Go back to login" %>
+    </div>
+  </div>
+</div>
