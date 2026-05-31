@@ -42,6 +42,12 @@ class ActivitiesControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
+  test "index shows create activity link" do
+    get activities_url
+    assert_response :success
+    assert_select "a.profile-create-activity-btn[href='#{new_activity_path}']", text: /Create activity/
+  end
+
   test "index filters by search query across title description and category" do
     Activity.create!(
       title: "Weekly Mahjong Meetup",
