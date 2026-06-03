@@ -13,7 +13,7 @@ Rails.application.routes.draw do
   # Stable helper for views (middleware still owns the actual POST).
   direct(:google_oauth_authorize) { "/auth/google_oauth2" }
 
-  root "activities#index"
+  root "pages#welcome"
 
   resources :users, only: %i[new create show edit update destroy]
   resources :activities do
