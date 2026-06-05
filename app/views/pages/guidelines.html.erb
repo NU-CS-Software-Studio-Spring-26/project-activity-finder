@@ -1,0 +1,65 @@
+<% content_for :title, "Community Guidelines" %>
+
+<%= render layout: "pages/page_card", locals: { title: "Community Guidelines", subtitle: "Last updated: #{Date.today.strftime('%B %d, %Y')}" } do %>
+  <section>
+    <h2>Our community</h2>
+    <p>
+      Open Scene helps people discover and join local activities. These guidelines explain how we
+      expect everyone to behave so the platform stays welcoming, safe, and useful for all members.
+    </p>
+  </section>
+
+  <section>
+    <h2>Be respectful</h2>
+    <ul>
+      <li>Treat hosts, attendees, and other users with courtesy.</li>
+      <li>Do not harass, threaten, or discriminate against anyone.</li>
+      <li>Keep activity descriptions and messages appropriate for a diverse community.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Post honest, accurate activities</h2>
+    <ul>
+      <li>Use a clear title, date, location, and city so people know what they are joining.</li>
+      <li>Set a realistic capacity when your venue or group has limits.</li>
+      <li>Update or cancel activities if plans change so attendees are not misled.</li>
+      <li>Only upload images you have the right to share and that relate to the activity.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Join and participate in good faith</h2>
+    <ul>
+      <li>Sign up only for activities you intend to attend.</li>
+      <li>Leave an activity if your plans change so a spot opens for someone else.</li>
+      <li>Respect private events: use invite links only when the host shared them with you.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Keep the platform safe</h2>
+    <ul>
+      <li>Do not spam, scrape, or automate signups or submissions.</li>
+      <li>Do not attempt to access accounts, private activities, or admin features without permission.</li>
+      <li>Report suspicious or harmful content to the team (see Contact below).</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Consequences</h2>
+    <p>
+      Content or behavior that violates these guidelines may be removed. Accounts may be suspended
+      or deleted, especially for repeated or serious violations. See our
+      <%= link_to "Terms of Service", terms_path %> for more detail.
+    </p>
+  </section>
+
+  <section>
+    <h2>Contact</h2>
+    <p>
+      Questions or concerns about community conduct? Contact a site administrator or report
+      the issue to your activity host.
+    </p>
+  </section>
+<% end %>
