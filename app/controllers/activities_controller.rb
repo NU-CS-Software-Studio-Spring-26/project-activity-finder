@@ -37,7 +37,7 @@ class ActivitiesController < ApplicationController
       ordered_cats = Activity::CATEGORIES + (all.map(&:category).uniq - Activity::CATEGORIES)
       @activities_by_category = ordered_cats.filter_map do |cat|
         acts = all.select { |a| a.category == cat }.first(12)
-        [cat, acts] unless acts.empty?
+        [ cat, acts ] unless acts.empty?
       end.to_h
 
       all_ids = @activities_by_category.values.flatten.map(&:id)
