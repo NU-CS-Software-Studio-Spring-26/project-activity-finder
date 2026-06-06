@@ -33,7 +33,9 @@
 
     <% if local_assigns[:action_path].present? && local_assigns[:action_label].present? %>
       <div class="app-empty-state-actions mt-3">
-        <%= link_to action_label, action_path, class: "btn btn-primary" %>
+        <% action_options = { class: "btn btn-primary" } %>
+        <% action_options[:data] = { turbo_frame: "_top" } if local_assigns[:break_frame] %>
+        <%= link_to action_label, action_path, **action_options %>
       </div>
     <% end %>
   </div>

@@ -57,6 +57,12 @@ module ActivitiesHelper
     { from: "profile", return_to: return_to }
   end
 
+  # Links inside the home-page activities turbo frame must break out to a full
+  # page visit; otherwise Turbo tries to render show inside the frame and fails.
+  def activity_show_link_options(return_to: nil)
+    activity_link_params(return_to: return_to).merge(data: { turbo_frame: "_top" })
+  end
+
   def activity_location_map_showable?(activity)
     location = activity.location.to_s.strip
     return false if location.blank?

@@ -12,6 +12,15 @@ class ActivitiesHelperTest < ActionView::TestCase
     )
   end
 
+  test "activity_show_link_options targets top frame for full-page navigation" do
+    assert_equal({ data: { turbo_frame: "_top" } }, activity_show_link_options)
+
+    assert_equal(
+      { from: "profile", return_to: "/users/1", data: { turbo_frame: "_top" } },
+      activity_show_link_options(return_to: "/users/1")
+    )
+  end
+
   test "activity_image uses title-based external fallback when no uploads" do
     activity = Activity.create!(
       title: "Sunrise Ridge Hike",

@@ -42,6 +42,12 @@ class ActivitiesControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
+  test "index activity links break out of activities turbo frame" do
+    get activities_url
+    assert_response :success
+    assert_select "turbo-frame#activities_results a[data-turbo-frame='_top'][href='#{activity_path(@activity)}']", minimum: 2
+  end
+
   test "index shows create activity link" do
     get activities_url
     assert_response :success

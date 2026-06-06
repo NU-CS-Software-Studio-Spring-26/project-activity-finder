@@ -167,7 +167,8 @@
                 title: "No activities yet",
                 message: "Be the first to host something fun. Create an activity and invite others to join.",
                 action_path: new_activity_path,
-                action_label: "Create activity" %>
+                action_label: "Create activity",
+                break_frame: true %>
         <% end %>
       </div>
     </div>
@@ -236,7 +237,7 @@
         data-activity-title="<%= activity.title.to_s.downcase %>"
       >
         <div class="activity-card-img">
-          <%= link_to activity do %>
+          <%= link_to activity, **activity_show_link_options do %>
             <%= image_tag activity_image(activity), class: "img-fluid", alt: activity_image_alt(activity) %>
           <% end %>
         </div>
@@ -262,7 +263,7 @@
         </div>
 
         <h2 class="activity-title h5 mb-1">
-          <%= link_to activity.title, activity %>
+          <%= link_to activity.title, activity, **activity_show_link_options %>
         </h2>
 
         <div class="activity-meta-list mb-2">
