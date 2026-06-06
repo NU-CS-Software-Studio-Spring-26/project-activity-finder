@@ -16,29 +16,52 @@ class ActivitiesController < ApplicationController
 
   # GET /activities or /activities.json
   def index
-    @city_query = params[:city].to_s.strip
-    @title_query = params[:q].to_s.strip
+    @city_query     = params[:city].to_s.strip
+    @title_query    = params[:q].to_s.strip
+    @category_query = params[:category].to_s.strip
 
     base_scope = Activity.publicly_visible.order(event_date: :asc)
     if @city_query.present?
       pattern = "%#{ActiveRecord::Base.sanitize_sql_like(@city_query)}%"
       base_scope = base_scope.where("city ILIKE ?", pattern)
     end
-    if @title_query.present?
-      pattern = "%#{ActiveRecord::Base.sanitize_sql_like(@title_query)}%"
-      base_scope = base_scope.where(
-        "title ILIKE :q OR COALESCE(description, '') ILIKE :q OR COALESCE(category, '') ILIKE :q",
-        q: pattern
-      )
+
+    # Browse mode: landing page with no query params → grouped horizontal rows.
+    # Any explicit pagination, text search, category filter, or JSON format switches to flat grid.
+    @browsing_mode = @title_query.blank? && @category_query.blank? &&
+                     params[:page].blank? && params[:per_page].blank? &&
+                     !request.format.json?
+
+    if @browsing_mode
+      all = base_scope.limit(300).to_a
+      ordered_cats = Activity::CATEGORIES + (all.map(&:category).uniq - Activity::CATEGORIES)
+      @activities_by_category = ordered_cats.filter_map do |cat|
+        acts = all.select { |a| a.category == cat }.first(12)
+        [ cat, acts ] unless acts.empty?
+      end.to_h
+
+      all_ids = @activities_by_category.values.flatten.map(&:id)
+      @signup_counts       = ActivitySignup.where(activity_id: all_ids).group(:activity_id).count
+      @joined_activity_ids = ActivitySignup.where(user: current_user, activity_id: all_ids).pluck(:activity_id).to_set
+      @pagination = nil
+    else
+      if @title_query.present?
+        pattern = "%#{ActiveRecord::Base.sanitize_sql_like(@title_query)}%"
+        base_scope = base_scope.where(
+          "title ILIKE :q OR COALESCE(description, '') ILIKE :q OR COALESCE(category, '') ILIKE :q",
+          q: pattern
+        )
+      end
+      base_scope = base_scope.where(category: @category_query) if @category_query.present?
+
+      result = paginate_activity_scope(base_scope, page_param: :page)
+      @activities = result[:records]
+      @pagination = result[:pagination]
+
+      activity_ids = @activities.map(&:id)
+      @signup_counts       = ActivitySignup.where(activity_id: activity_ids).group(:activity_id).count
+      @joined_activity_ids = ActivitySignup.where(user: current_user, activity_id: activity_ids).pluck(:activity_id).to_set
     end
-
-    result = paginate_activity_scope(base_scope, page_param: :page)
-    @activities = result[:records]
-    @pagination = result[:pagination]
-
-    activity_ids = @activities.map(&:id)
-    @signup_counts = ActivitySignup.where(activity_id: activity_ids).group(:activity_id).count
-    @joined_activity_ids = ActivitySignup.where(user: current_user, activity_id: activity_ids).pluck(:activity_id).to_set
   end
 
   # GET /activities/1 or /activities/1.json

@@ -1,6 +1,21 @@
 module ActivitiesHelper
   NON_MAP_LOCATION_PATTERN = /\A(online|virtual|remote|zoom|teams|google\s*meet|webex|n\/a|tbd|none|—|-)\z/i.freeze
 
+  CATEGORY_PLACEHOLDER_GRADIENTS = {
+    "Hike"                 => %w[#1a3a2a #3a8c5c],
+    "Food Crawl"           => %w[#3a1a1a #c4613a],
+    "Coffee Meetup"        => %w[#2e1e10 #7a5230],
+    "Trivia Night"         => %w[#1e1a3c #5040b4],
+    "Art Walk"             => %w[#3a1a30 #b43a80],
+    "Fitness Class"        => %w[#1a2a3a #3a88c4],
+    "Farmers Market"       => %w[#1e3a10 #6ab440],
+    "Sports & Recreation"  => %w[#1a2a3a #2a8ab4],
+    "Music & Live Events"  => %w[#2a1a3a #8a3ac4],
+    "Workshop / Class"     => %w[#2a2e1a #7a8a40],
+    "Social & Networking"  => %w[#1a2030 #3a5ab4],
+    "Volunteer"            => %w[#2e2a10 #b4901e]
+  }.freeze
+
   POPULAR_ACTIVITY_CITIES = Activity::ALLOWED_CITIES
 
   EXTERNAL_ACTIVITY_IMAGE_FALLBACKS = [
@@ -21,7 +36,7 @@ module ActivitiesHelper
 
     return external_fallback.last if external_fallback.present?
 
-    asset_path("activity_finder_default_thumbnail.jpg")
+    category_placeholder_image(activity.category.to_s)
   end
 
   def activity_link_params(return_to: nil)
@@ -74,6 +89,28 @@ module ActivitiesHelper
 
     return activity.title.to_s if external_fallback.present?
 
-    "default image"
+    "#{activity.category} activity"
+  end
+
+  private
+
+  def category_placeholder_image(category)
+    colors = CATEGORY_PLACEHOLDER_GRADIENTS[category] || %w[#1a1e2e #3a4464]
+    label  = ERB::Util.html_escape(category.presence || "Activity")
+    svg = <<~SVG.strip
+      <svg xmlns="http://www.w3.org/2000/svg" width="400" height="225">
+        <defs>
+          <linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#{colors[0]}"/>
+            <stop offset="100%" stop-color="#{colors[1]}"/>
+          </linearGradient>
+        </defs>
+        <rect width="400" height="225" fill="url(#g)"/>
+        <text x="200" y="113" text-anchor="middle" dominant-baseline="middle"
+              font-family="system-ui,-apple-system,sans-serif"
+              font-size="22" font-weight="600" fill="rgba(255,255,255,0.85)">#{label}</text>
+      </svg>
+    SVG
+    "data:image/svg+xml;base64,#{[ svg ].pack('m0')}"
   end
 end
