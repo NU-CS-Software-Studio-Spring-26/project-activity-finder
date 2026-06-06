@@ -1,5 +1,8 @@
 module ActivityTextValidation
   extend ActiveSupport::Concern
+  include ActivityProfanityFilter
+
+  INAPPROPRIATE_LANGUAGE_MESSAGE = ActivityProfanityFilter::INAPPROPRIATE_LANGUAGE_MESSAGE
 
   TITLE_MAX_LENGTH = 120
   TITLE_MIN_LENGTH = 3
@@ -178,6 +181,8 @@ module ActivityTextValidation
       errors.add(:title, "must include at least one letter")
     elsif !title.match?(TITLE_PATTERN)
       errors.add(:title, "contains unsupported characters")
+    elsif self.class.profanity?(title)
+      errors.add(:title, INAPPROPRIATE_LANGUAGE_MESSAGE)
     elsif self.class.gibberish_text?(title)
       errors.add(:title, "must be a readable activity name")
     end
@@ -190,6 +195,8 @@ module ActivityTextValidation
       errors.add(:description, "contains unsupported content")
     elsif !description.match?(DESCRIPTION_PATTERN)
       errors.add(:description, "contains unsupported characters")
+    elsif self.class.profanity?(description)
+      errors.add(:description, INAPPROPRIATE_LANGUAGE_MESSAGE)
     elsif self.class.gibberish_text?(description)
       errors.add(:description, "must use readable words and sentences")
     end
@@ -202,6 +209,8 @@ module ActivityTextValidation
       errors.add(:location, "must be a readable place or address")
     elsif !location.match?(LOCATION_PATTERN)
       errors.add(:location, "contains unsupported characters")
+    elsif self.class.profanity?(location)
+      errors.add(:location, INAPPROPRIATE_LANGUAGE_MESSAGE)
     elsif self.class.gibberish_location?(location)
       errors.add(:location, "must be a readable place or address")
     end

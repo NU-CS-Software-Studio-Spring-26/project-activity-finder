@@ -7,6 +7,7 @@ import {
   gibberishText,
   gibberishLocationText
 } from "utils/readable_text"
+import { profanityText, INAPPROPRIATE_LANGUAGE_MESSAGE } from "utils/profanity_filter"
 
 const TITLE_MIN_LENGTH = 3
 const TITLE_MAX_LENGTH = 120
@@ -17,20 +18,45 @@ export default class extends Controller {
   static targets = ["title", "description", "location", "submit", "titleFeedback", "descriptionFeedback", "locationFeedback"]
 
   connect() {
+    this.fieldTouched = new Set()
+    this.submitAttempted = false
+
     this.validateAll()
 
     ;[this.titleTarget, this.descriptionTarget, this.locationTarget].forEach((field) => {
-      field.addEventListener("input", () => this.validateAll())
-      field.addEventListener("blur", () => this.validateAll())
+      const markTouched = () => {
+        this.fieldTouched.add(field)
+        this.refreshFieldAppearance()
+      }
+
+      field.addEventListener("input", () => {
+        markTouched()
+        this.validateAll()
+      })
+      field.addEventListener("blur", () => {
+        markTouched()
+        this.validateAll()
+      })
     })
 
     this.element.addEventListener("submit", (event) => {
       if (!this.formValid()) {
         event.preventDefault()
+        this.submitAttempted = true
         this.validateAll()
         this.firstInvalidField()?.focus()
       }
     })
+  }
+
+  shouldShowFeedback(field) {
+    return this.submitAttempted || this.fieldTouched.has(field)
+  }
+
+  refreshFieldAppearance() {
+    this.validateTitle()
+    this.validateDescription()
+    this.validateLocation()
   }
 
   formValid() {
@@ -69,6 +95,8 @@ export default class extends Controller {
       message = "Title must include at least one letter."
     } else if (!TITLE_PATTERN.test(value)) {
       message = "Title contains unsupported characters."
+    } else if (profanityText(value)) {
+      message = INAPPROPRIATE_LANGUAGE_MESSAGE
     } else if (gibberishText(value)) {
       message = "Title must be a readable activity name."
     }
@@ -87,6 +115,8 @@ export default class extends Controller {
       message = "Description contains unsupported content."
     } else if (value !== "" && !DESCRIPTION_PATTERN.test(value)) {
       message = "Description contains unsupported characters."
+    } else if (value !== "" && profanityText(value)) {
+      message = INAPPROPRIATE_LANGUAGE_MESSAGE
     } else if (value !== "" && gibberishText(value)) {
       message = "Description must use readable words and sentences."
     }
@@ -105,6 +135,8 @@ export default class extends Controller {
       message = "Location must be a readable place or address."
     } else if (value !== "" && !LOCATION_PATTERN.test(value)) {
       message = "Location contains unsupported characters."
+    } else if (value !== "" && profanityText(value)) {
+      message = INAPPROPRIATE_LANGUAGE_MESSAGE
     } else if (value !== "" && gibberishLocationText(value)) {
       message = "Location must be a readable place or address."
     }
@@ -126,7 +158,9 @@ export default class extends Controller {
   }
 
   setFieldState(field, feedbackTarget, message) {
-    if (message) {
+    const showFeedback = this.shouldShowFeedback(field)
+
+    if (message && showFeedback) {
       field.classList.add("is-invalid")
       field.classList.remove("is-valid")
       field.setAttribute("aria-invalid", "true")
@@ -134,7 +168,7 @@ export default class extends Controller {
         feedbackTarget.textContent = message
         feedbackTarget.classList.remove("d-none")
       }
-    } else if (field.value.trim() !== "") {
+    } else if (field.value.trim() !== "" && !message) {
       field.classList.remove("is-invalid")
       field.classList.add("is-valid")
       field.setAttribute("aria-invalid", "false")
