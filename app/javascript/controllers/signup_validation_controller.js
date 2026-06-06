@@ -1,6 +1,8 @@
 import { Controller } from "@hotwired/stimulus"
 
-const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+// WHATWG email validation pattern (matches what browsers use for type="email").
+// Rejects invalid domains like "gmailsad,.com" that a looser [^\s@] pattern would allow.
+const EMAIL_PATTERN = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+$/
 const ALLOWED_CHARS = /^[a-zA-Z0-9.]*$/
 const MIN_PASSWORD_LENGTH = 5
 const EMAIL_CHECK_DELAY_MS = 400
@@ -158,7 +160,12 @@ export default class extends Controller {
       const data = await response.json()
       if (this.emailTarget.value.trim() !== value) return
 
-      this.emailAvailability = data.available === true
+      // Server rejected the format outright — treat as invalid, not "already registered".
+      if (data.error === "invalid") {
+        this.emailAvailability = "invalid"
+      } else {
+        this.emailAvailability = data.available === true
+      }
       this.clearEmailHint()
       this.validateAll()
     } catch (error) {
@@ -230,6 +237,10 @@ export default class extends Controller {
         this.emailFeedbackTarget.classList.add("d-none")
       }
       return false
+    }
+
+    if (this.emailAvailability === "invalid") {
+      return this.setInvalid(this.emailTarget, this.emailFeedbackTarget, "Enter a valid email address.")
     }
 
     if (this.emailAvailability === false) {
