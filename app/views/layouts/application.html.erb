@@ -22,8 +22,8 @@
 
     <%= tag.link rel: "manifest", href: pwa_manifest_path(format: :json) %>
 
-    <%= favicon_link_tag "logo.png", type: "image/png" %>
-    <%= favicon_link_tag "logo.png", rel: "apple-touch-icon" %>
+    <%= favicon_link_tag "logo2.png", type: "image/png" %>
+    <%= favicon_link_tag "logo2.png", rel: "apple-touch-icon" %>
 
     <%# Includes all stylesheet files in app/assets/stylesheets %>
     <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
@@ -36,7 +36,7 @@
     <nav class="navbar navbar-expand-lg app-navbar">
       <div class="container-xxl app-navbar-inner">
         <%= link_to root_path, class: "app-navbar-brand", "aria-label": "Open Scene — home" do %>
-          <%= image_tag "logo.png", height: 32, alt: "Open Scene logo" %>
+          <%= image_tag "logo2.png", height: 32, alt: "Open Scene logo" %>
           <span class="app-navbar-brand-text">Open Scene</span>
         <% end %>
 
