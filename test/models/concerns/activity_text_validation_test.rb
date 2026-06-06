@@ -64,6 +64,68 @@ class ActivityTextValidationTest < ActiveSupport::TestCase
     assert_includes activity.errors[:location], "must be a readable place or address"
   end
 
+  test "rejects sql-like description" do
+    activity = build_activity(description: "SELECT * FROM database")
+
+    assert_not activity.valid?
+    assert_includes activity.errors[:description], "contains unsupported content"
+  end
+
+  test "rejects gibberish title" do
+    activity = build_activity(title: "hfclfcsuhsfchjchaakjscn")
+
+    assert_not activity.valid?
+    assert_includes activity.errors[:title], "must be a readable activity name"
+  end
+
+  test "rejects sparse vowel gibberish title" do
+    activity = build_activity(title: "sjnfcoanfisf")
+
+    assert_not activity.valid?
+    assert_includes activity.errors[:title], "must be a readable activity name"
+  end
+
+  test "rejects short gibberish title" do
+    activity = build_activity(title: "oksnn")
+
+    assert_not activity.valid?
+    assert_includes activity.errors[:title], "must be a readable activity name"
+  end
+
+  test "rejects keyboard mash with sprinkled vowels" do
+    activity = build_activity(title: "asincpoinwo")
+
+    assert_not activity.valid?
+    assert_includes activity.errors[:title], "must be a readable activity name"
+  end
+
+  test "accepts short readable title" do
+    activity = build_activity(title: "Yoga")
+
+    assert activity.valid?
+  end
+
+  test "rejects gibberish description" do
+    activity = build_activity(description: "hfclfcsuhsfchjchaakjscn")
+
+    assert_not activity.valid?
+    assert_includes activity.errors[:description], "must use readable words and sentences"
+  end
+
+  test "rejects gibberish location" do
+    activity = build_activity(location: "hfclfcsuhsfchjchaakjscn")
+
+    assert_not activity.valid?
+    assert_includes activity.errors[:location], "must be a readable place or address"
+  end
+
+  test "rejects keyboard mash text" do
+    activity = build_activity(title: "asdfghjkl meetup")
+
+    assert_not activity.valid?
+    assert_includes activity.errors[:title], "must be a readable activity name"
+  end
+
   test "strips and squish text fields" do
     activity = build_activity(
       title: "  Board   Game   Night  ",
