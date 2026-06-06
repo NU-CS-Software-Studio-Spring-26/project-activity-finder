@@ -1,7 +1,7 @@
 <%= form_with(model: activity,
               html: {
                 data: {
-                  controller: "category-picker",
+                  controller: "category-picker activity-form-validation",
                   category_picker_presets_value: Activity::CATEGORIES,
                   action: "submit->category-picker#beforeSubmit"
                 }
@@ -24,17 +24,41 @@
 
   <div class="mb-3">
     <%= form.label :title, "Title *", class: "form-label" %>
-    <%= form.text_field :title, class: "form-control", required: true %>
+    <%= form.text_field :title,
+          class: "form-control",
+          required: true,
+          minlength: Activity::TITLE_MIN_LENGTH,
+          maxlength: Activity::TITLE_MAX_LENGTH,
+          autocomplete: "off",
+          aria: { describedby: "activity-title-help activity-title-feedback" },
+          data: { activity_form_validation_target: "title" } %>
+    <div id="activity-title-help" class="form-text"><%= Activity::TITLE_MIN_LENGTH %>–<%= Activity::TITLE_MAX_LENGTH %> characters. Use a short, readable activity name.</div>
+    <div id="activity-title-feedback" class="invalid-feedback d-none" data-activity-form-validation-target="titleFeedback"></div>
   </div>
 
   <div class="mb-3">
     <%= form.label :description, class: "form-label" %>
-    <%= form.textarea :description, class: "form-control" %>
+    <%= form.textarea :description,
+          class: "form-control",
+          rows: 5,
+          maxlength: Activity::DESCRIPTION_MAX_LENGTH,
+          aria: { describedby: "activity-description-help activity-description-feedback" },
+          data: { activity_form_validation_target: "description" } %>
+    <div id="activity-description-help" class="form-text">Optional. Up to <%= Activity::DESCRIPTION_MAX_LENGTH %> characters. Use readable words and sentences.</div>
+    <div id="activity-description-feedback" class="invalid-feedback d-none" data-activity-form-validation-target="descriptionFeedback"></div>
   </div>
 
   <div class="mb-3">
     <%= form.label :location, class: "form-label" %>
-    <%= form.text_field :location, class: "form-control" %>
+    <%= form.text_field :location,
+          class: "form-control",
+          maxlength: Activity::LOCATION_MAX_LENGTH,
+          autocomplete: "street-address",
+          placeholder: "e.g. Green Lake Park, 123 Main St",
+          aria: { describedby: "activity-location-help activity-location-feedback" },
+          data: { activity_form_validation_target: "location" } %>
+    <div id="activity-location-help" class="form-text">Optional venue or address. Up to <%= Activity::LOCATION_MAX_LENGTH %> characters.</div>
+    <div id="activity-location-feedback" class="invalid-feedback d-none" data-activity-form-validation-target="locationFeedback"></div>
   </div>
 
   <div
@@ -166,6 +190,6 @@
   </div>
 
   <div>
-    <%= form.submit class: "btn btn-primary" %>
+    <%= form.submit class: "btn btn-primary", data: { activity_form_validation_target: "submit" } %>
   </div>
 <% end %>

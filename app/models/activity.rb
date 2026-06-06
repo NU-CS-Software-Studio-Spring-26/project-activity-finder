@@ -1,4 +1,6 @@
 class Activity < ApplicationRecord
+  include ActivityTextValidation
+
   CUSTOM_CATEGORY = "__custom__"
   VISIBILITY_OPTIONS = %w[public private].freeze
 
@@ -53,7 +55,6 @@ class Activity < ApplicationRecord
 
   scope :publicly_visible, -> { where(visibility: "public") }
 
-  validates :title, presence: true
   validates :city, presence: true, inclusion: { in: ALLOWED_CITIES, message: "must be a supported city" }
   validates :category, presence: true
   validates :visibility, inclusion: { in: VISIBILITY_OPTIONS }
