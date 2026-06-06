@@ -150,4 +150,27 @@ class ActivityTextValidationTest < ActiveSupport::TestCase
     assert_equal "Board Game Night", activity.title
     assert_equal "Community Hall", activity.location
   end
+
+  test "rejects profanity in title description and location" do
+    {
+      title: "What the fuck meetup",
+      description: "Free porn screening",
+      location: "123 Shit Creek Rd"
+    }.each do |field, value|
+      activity = build_activity(field => value)
+
+      assert_not activity.valid?, "expected #{field} #{value.inspect} to be rejected"
+      assert_includes activity.errors[field], ActivityTextValidation::INAPPROPRIATE_LANGUAGE_MESSAGE
+    end
+  end
+
+  test "does not reject benign words containing blocked substrings" do
+    activity = build_activity(
+      title: "Classic Scrape Hunt",
+      description: "Meet in Middlesex County.",
+      location: "Grass Field Park"
+    )
+
+    assert activity.valid?, activity.errors.full_messages.join(", ")
+  end
 end
