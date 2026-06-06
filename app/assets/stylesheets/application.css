@@ -1225,6 +1225,43 @@ body {
   color: rgba(255, 255, 255, 0.55);
 }
 
+/* Card meta rows with leading icons */
+.activity-meta-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 0.85rem;
+}
+
+.activity-meta-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.875rem;
+  color: var(--af-muted);
+}
+
+.activity-meta-icon {
+  width: 0.95rem;
+  height: 0.95rem;
+  flex-shrink: 0;
+  color: var(--af-accent);
+  opacity: 0.9;
+}
+
+/* Small category chip inside cards */
+.activity-chip {
+  align-self: flex-start;
+  display: inline-block;
+  padding: 0.25rem 0.7rem;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: #d8d2ff;
+  background: var(--af-gradient-brand-soft);
+  border: 1px solid rgba(139, 124, 255, 0.28);
+}
+
 @media (min-width: 1400px) {
   .activity-grid {
     grid-template-columns: repeat(auto-fit, minmax(min(100%, 18.75rem), 1fr));
