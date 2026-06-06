@@ -256,7 +256,21 @@ body {
 }
 
 .app-navbar-brand-text {
-  color: inherit !important;
+  background: var(--af-gradient-text);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent !important;
+}
+
+.app-navbar-brand img {
+  filter: drop-shadow(0 4px 12px rgba(109, 94, 252, 0.45));
+  transition: transform 0.2s ease;
+}
+
+.app-navbar-brand:hover img,
+.app-navbar-brand:focus-visible img {
+  transform: rotate(-6deg) scale(1.06);
 }
 
 .app-navbar-actions {
@@ -303,19 +317,23 @@ body {
 .app-nav-pill-btn {
   display: inline-flex;
   align-items: center;
-  padding: 0.4rem 1rem;
+  padding: 0.45rem 1.15rem;
   border-radius: 999px;
-  background: var(--af-primary);
+  background: var(--af-gradient-brand);
   color: var(--af-on-primary) !important;
   text-decoration: none !important;
   font-weight: 600;
   font-size: 0.9rem;
+  box-shadow: 0 6px 20px rgba(86, 69, 232, 0.4);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
 }
 
 .app-nav-pill-btn:hover,
 .app-nav-pill-btn:focus-visible {
-  background: var(--af-primary-hover);
   color: #fff !important;
+  transform: translateY(-1px);
+  filter: brightness(1.07);
+  box-shadow: 0 10px 28px rgba(86, 69, 232, 0.52);
 }
 
 /* Profile page */
