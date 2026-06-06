@@ -15,7 +15,6 @@ export default class extends Controller {
     "nameFeedback",
     "emailFeedback",
     "emailHint",
-    "emailCharFeedback",
     "passwordFeedback",
     "passwordCharFeedback",
     "confirmationFeedback"
@@ -83,7 +82,6 @@ export default class extends Controller {
     return (
       this.validateName() &&
       this.validateEmail() &&
-      this.validateEmailChars() &&
       this.validatePassword() &&
       this.validatePasswordChars() &&
       this.validateConfirmation() &&
@@ -94,7 +92,6 @@ export default class extends Controller {
   validateAll() {
     this.validateName()
     this.validateEmail()
-    this.validateEmailChars()
     this.validatePassword()
     this.validatePasswordChars()
     this.validateConfirmation()
@@ -167,17 +164,6 @@ export default class extends Controller {
       return this.setInvalid(this.nameTarget, this.nameFeedbackTarget, "Name is required.")
     }
     return this.setValid(this.nameTarget, this.nameFeedbackTarget)
-  }
-
-  validateEmailChars() {
-    const value = this.emailTarget.value.trim()
-    if (value === "") return true // let validateEmail handle empty case
-    if (!ALLOWED_CHARS.test(value)) {
-      this.setCharInvalid(this.emailTarget, this.emailCharFeedbackTarget)
-      return false
-    }
-    this.clearCharFeedback(this.emailTarget, this.emailCharFeedbackTarget)
-    return true
   }
 
   validatePasswordChars() {

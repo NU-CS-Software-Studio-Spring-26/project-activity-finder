@@ -6,8 +6,19 @@ export default class extends Controller {
   connect() {
     this.submitTimeout = null
     this.debounceMs = 200
+    this.boundSearchSubmitEnd = this.onSearchSubmitEnd.bind(this)
     this.updateButtons()
-    this.restoreInputFocus()
+
+    if (this.hasFormTarget) {
+      this.formTarget.addEventListener("turbo:submit-end", this.boundSearchSubmitEnd)
+    }
+  }
+
+  disconnect() {
+    clearTimeout(this.submitTimeout)
+    if (this.hasFormTarget) {
+      this.formTarget.removeEventListener("turbo:submit-end", this.boundSearchSubmitEnd)
+    }
   }
 
   filter() {
@@ -50,6 +61,11 @@ export default class extends Controller {
     if (this.hasInputClearButtonTarget) {
       this.inputClearButtonTarget.classList.toggle("d-none", query === "")
     }
+  }
+
+  onSearchSubmitEnd(event) {
+    if (event.detail?.success === false) return
+    this.restoreInputFocus()
   }
 
   restoreInputFocus() {

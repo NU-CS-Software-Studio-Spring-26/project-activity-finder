@@ -43,6 +43,7 @@ Rails.application.routes.draw do
 
   get "/terms", to: "pages#terms", as: :terms
   get "/privacy", to: "pages#privacy", as: :privacy
+  get "/guidelines", to: "pages#guidelines", as: :guidelines
   get "/about", to: "pages#about", as: :about
 
   namespace :advisor do

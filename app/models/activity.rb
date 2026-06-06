@@ -2,6 +2,35 @@ class Activity < ApplicationRecord
   CUSTOM_CATEGORY = "__custom__"
   VISIBILITY_OPTIONS = %w[public private].freeze
 
+  ALLOWED_CITIES = [
+    "Chicago",
+    "Madison",
+    "Milwaukee",
+    "Minneapolis",
+    "Detroit",
+    "Indianapolis",
+    "Columbus",
+    "Cleveland",
+    "St. Louis",
+    "Kansas City",
+    "Denver",
+    "Seattle",
+    "Portland",
+    "San Francisco",
+    "Los Angeles",
+    "San Diego",
+    "Phoenix",
+    "Dallas",
+    "Houston",
+    "Austin",
+    "Atlanta",
+    "Miami",
+    "Boston",
+    "New York",
+    "Philadelphia",
+    "Washington"
+  ].freeze
+
   CATEGORIES = [
     "Hike",
     "Food Crawl",
@@ -25,10 +54,11 @@ class Activity < ApplicationRecord
   scope :publicly_visible, -> { where(visibility: "public") }
 
   validates :title, presence: true
-  validates :city, presence: true
+  validates :city, presence: true, inclusion: { in: ALLOWED_CITIES, message: "must be a supported city" }
   validates :category, presence: true
   validates :visibility, inclusion: { in: VISIBILITY_OPTIONS }
   before_validation :normalize_category
+  before_validation :normalize_city
   before_create :generate_share_token
   validates :event_date, presence: true
   validates :capacity,
@@ -58,6 +88,10 @@ class Activity < ApplicationRecord
     CATEGORIES
   end
 
+  def self.allowed_cities
+    ALLOWED_CITIES
+  end
+
   def preset_category?
     category.present? && CATEGORIES.include?(category)
   end
@@ -74,6 +108,10 @@ class Activity < ApplicationRecord
 
   def normalize_category
     self.category = category.to_s.strip.presence
+  end
+
+  def normalize_city
+    self.city = city.to_s.strip.presence
   end
 
   def generate_share_token

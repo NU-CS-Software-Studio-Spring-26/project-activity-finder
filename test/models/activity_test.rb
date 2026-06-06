@@ -30,6 +30,19 @@ class ActivityTest < ActiveSupport::TestCase
     assert_includes activity.errors[:city], "can't be blank"
   end
 
+  test "is invalid with unsupported city" do
+    activity = Activity.new(
+      title: "City Walk",
+      city: "1234",
+      category: "Hike",
+      event_date: Date.today,
+      user: @user
+    )
+
+    assert_not activity.valid?
+    assert_includes activity.errors[:city], "must be a supported city"
+  end
+
   test "preset_category? is true for listed categories" do
     activity = Activity.new(category: "Hike")
 

@@ -6,13 +6,19 @@ const CITY_PATTERN = /^[a-zA-Z\s.'-]+$/
 /**
  * Custom city menu (no Bootstrap Dropdown JS) — avoids Turbo/Popper lifecycle bugs
  * where the toggle stops responding after submit.
+ *
+ * mode "filter": browse-page city filter (optional city, auto-submit, "All cities")
+ * mode "field": activity form city picker (required allowed city, no auto-submit)
  */
 export default class extends Controller {
   static targets = ["form", "cityInput", "label", "searchInput", "list", "toggle", "menu", "dropdownRoot", "searchFeedback"]
 
   static values = {
     popularCities: Array,
-    initialCity: String
+    initialCity: String,
+    mode: { type: String, default: "filter" },
+    required: { type: Boolean, default: false },
+    emptyLabel: { type: String, default: "All cities" }
   }
 
   connect() {
@@ -22,6 +28,11 @@ export default class extends Controller {
     this.boundEscape = this.onEscape.bind(this)
 
     this.selectedCity = (this.initialCityValue || "").trim()
+    if (this.isFieldMode) {
+      const canonical = this.canonicalCity(this.selectedCity)
+      this.selectedCity = canonical || this.selectedCity
+    }
+
     this.syncHiddenInput()
     this.renderLabel()
     this.renderPopularList()
@@ -31,10 +42,30 @@ export default class extends Controller {
       this.searchInputTarget.addEventListener("input", () => this.validateSearchInput())
       this.searchInputTarget.addEventListener("blur", () => this.validateSearchInput())
     }
+
+    if (this.isFieldMode) {
+      this.hostForm = this.element.closest("form")
+      if (this.hostForm) {
+        this.boundFormSubmit = (event) => {
+          if (!this.validateField()) {
+            event.preventDefault()
+            this.toggleTarget?.focus()
+          }
+        }
+        this.hostForm.addEventListener("submit", this.boundFormSubmit)
+      }
+    }
   }
 
   disconnect() {
     this.closeMenuOnly()
+    if (this.hostForm && this.boundFormSubmit) {
+      this.hostForm.removeEventListener("submit", this.boundFormSubmit)
+    }
+  }
+
+  get isFieldMode() {
+    return this.modeValue === "field"
   }
 
   toggleMenu(event) {
@@ -54,7 +85,6 @@ export default class extends Controller {
     this.menuTarget.classList.add("show")
     this.toggleTarget.setAttribute("aria-expanded", "true")
 
-    // Defer so the opening click does not bubble to the new listener in the same tick
     this.openMenuFrame = requestAnimationFrame(() => {
       this.openMenuFrame = null
       document.addEventListener("click", this.boundDocClick, false)
@@ -105,7 +135,7 @@ export default class extends Controller {
 
   renderLabel() {
     if (!this.hasLabelTarget) return
-    this.labelTarget.textContent = this.selectedCity || "All cities"
+    this.labelTarget.textContent = this.selectedCity || this.emptyLabelValue
   }
 
   filterList() {
@@ -122,12 +152,14 @@ export default class extends Controller {
 
     this.listTarget.innerHTML = ""
 
-    const allBtn = document.createElement("button")
-    allBtn.type = "button"
-    allBtn.className = "dropdown-item city-picker-city-item"
-    allBtn.textContent = "All cities"
-    allBtn.addEventListener("click", () => this.clearFilter())
-    this.listTarget.appendChild(allBtn)
+    if (!this.isFieldMode) {
+      const allBtn = document.createElement("button")
+      allBtn.type = "button"
+      allBtn.className = "dropdown-item city-picker-city-item"
+      allBtn.textContent = "All cities"
+      allBtn.addEventListener("click", () => this.clearFilter())
+      this.listTarget.appendChild(allBtn)
+    }
 
     if (cities.length === 0) {
       return
@@ -152,14 +184,27 @@ export default class extends Controller {
     }
     this.closeMenuOnly()
     this.renderPopularList()
-    this.formTarget.requestSubmit()
+    this.clearFieldInvalid()
+    if (this.hasFormTarget) {
+      this.formTarget.requestSubmit()
+    }
   }
 
   pickCity(city) {
     const trimmed = (city || "").trim()
     if (!trimmed) return
 
-    this.selectedCity = trimmed
+    if (this.isFieldMode) {
+      const canonical = this.canonicalCity(trimmed)
+      if (!canonical) {
+        this.showSearchError("Choose a supported city from the list.")
+        return
+      }
+      this.selectedCity = canonical
+    } else {
+      this.selectedCity = trimmed
+    }
+
     this.syncHiddenInput()
     this.renderLabel()
     this.closeMenuOnly()
@@ -167,7 +212,12 @@ export default class extends Controller {
       this.searchInputTarget.value = ""
     }
     this.renderPopularList()
-    this.formTarget.requestSubmit()
+    this.clearSearchError()
+    this.clearFieldInvalid()
+
+    if (!this.isFieldMode && this.hasFormTarget) {
+      this.formTarget.requestSubmit()
+    }
   }
 
   applySearch(event) {
@@ -175,7 +225,7 @@ export default class extends Controller {
     if (!this.hasSearchInputTarget) return
     const q = this.searchInputTarget.value.trim()
     if (!q) {
-      this.showSearchError("Enter a city name.")
+      this.showSearchError(this.isFieldMode ? "Enter or pick a city." : "Enter a city name.")
       this.searchInputTarget.focus()
       return
     }
@@ -183,6 +233,18 @@ export default class extends Controller {
       this.searchInputTarget.focus()
       return
     }
+
+    if (this.isFieldMode) {
+      const canonical = this.canonicalCity(q)
+      if (!canonical) {
+        this.showSearchError("Choose a supported city from the list.")
+        this.searchInputTarget.focus()
+        return
+      }
+      this.pickCity(canonical)
+      return
+    }
+
     this.pickCity(q)
   }
 
@@ -206,6 +268,49 @@ export default class extends Controller {
 
     this.clearSearchError()
     return true
+  }
+
+  validateField() {
+    if (!this.isFieldMode) return true
+
+    const city = this.selectedCity.trim()
+    if (this.requiredValue && city === "") {
+      this.setFieldInvalid("City is required.")
+      return false
+    }
+
+    if (city !== "" && !this.canonicalCity(city)) {
+      this.setFieldInvalid("Choose a supported city from the list.")
+      return false
+    }
+
+    this.clearFieldInvalid()
+    return true
+  }
+
+  canonicalCity(input) {
+    const normalized = input.trim().toLowerCase()
+    if (normalized === "") return null
+
+    return (this.popularCitiesValue || []).find((city) => city.toLowerCase() === normalized) || null
+  }
+
+  setFieldInvalid(message) {
+    if (this.hasToggleTarget) {
+      this.toggleTarget.classList.add("is-invalid")
+      this.toggleTarget.setAttribute("aria-invalid", "true")
+    }
+    if (this.hasSearchFeedbackTarget) {
+      this.searchFeedbackTarget.textContent = message
+      this.searchFeedbackTarget.classList.remove("d-none")
+    }
+  }
+
+  clearFieldInvalid() {
+    if (this.hasToggleTarget) {
+      this.toggleTarget.classList.remove("is-invalid")
+      this.toggleTarget.setAttribute("aria-invalid", "false")
+    }
   }
 
   showSearchError(message) {

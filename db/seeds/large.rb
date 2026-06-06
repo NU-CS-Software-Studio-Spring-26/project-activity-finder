@@ -19,13 +19,7 @@ module Seeds
       "Fitness Class", "Farmers Market"
     ].freeze
 
-    CITIES = [
-      "Chicago", "Madison", "Milwaukee", "Minneapolis", "Detroit", "Indianapolis",
-      "Columbus", "Cleveland", "St. Louis", "Kansas City", "Denver", "Seattle",
-      "Portland", "San Francisco", "Los Angeles", "San Diego", "Phoenix",
-      "Dallas", "Houston", "Austin", "Atlanta", "Miami", "Boston", "New York",
-      "Philadelphia", "Washington"
-    ].freeze
+    CITIES = Activity::ALLOWED_CITIES
 
     LOCATIONS = [
       "Community Center", "City Park", "Downtown Plaza", "Riverfront Trail",

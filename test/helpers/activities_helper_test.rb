@@ -12,6 +12,32 @@ class ActivitiesHelperTest < ActionView::TestCase
     )
   end
 
+  test "activity_show_link_options targets top frame for full-page navigation" do
+    assert_equal({ data: { turbo_frame: "_top" } }, activity_show_link_options)
+  end
+
+  test "activity_show_path encodes list return_to as a query param" do
+    activity = Activity.new(id: 42)
+    href = activity_show_path(activity, list_return_to: "/activities?page=3&per_page=12")
+    return_to = Rack::Utils.parse_query(URI.parse(href).query)["return_to"]
+
+    assert_equal "/activities?page=3&per_page=12", return_to
+  end
+
+  test "activity_index_return_path includes page when beyond first page" do
+    pagination = { page: 3, per_page: 12 }
+
+    controller.request.path = "/"
+    assert_equal "/?page=3&per_page=12", activity_index_return_path(pagination: pagination)
+
+    controller.request.path = "/activities"
+    assert_equal "/activities?page=3&per_page=12", activity_index_return_path(pagination: pagination)
+  end
+
+  test "activity_link_params adds profile context" do
+    assert_equal({ from: "profile", return_to: "/users/1" }, activity_link_params(return_to: "/users/1"))
+  end
+
   test "activity_image uses title-based external fallback when no uploads" do
     activity = Activity.create!(
       title: "Sunrise Ridge Hike",

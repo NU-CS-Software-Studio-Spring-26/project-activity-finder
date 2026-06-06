@@ -24,7 +24,22 @@ module ActivityNavigation
   end
 
   def activity_list_return_path
-    from_profile? ? profile_return_path : activities_path
+    if from_profile?
+      profile_return_path
+    elsif safe_activity_list_return_path?(params[:return_to])
+      params[:return_to].to_s
+    else
+      root_path
+    end
+  end
+
+  def safe_activity_list_return_path?(path)
+    path = path.to_s
+    path.present? &&
+      path.start_with?("/") &&
+      !path.start_with?("//") &&
+      !path.include?("://") &&
+      path.match?(%r{\A/(?:activities(?:\?.*)?)?(?:\?.*)?\z})
   end
 
   def show_activity_management?

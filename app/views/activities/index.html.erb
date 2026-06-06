@@ -1,5 +1,10 @@
 <% content_for :title, "Activities" %>
 
+<% content_for :head do %>
+  <%# Avoid Turbo showing a cached snapshot then re-fetching on browser back (double refresh). %>
+  <meta name="turbo-cache-control" content="no-preview">
+<% end %>
+
 <div data-controller="search">
   <section class="page-hero mb-4">
     <div class="page-hero-inner">
@@ -71,8 +76,10 @@
           <div
             class="activity-city-toolbar d-flex flex-wrap gap-2 align-items-center align-self-lg-end order-2 ms-lg-auto flex-shrink-0"
             data-controller="city-picker"
-            data-city-picker-popular-cities-value='<%= raw ActivitiesHelper::POPULAR_ACTIVITY_CITIES.to_json %>'
+            data-city-picker-popular-cities-value='<%= raw Activity.allowed_cities.to_json %>'
             data-city-picker-initial-city-value="<%= h(@city_query) %>"
+            data-city-picker-mode-value="filter"
+            data-city-picker-empty-label-value="All cities"
           >
             <%= form_with url: activities_path, method: :get, local: true, id: "activity-city-filter-form", class: "activity-city-filter m-0", data: { city_picker_target: "form" } do %>
               <%= hidden_field_tag :page, 1 %>
@@ -81,54 +88,10 @@
               <%= hidden_field_tag :q, @title_query if @title_query.present? %>
             <% end %>
 
-            <div class="dropdown city-picker-dropdown" data-city-picker-target="dropdownRoot">
-              <button
-                type="button"
-                class="btn btn-outline-secondary dropdown-toggle city-picker-toggle d-inline-flex align-items-center gap-2 text-start"
-                id="city-picker-toggle"
-                data-action="click->city-picker#toggleMenu"
-                aria-expanded="false"
-                aria-haspopup="listbox"
-                aria-controls="city-picker-menu"
-                aria-label="Filter by city"
-                data-city-picker-target="toggle"
-              >
-                <svg class="city-picker-pin" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false">
-                  <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5S10.62 6.5 12 6.5s2.5 1.12 2.5 2.5S13.38 11.5 12 11.5z" />
-                </svg>
-                <span data-city-picker-target="label" class="text-truncate flex-grow-1" style="min-width: 0"><%= @city_query.presence || "All cities" %></span>
-              </button>
-              <div
-                id="city-picker-menu"
-                class="dropdown-menu dropdown-menu-end shadow city-picker-panel p-2"
-                role="presentation"
-                data-city-picker-target="menu"
-              >
-                <div class="input-group input-group-sm mb-2">
-                  <input
-                    type="search"
-                    id="city-picker-search"
-                    class="form-control"
-                    placeholder="Search cities…"
-                    autocomplete="address-level2"
-                    aria-label="Search for a city"
-                    data-city-picker-target="searchInput"
-                    data-action="input->city-picker#filterList input->city-picker#validateSearchInput keydown.enter->city-picker#applySearch"
-                  >
-                  <button type="button" class="btn btn-outline-secondary" data-action="city-picker#applySearch" title="Apply city filter">
-                    Go
-                  </button>
-                </div>
-                <div class="invalid-feedback d-none small" data-city-picker-target="searchFeedback"></div>
-
-                <div
-                  class="city-picker-city-list border rounded"
-                  data-city-picker-target="list"
-                  role="listbox"
-                  aria-label="City suggestions"
-                ></div>
-              </div>
-            </div>
+            <%= render "shared/city_picker_menu",
+                  id_prefix: "activity-index-city",
+                  aria_label: "Filter by city",
+                  go_button_title: "Apply city filter" %>
           </div>
         </div>
 
@@ -167,7 +130,8 @@
                 title: "No activities yet",
                 message: "Be the first to host something fun. Create an activity and invite others to join.",
                 action_path: new_activity_path,
-                action_label: "Create activity" %>
+                action_label: "Create activity",
+                break_frame: true %>
         <% end %>
       </div>
     </div>
@@ -211,17 +175,18 @@
           <% pagination_opts = { per_page: p[:per_page] } %>
           <% pagination_opts[:city] = @city_query if @city_query.present? %>
           <% pagination_opts[:q] = @title_query if @title_query.present? %>
-          <% path_prev = activities_path(pagination_opts.merge(page: p[:page] - 1)) %>
-          <% path_next = activities_path(pagination_opts.merge(page: p[:page] + 1)) %>
+          <% path_prev = activity_index_path(**pagination_opts.merge(page: p[:page] - 1)) %>
+          <% path_next = activity_index_path(**pagination_opts.merge(page: p[:page] + 1)) %>
+          <% frame_link_data = { turbo_action: "advance" } %>
           <% if p[:page] <= 1 %>
             <span class="btn btn-outline-secondary btn-sm disabled" aria-disabled="true">Previous</span>
           <% else %>
-            <%= link_to "Previous", path_prev, class: "btn btn-outline-secondary btn-sm" %>
+            <%= link_to "Previous", path_prev, class: "btn btn-outline-secondary btn-sm", data: frame_link_data %>
           <% end %>
           <% if p[:page] >= p[:total_pages] %>
             <span class="btn btn-outline-secondary btn-sm disabled" aria-disabled="true">Next</span>
           <% else %>
-            <%= link_to "Next", path_next, class: "btn btn-outline-secondary btn-sm" %>
+            <%= link_to "Next", path_next, class: "btn btn-outline-secondary btn-sm", data: frame_link_data %>
           <% end %>
         </div>
       </div>
@@ -229,6 +194,8 @@
   </nav>
 
   <div class="activity-grid" data-search-target="results">
+    <% list_return_to = activity_index_return_path(pagination: @pagination, city: @city_query, q: @title_query) %>
+    <% activity_link_data = activity_show_link_options(list_return_to: list_return_to) %>
     <% @activities.each do |activity| %>
       <div
         class="activity-card"
@@ -236,7 +203,7 @@
         data-activity-title="<%= activity.title.to_s.downcase %>"
       >
         <div class="activity-card-img">
-          <%= link_to activity do %>
+          <%= link_to activity_show_path(activity, list_return_to: list_return_to), activity_link_data do %>
             <%= image_tag activity_image(activity), class: "img-fluid", alt: activity_image_alt(activity) %>
           <% end %>
         </div>
@@ -262,19 +229,25 @@
         </div>
 
         <h2 class="activity-title h5 mb-1">
-          <%= link_to activity.title, activity %>
+          <%= link_to activity.title, activity_show_path(activity, list_return_to: list_return_to), activity_link_data %>
         </h2>
 
-        <p class="activity-meta mb-1">
-          <%= activity.city %>
-          <% if activity.event_date.present? %>
-            • <%= activity.event_date.strftime("%b %d") %>
+        <div class="activity-meta-list mb-2">
+          <% if activity.city.present? %>
+            <span class="activity-meta-item">
+              <svg class="activity-meta-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5z"/></svg>
+              <%= activity.city %>
+            </span>
           <% end %>
-        </p>
+          <% if activity.event_date.present? %>
+            <span class="activity-meta-item">
+              <svg class="activity-meta-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 2v2H5a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-2V2h-2v2H9V2H7zm12 7v10H5V9h14z"/></svg>
+              <%= activity.event_date.strftime("%b %d") %>
+            </span>
+          <% end %>
+        </div>
 
-        <p class="activity-category mb-0">
-          <%= activity.category %>
-        </p>
+        <span class="activity-chip mt-auto"><%= activity.category %></span>
       </div>
       </div>
     <% end %>

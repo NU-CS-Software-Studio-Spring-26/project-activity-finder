@@ -1,34 +1,7 @@
 module ActivitiesHelper
   NON_MAP_LOCATION_PATTERN = /\A(online|virtual|remote|zoom|teams|google\s*meet|webex|n\/a|tbd|none|—|-)\z/i.freeze
 
-  POPULAR_ACTIVITY_CITIES = [
-    "Chicago",
-    "Madison",
-    "Milwaukee",
-    "Minneapolis",
-    "Detroit",
-    "Indianapolis",
-    "Columbus",
-    "Cleveland",
-    "St. Louis",
-    "Kansas City",
-    "Denver",
-    "Seattle",
-    "Portland",
-    "San Francisco",
-    "Los Angeles",
-    "San Diego",
-    "Phoenix",
-    "Dallas",
-    "Houston",
-    "Austin",
-    "Atlanta",
-    "Miami",
-    "Boston",
-    "New York",
-    "Philadelphia",
-    "Washington"
-  ].freeze
+  POPULAR_ACTIVITY_CITIES = Activity::ALLOWED_CITIES
 
   EXTERNAL_ACTIVITY_IMAGE_FALLBACKS = [
     [ /sunrise ridge hike/i, "https://www.hikeoftheweek.com/wp-content/uploads/2016/07/DSC03218-scaled.jpg" ],
@@ -55,6 +28,33 @@ module ActivitiesHelper
     return {} if return_to.blank?
 
     { from: "profile", return_to: return_to }
+  end
+
+  def activity_index_path(**query_params)
+    if request.path == activities_path
+      activities_path(query_params)
+    else
+      root_path(query_params)
+    end
+  end
+
+  def activity_index_return_path(pagination:, city: nil, q: nil)
+    query_params = { per_page: pagination[:per_page] }
+    query_params[:page] = pagination[:page] if pagination[:page] > 1
+    query_params[:city] = city if city.present?
+    query_params[:q] = q if q.present?
+    activity_index_path(**query_params)
+  end
+
+  def activity_show_path(activity, list_return_to: nil)
+    url_params = list_return_to.present? ? { return_to: list_return_to } : {}
+    activity_path(activity, **url_params)
+  end
+
+  # Links inside the home-page activities turbo frame must break out to a full
+  # page visit; otherwise Turbo tries to render show inside the frame and fails.
+  def activity_show_link_options(list_return_to: nil)
+    { data: { turbo_frame: "_top" } }
   end
 
   def activity_location_map_showable?(activity)
