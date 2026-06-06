@@ -2,6 +2,8 @@ module ActivityTextValidation
   extend ActiveSupport::Concern
   include ActivityProfanityFilter
 
+  INAPPROPRIATE_LANGUAGE_MESSAGE = ActivityProfanityFilter::INAPPROPRIATE_LANGUAGE_MESSAGE
+
   TITLE_MAX_LENGTH = 120
   TITLE_MIN_LENGTH = 3
   DESCRIPTION_MAX_LENGTH = 2_000
