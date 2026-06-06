@@ -2244,6 +2244,102 @@ body {
 }
 
 /* ---------------------------------------------------------------------------
+   Category Browse Rows (Airbnb-style)
+   --------------------------------------------------------------------------- */
+
+.category-section {
+  margin-bottom: 2.5rem;
+}
+
+.category-section-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.category-section-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin: 0;
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.category-see-all {
+  font-size: 0.875rem;
+  color: var(--af-accent);
+  text-decoration: none;
+  font-weight: 500;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.category-see-all:hover {
+  color: var(--af-accent);
+  text-decoration: underline;
+}
+
+.activity-row {
+  display: flex;
+  gap: 18px;
+  overflow-x: auto;
+  padding-bottom: 14px;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  /* Narrow horizontal scrollbar distinct from the global thin vertical scrollbar */
+  scrollbar-width: thin;
+  scrollbar-color: rgba(61, 213, 243, 0.25) transparent;
+}
+
+.activity-row::-webkit-scrollbar {
+  height: 4px;
+  width: auto;
+}
+
+.activity-row::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.activity-row::-webkit-scrollbar-thumb {
+  background: rgba(61, 213, 243, 0.28);
+  border-radius: 999px;
+  border: none;
+}
+
+.activity-row .activity-card {
+  flex: 0 0 17.5rem;
+  min-width: 0;
+  scroll-snap-align: start;
+}
+
+@media (max-width: 575px) {
+  .activity-row .activity-card {
+    flex: 0 0 80vw;
+  }
+}
+
+/* Active category filter banner */
+.active-filter-banner {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+/* Clickable chip variant (used in search-results grid) */
+a.activity-chip {
+  text-decoration: none;
+  transition: opacity 0.15s ease, border-color 0.15s ease;
+}
+
+a.activity-chip:hover {
+  opacity: 0.82;
+  border-color: rgba(139, 124, 255, 0.55);
+}
+
+/* ---------------------------------------------------------------------------
    Global finishing touches
    --------------------------------------------------------------------------- */
 
