@@ -178,6 +178,24 @@ class ActivitiesControllerTest < ActionDispatch::IntegrationTest
     assert_match(/must be a supported city/i, response.body)
   end
 
+  test "should not create activity with sql-like title" do
+    assert_no_difference("Activity.count") do
+      post activities_url, params: {
+        activity: {
+          category: @activity.category,
+          city: @activity.city,
+          description: @activity.description,
+          event_date: @activity.event_date,
+          location: @activity.location,
+          title: "SELECT * FROM database"
+        }
+      }
+    end
+
+    assert_response :unprocessable_entity
+    assert_match(/readable activity name/i, response.body)
+  end
+
   test "should show activity" do
     get activity_url(@activity)
     assert_response :success
