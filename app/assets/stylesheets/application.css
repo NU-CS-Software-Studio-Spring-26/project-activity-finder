@@ -344,8 +344,19 @@ body {
   padding-bottom: 2.5rem;
 }
 
+.profile-header {
+  background:
+    radial-gradient(120% 130% at 50% -20%, rgba(109, 94, 252, 0.32), transparent 60%),
+    radial-gradient(90% 120% at 90% 0%, rgba(61, 213, 243, 0.16), transparent 55%),
+    var(--af-surface) !important;
+}
+
 .profile-header .surface-card-body {
-  padding: 1.75rem 1.5rem 2rem;
+  padding: 2rem 1.5rem 2.25rem;
+}
+
+.profile-avatar.user-avatar {
+  box-shadow: 0 0 0 4px rgba(11, 18, 32, 0.6), 0 0 0 6px rgba(139, 124, 255, 0.4), 0 18px 40px rgba(0, 0, 0, 0.4);
 }
 
 .profile-header-body {
@@ -396,10 +407,14 @@ body {
 
 .profile-name {
   margin: 0;
-  font-size: clamp(1.5rem, 4vw, 1.75rem);
+  font-size: clamp(1.6rem, 4vw, 2rem);
   font-weight: 700;
   letter-spacing: -0.03em;
-  color: var(--af-text);
+  background: var(--af-gradient-text);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
   text-align: center;
 }
 
@@ -438,14 +453,16 @@ body {
 }
 
 .profile-action-btn-primary {
-  background: var(--af-primary);
+  background: var(--af-gradient-brand);
   color: var(--af-on-primary) !important;
+  box-shadow: 0 8px 22px rgba(86, 69, 232, 0.38);
 }
 
 .profile-action-btn-primary:hover,
 .profile-action-btn-primary:focus-visible {
-  background: var(--af-primary-hover);
   color: #fff !important;
+  filter: brightness(1.08);
+  transform: translateY(-1px);
 }
 
 .profile-action-btn-destructive {
@@ -530,8 +547,9 @@ body {
 }
 
 .profile-activities-tab-active {
-  background: var(--af-primary);
+  background: var(--af-gradient-brand);
   color: var(--af-on-primary) !important;
+  box-shadow: 0 6px 16px rgba(86, 69, 232, 0.4);
 }
 
 .profile-activities-tab-active:hover,
@@ -544,21 +562,24 @@ body {
   align-items: center;
   gap: 0.45rem;
   min-height: 2.75rem;
-  padding: 0.55rem 1.15rem;
+  padding: 0.55rem 1.25rem;
   border-radius: 12px;
-  background: var(--af-primary);
+  background: var(--af-gradient-brand);
   color: var(--af-on-primary) !important;
   font-size: 0.95rem;
   font-weight: 600;
   text-decoration: none !important;
   white-space: nowrap;
-  transition: background 0.15s ease;
+  box-shadow: 0 8px 22px rgba(86, 69, 232, 0.4);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
 }
 
 .profile-create-activity-btn:hover,
 .profile-create-activity-btn:focus-visible {
-  background: var(--af-primary-hover);
   color: #fff !important;
+  transform: translateY(-1px);
+  filter: brightness(1.08);
+  box-shadow: 0 12px 30px rgba(86, 69, 232, 0.52);
 }
 
 .profile-create-activity-icon {
