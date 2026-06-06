@@ -715,6 +715,22 @@ body {
 }
 
 /* Bootstrap theme nudges */
+/* Shared button feel: pill-ish radius, smooth motion. */
+.btn {
+  --bs-btn-border-radius: 12px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  transition: transform 0.12s ease, box-shadow 0.18s ease, filter 0.18s ease, background-color 0.18s ease, border-color 0.18s ease, color 0.18s ease;
+}
+
+.btn:active {
+  transform: translateY(1px);
+}
+
+.btn-sm {
+  --bs-btn-border-radius: 10px;
+}
+
 .btn-primary {
   --bs-btn-bg: var(--af-primary);
   --bs-btn-border-color: var(--af-primary);
@@ -732,6 +748,25 @@ body {
   --bs-btn-disabled-bg: #3f3f5c;
   --bs-btn-disabled-border-color: #3f3f5c;
   --bs-btn-disabled-color: #e2e8f0;
+
+  background-image: var(--af-gradient-brand);
+  border: none;
+  box-shadow: 0 8px 24px rgba(86, 69, 232, 0.38);
+}
+
+.btn-primary:hover,
+.btn-primary:focus-visible {
+  background-image: var(--af-gradient-brand);
+  filter: brightness(1.08);
+  transform: translateY(-1px);
+  box-shadow: 0 12px 32px rgba(86, 69, 232, 0.5);
+}
+
+.btn-primary:disabled,
+.btn-primary.disabled {
+  background-image: none;
+  box-shadow: none;
+  filter: none;
 }
 
 .btn-secondary,
@@ -745,17 +780,26 @@ body {
 
 .form-control,
 .form-select {
-  background-color: var(--af-surface-2);
+  background-color: rgba(10, 15, 28, 0.55);
   border-color: var(--af-border);
   color: var(--af-text);
+  border-radius: 12px;
+  padding-block: 0.55rem;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
 }
 
 .form-control::placeholder {
   color: var(--af-muted-2);
 }
 
+.form-control:hover:not(:focus),
+.form-select:hover:not(:focus) {
+  border-color: var(--af-border-strong);
+}
+
 .form-control:focus,
 .form-select:focus {
+  background-color: rgba(10, 15, 28, 0.75);
   border-color: #8b7cff;
   box-shadow: 0 0 0 0.25rem rgba(139, 124, 255, 0.28);
   color: var(--af-text);
