@@ -43,7 +43,29 @@
   --af-shadow-soft: 0 10px 30px rgba(0, 0, 0, 0.22);
 
   --af-radius: 18px;
+  --af-radius-lg: 26px;
+  --af-radius-sm: 12px;
+
+  /* Typography */
+  --af-font-body: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+  --af-font-display: "Space Grotesk", Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+
+  /* Reusable gradients */
+  --af-gradient-brand: linear-gradient(135deg, #6d5efc 0%, #5645e8 48%, #3dd5f3 135%);
+  --af-gradient-brand-soft: linear-gradient(135deg, rgba(109, 94, 252, 0.20), rgba(61, 213, 243, 0.12));
+  --af-gradient-text: linear-gradient(120deg, #ffffff 0%, #c9c2ff 45%, #8fe9fb 100%);
 }
+
+/* Headings use the display family for a more distinctive, modern feel. */
+h1, h2, h3, h4, h5, h6,
+.app-navbar-brand,
+.display-font {
+  font-family: var(--af-font-display);
+  letter-spacing: -0.02em;
+}
+
+h1, .h1 { font-weight: 700; }
+h2, .h2, h3, .h3 { font-weight: 600; }
 
 /* Reflow / zoom (WCAG 1.4.4): respect user text size; page can grow past the viewport. */
 html {
@@ -63,7 +85,10 @@ body {
 }
 
 .app-body {
-  font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+  font-family: var(--af-font-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
   background:
     radial-gradient(1200px 600px at 10% 10%, rgba(109, 94, 252, 0.25), transparent 55%),
     radial-gradient(900px 500px at 90% 0%, rgba(61, 213, 243, 0.18), transparent 60%),
