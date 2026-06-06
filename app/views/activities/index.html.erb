@@ -11,7 +11,7 @@
       <div class="page-hero-header d-flex flex-column flex-sm-row flex-wrap gap-3 align-items-sm-center justify-content-sm-between">
         <div>
           <h1 class="mb-1">Find your next plan</h1>
-          <p class="text-muted mb-0">Browse activities, RSVP in one click, and see who’s going.</p>
+          <p class="text-muted mb-0">Browse activities, RSVP in one click, and see who's going.</p>
         </div>
 
         <%= link_to new_activity_path, class: "profile-create-activity-btn" do %>
@@ -27,8 +27,9 @@
           <div class="activity-search-controls flex-grow-1 order-1" style="min-width: 0; max-width: 42rem;">
             <%= form_with url: activities_path, method: :get, local: true, class: "activity-search-form d-flex flex-column flex-lg-row gap-2 align-items-stretch align-items-lg-center m-0", data: { search_target: "form", turbo_frame: "activities_results" } do %>
               <%= hidden_field_tag :page, 1 %>
-              <%= hidden_field_tag :per_page, @pagination[:per_page] %>
+              <%= hidden_field_tag :per_page, @pagination&.dig(:per_page) || ActivityListPagination::PER_PAGE_CHOICES.first %>
               <%= hidden_field_tag :city, @city_query if @city_query.present? %>
+              <%= hidden_field_tag :category, @category_query if @category_query.present? %>
 
               <div class="activity-search-input-wrap flex-grow-1">
                 <label for="activity-search" class="visually-hidden">Search activities by name</label>
@@ -83,9 +84,10 @@
           >
             <%= form_with url: activities_path, method: :get, local: true, id: "activity-city-filter-form", class: "activity-city-filter m-0", data: { city_picker_target: "form" } do %>
               <%= hidden_field_tag :page, 1 %>
-              <%= hidden_field_tag :per_page, @pagination[:per_page] %>
+              <%= hidden_field_tag :per_page, @pagination&.dig(:per_page) || ActivityListPagination::PER_PAGE_CHOICES.first %>
               <%= hidden_field_tag :city, @city_query.to_s, data: { city_picker_target: "cityInput" } %>
               <%= hidden_field_tag :q, @title_query if @title_query.present? %>
+              <%= hidden_field_tag :category, @category_query if @category_query.present? %>
             <% end %>
 
             <%= render "shared/city_picker_menu",
@@ -107,151 +109,262 @@
   </section>
 
   <%= turbo_frame_tag "activities_results" do %>
-  <% if @pagination[:total].zero? %>
-    <div class="surface-card mb-4">
-      <div class="surface-card-body">
-        <% if @city_query.present? && @title_query.blank? %>
-          <%= render "shared/empty_state",
-                icon: :pin,
-                title: "No activities in this city",
-                message: "We couldn’t find any activities matching “#{h(@city_query)}”. Try another city or browse everywhere.",
-                action_path: activities_path(per_page: @pagination[:per_page]),
-                action_label: "Show all cities" %>
-        <% elsif @title_query.present? %>
-          <%= render "shared/empty_state",
-                icon: :search,
-                title: "No matching activities",
-                message: "No public activities matched “#{h(@title_query)}”#{@city_query.present? ? " in #{h(@city_query)}" : ""}. Private activities never appear in this list—open them from your profile or an invite link. Try a shorter search, clear the city filter, or create a new activity.",
-                action_path: activities_path(per_page: @pagination[:per_page]),
-                action_label: "Clear search & show all" %>
-        <% else %>
-          <%= render "shared/empty_state",
-                icon: :calendar,
-                title: "No activities yet",
-                message: "Be the first to host something fun. Create an activity and invite others to join.",
-                action_path: new_activity_path,
-                action_label: "Create activity",
-                break_frame: true %>
-        <% end %>
-      </div>
-    </div>
-  <% else %>
-  <nav class="activity-pagination surface-card mb-4" aria-label="Activity list pagination">
-    <div class="surface-card-body py-3">
-      <div class="d-flex flex-column flex-lg-row flex-wrap align-items-center justify-content-between gap-3">
-        <div class="d-flex flex-wrap align-items-center gap-2">
-          <%= form_with url: activities_path, method: :get, local: true, class: "d-flex flex-wrap align-items-center gap-2 m-0" do %>
-            <%= hidden_field_tag :page, 1 %>
-            <%= hidden_field_tag :city, @city_query if @city_query.present? %>
-            <%= hidden_field_tag :q, @title_query if @title_query.present? %>
-            <label for="activities-per-page" class="form-label mb-0 text-nowrap small text-muted">Per page</label>
-            <%= select_tag :per_page,
-                  options_for_select(
-                    ActivityListPagination::PER_PAGE_CHOICES.map { |n| [n.to_s, n] },
-                    @pagination[:per_page]
-                  ),
-                  id: "activities-per-page",
-                  class: "form-select form-select-sm w-auto",
-                  onchange: "this.form.requestSubmit()" %>
+
+  <% if @browsing_mode %>
+    <%# ── Browse mode: Airbnb-style category rows ── %>
+    <% if @activities_by_category.empty? %>
+      <div class="surface-card mb-4">
+        <div class="surface-card-body">
+          <% if @city_query.present? %>
+            <%= render "shared/empty_state",
+                  icon: :pin,
+                  title: "No activities in this city",
+                  message: "We couldn't find any activities matching “#{h(@city_query)}”. Try another city or browse everywhere.",
+                  action_path: activities_path,
+                  action_label: "Show all cities" %>
+          <% else %>
+            <%= render "shared/empty_state",
+                  icon: :calendar,
+                  title: "No activities yet",
+                  message: "Be the first to host something fun. Create an activity and invite others to join.",
+                  action_path: new_activity_path,
+                  action_label: "Create activity",
+                  break_frame: true %>
           <% end %>
         </div>
+      </div>
+    <% else %>
+      <div class="category-browse">
+        <% @activities_by_category.each do |category, activities| %>
+          <section class="category-section" aria-label="<%= h(category) %> activities">
+            <div class="category-section-header">
+              <h2 class="category-section-title"><%= h(category) %></h2>
+              <% see_all_opts = { category: category }
+                 see_all_opts[:city] = @city_query if @city_query.present? %>
+              <%= link_to "See all →", activities_path(see_all_opts), class: "category-see-all" %>
+            </div>
 
-        <p class="small text-muted mb-0 align-self-center">
-          <% if @pagination[:total].zero? %>
-            <% if @city_query.present? %>
-              No activities in cities matching &ldquo;<%= @city_query %>&rdquo;.
-            <% else %>
-              No activities yet.
-            <% end %>
+            <div class="activity-row">
+              <% browse_return_to = @city_query.present? ? activities_path(city: @city_query) : activities_path %>
+              <% link_data = activity_show_link_options(list_return_to: browse_return_to) %>
+              <% activities.each do |activity| %>
+                <div class="activity-card">
+                  <div class="activity-card-img">
+                    <%= link_to activity_show_path(activity, list_return_to: browse_return_to), link_data do %>
+                      <%= image_tag activity_image(activity), class: "img-fluid", alt: activity_image_alt(activity) %>
+                    <% end %>
+                  </div>
+
+                  <div class="activity-card-body">
+                    <div class="d-flex flex-wrap gap-2 mb-2">
+                      <% if @joined_activity_ids.include?(activity.id) %>
+                        <span class="badge text-bg-success">You're going</span>
+                      <% end %>
+
+                      <% taken = @signup_counts[activity.id] || 0 %>
+                      <% if activity.capacity.present? %>
+                        <% full = taken >= activity.capacity %>
+                        <span class="badge d-inline-flex align-items-center <%= full ? "text-bg-danger" : "text-bg-light border" %>">
+                          <% if full %><span class="badge-dot-red"></span><% end %>
+                          <%= taken %>/<%= activity.capacity %> going<%= full ? " (full)" : "" %>
+                        </span>
+                      <% else %>
+                        <span class="badge text-bg-light border"><%= taken %> going</span>
+                      <% end %>
+                    </div>
+
+                    <h3 class="activity-title h5 mb-1">
+                      <%= link_to activity.title, activity_show_path(activity, list_return_to: browse_return_to), link_data %>
+                    </h3>
+
+                    <div class="activity-meta-list mb-2">
+                      <% if activity.city.present? %>
+                        <span class="activity-meta-item">
+                          <svg class="activity-meta-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5z"/></svg>
+                          <%= activity.city %>
+                        </span>
+                      <% end %>
+                      <% if activity.event_date.present? %>
+                        <span class="activity-meta-item">
+                          <svg class="activity-meta-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 2v2H5a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-2V2h-2v2H9V2H7zm12 7v10H5V9h14z"/></svg>
+                          <%= activity.event_date.strftime("%b %d") %>
+                        </span>
+                      <% end %>
+                    </div>
+
+                    <span class="activity-chip mt-auto"><%= activity.category %></span>
+                  </div>
+                </div>
+              <% end %>
+            </div>
+          </section>
+        <% end %>
+      </div>
+    <% end %>
+
+  <% else %>
+    <%# ── Search / filter mode: flat paginated grid ── %>
+    <% if @pagination[:total].zero? %>
+      <div class="surface-card mb-4">
+        <div class="surface-card-body">
+          <% if @category_query.present? && @title_query.blank? && @city_query.blank? %>
+            <%= render "shared/empty_state",
+                  icon: :search,
+                  title: "No #{h(@category_query)} activities",
+                  message: "There are no public activities in this category yet. Try another or create one!",
+                  action_path: activities_path,
+                  action_label: "Browse all categories" %>
+          <% elsif @city_query.present? && @title_query.blank? %>
+            <%= render "shared/empty_state",
+                  icon: :pin,
+                  title: "No activities in this city",
+                  message: "We couldn't find any activities matching “#{h(@city_query)}”. Try another city or browse everywhere.",
+                  action_path: activities_path(per_page: @pagination[:per_page]),
+                  action_label: "Show all cities" %>
+          <% elsif @title_query.present? %>
+            <%= render "shared/empty_state",
+                  icon: :search,
+                  title: "No matching activities",
+                  message: "No public activities matched “#{h(@title_query)}”#{@city_query.present? ? " in #{h(@city_query)}" : ""}. Private activities never appear in this list—open them from your profile or an invite link. Try a shorter search, clear the city filter, or create a new activity.",
+                  action_path: activities_path(per_page: @pagination[:per_page]),
+                  action_label: "Clear search & show all" %>
           <% else %>
+            <%= render "shared/empty_state",
+                  icon: :calendar,
+                  title: "No activities yet",
+                  message: "Be the first to host something fun. Create an activity and invite others to join.",
+                  action_path: new_activity_path,
+                  action_label: "Create activity",
+                  break_frame: true %>
+          <% end %>
+        </div>
+      </div>
+    <% else %>
+
+    <%# Active category filter banner %>
+    <% if @category_query.present? %>
+      <% clear_opts = { per_page: @pagination[:per_page] }
+         clear_opts[:city] = @city_query if @city_query.present?
+         clear_opts[:q]    = @title_query if @title_query.present? %>
+      <div class="active-filter-banner">
+        <span class="text-muted small">Category:</span>
+        <span class="activity-chip"><%= h(@category_query) %></span>
+        <%= link_to "Clear filter", activities_path(clear_opts), class: "btn btn-sm btn-outline-secondary" %>
+      </div>
+    <% end %>
+
+    <nav class="activity-pagination surface-card mb-4" aria-label="Activity list pagination">
+      <div class="surface-card-body py-3">
+        <div class="d-flex flex-column flex-lg-row flex-wrap align-items-center justify-content-between gap-3">
+          <div class="d-flex flex-wrap align-items-center gap-2">
+            <%= form_with url: activities_path, method: :get, local: true, class: "d-flex flex-wrap align-items-center gap-2 m-0" do %>
+              <%= hidden_field_tag :page, 1 %>
+              <%= hidden_field_tag :city, @city_query if @city_query.present? %>
+              <%= hidden_field_tag :q, @title_query if @title_query.present? %>
+              <%= hidden_field_tag :category, @category_query if @category_query.present? %>
+              <label for="activities-per-page" class="form-label mb-0 text-nowrap small text-muted">Per page</label>
+              <%= select_tag :per_page,
+                    options_for_select(
+                      ActivityListPagination::PER_PAGE_CHOICES.map { |n| [n.to_s, n] },
+                      @pagination[:per_page]
+                    ),
+                    id: "activities-per-page",
+                    class: "form-select form-select-sm w-auto",
+                    onchange: "this.form.requestSubmit()" %>
+            <% end %>
+          </div>
+
+          <p class="small text-muted mb-0 align-self-center">
             Showing <%= @pagination[:first_number] %>–<%= @pagination[:last_number] %>
             of <%= @pagination[:total] %>
             (page <%= @pagination[:page] %> of <%= @pagination[:total_pages] %>)
-          <% end %>
-        </p>
+          </p>
 
-        <div class="d-flex flex-wrap align-items-center gap-2 justify-content-lg-end">
-          <% p = @pagination %>
-          <% pagination_opts = { per_page: p[:per_page] } %>
-          <% pagination_opts[:city] = @city_query if @city_query.present? %>
-          <% pagination_opts[:q] = @title_query if @title_query.present? %>
-          <% path_prev = activity_index_path(**pagination_opts.merge(page: p[:page] - 1)) %>
-          <% path_next = activity_index_path(**pagination_opts.merge(page: p[:page] + 1)) %>
-          <% frame_link_data = { turbo_action: "advance" } %>
-          <% if p[:page] <= 1 %>
-            <span class="btn btn-outline-secondary btn-sm disabled" aria-disabled="true">Previous</span>
-          <% else %>
-            <%= link_to "Previous", path_prev, class: "btn btn-outline-secondary btn-sm", data: frame_link_data %>
-          <% end %>
-          <% if p[:page] >= p[:total_pages] %>
-            <span class="btn btn-outline-secondary btn-sm disabled" aria-disabled="true">Next</span>
-          <% else %>
-            <%= link_to "Next", path_next, class: "btn btn-outline-secondary btn-sm", data: frame_link_data %>
-          <% end %>
+          <div class="d-flex flex-wrap align-items-center gap-2 justify-content-lg-end">
+            <% p = @pagination %>
+            <% pagination_opts = { per_page: p[:per_page] } %>
+            <% pagination_opts[:city]     = @city_query     if @city_query.present? %>
+            <% pagination_opts[:q]        = @title_query    if @title_query.present? %>
+            <% pagination_opts[:category] = @category_query if @category_query.present? %>
+            <% path_prev = activity_index_path(**pagination_opts.merge(page: p[:page] - 1)) %>
+            <% path_next = activity_index_path(**pagination_opts.merge(page: p[:page] + 1)) %>
+            <% frame_link_data = { turbo_action: "advance" } %>
+            <% if p[:page] <= 1 %>
+              <span class="btn btn-outline-secondary btn-sm disabled" aria-disabled="true">Previous</span>
+            <% else %>
+              <%= link_to "Previous", path_prev, class: "btn btn-outline-secondary btn-sm", data: frame_link_data %>
+            <% end %>
+            <% if p[:page] >= p[:total_pages] %>
+              <span class="btn btn-outline-secondary btn-sm disabled" aria-disabled="true">Next</span>
+            <% else %>
+              <%= link_to "Next", path_next, class: "btn btn-outline-secondary btn-sm", data: frame_link_data %>
+            <% end %>
+          </div>
         </div>
       </div>
-    </div>
-  </nav>
+    </nav>
 
-  <div class="activity-grid" data-search-target="results">
-    <% list_return_to = activity_index_return_path(pagination: @pagination, city: @city_query, q: @title_query) %>
-    <% activity_link_data = activity_show_link_options(list_return_to: list_return_to) %>
-    <% @activities.each do |activity| %>
-      <div
-        class="activity-card"
-        data-search-target="card"
-        data-activity-title="<%= activity.title.to_s.downcase %>"
-      >
-        <div class="activity-card-img">
-          <%= link_to activity_show_path(activity, list_return_to: list_return_to), activity_link_data do %>
-            <%= image_tag activity_image(activity), class: "img-fluid", alt: activity_image_alt(activity) %>
-          <% end %>
-        </div>
+    <div class="activity-grid" data-search-target="results">
+      <% list_return_to = activity_index_return_path(pagination: @pagination, city: @city_query, q: @title_query) %>
+      <% activity_link_data = activity_show_link_options(list_return_to: list_return_to) %>
+      <% @activities.each do |activity| %>
+        <div
+          class="activity-card"
+          data-search-target="card"
+          data-activity-title="<%= activity.title.to_s.downcase %>"
+        >
+          <div class="activity-card-img">
+            <%= link_to activity_show_path(activity, list_return_to: list_return_to), activity_link_data do %>
+              <%= image_tag activity_image(activity), class: "img-fluid", alt: activity_image_alt(activity) %>
+            <% end %>
+          </div>
 
-      <div class="activity-card-body">
-        <div class="d-flex flex-wrap gap-2 mb-2">
-          <% if @joined_activity_ids.include?(activity.id) %>
-            <span class="badge text-bg-success">You’re going</span>
-          <% end %>
-
-          <% taken = @signup_counts[activity.id] || 0 %>
-          <% if activity.capacity.present? %>
-            <% full = taken >= activity.capacity %>
-            <span class="badge d-inline-flex align-items-center <%= full ? "text-bg-danger" : "text-bg-light border" %>">
-              <% if full %>
-                <span class="badge-dot-red"></span>
+          <div class="activity-card-body">
+            <div class="d-flex flex-wrap gap-2 mb-2">
+              <% if @joined_activity_ids.include?(activity.id) %>
+                <span class="badge text-bg-success">You're going</span>
               <% end %>
-              <%= taken %>/<%= activity.capacity %> going<%= full ? " (full)" : "" %>
-            </span>
-          <% else %>
-            <span class="badge text-bg-light border"><%= taken %> going</span>
-          <% end %>
+
+              <% taken = @signup_counts[activity.id] || 0 %>
+              <% if activity.capacity.present? %>
+                <% full = taken >= activity.capacity %>
+                <span class="badge d-inline-flex align-items-center <%= full ? "text-bg-danger" : "text-bg-light border" %>">
+                  <% if full %><span class="badge-dot-red"></span><% end %>
+                  <%= taken %>/<%= activity.capacity %> going<%= full ? " (full)" : "" %>
+                </span>
+              <% else %>
+                <span class="badge text-bg-light border"><%= taken %> going</span>
+              <% end %>
+            </div>
+
+            <h2 class="activity-title h5 mb-1">
+              <%= link_to activity.title, activity_show_path(activity, list_return_to: list_return_to), activity_link_data %>
+            </h2>
+
+            <div class="activity-meta-list mb-2">
+              <% if activity.city.present? %>
+                <span class="activity-meta-item">
+                  <svg class="activity-meta-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5z"/></svg>
+                  <%= activity.city %>
+                </span>
+              <% end %>
+              <% if activity.event_date.present? %>
+                <span class="activity-meta-item">
+                  <svg class="activity-meta-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 2v2H5a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-2V2h-2v2H9V2H7zm12 7v10H5V9h14z"/></svg>
+                  <%= activity.event_date.strftime("%b %d") %>
+                </span>
+              <% end %>
+            </div>
+
+            <% chip_opts = { category: activity.category }
+               chip_opts[:city] = @city_query if @city_query.present? %>
+            <%= link_to activity.category, activities_path(chip_opts), class: "activity-chip mt-auto" %>
+          </div>
         </div>
-
-        <h2 class="activity-title h5 mb-1">
-          <%= link_to activity.title, activity_show_path(activity, list_return_to: list_return_to), activity_link_data %>
-        </h2>
-
-        <div class="activity-meta-list mb-2">
-          <% if activity.city.present? %>
-            <span class="activity-meta-item">
-              <svg class="activity-meta-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5z"/></svg>
-              <%= activity.city %>
-            </span>
-          <% end %>
-          <% if activity.event_date.present? %>
-            <span class="activity-meta-item">
-              <svg class="activity-meta-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 2v2H5a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-2V2h-2v2H9V2H7zm12 7v10H5V9h14z"/></svg>
-              <%= activity.event_date.strftime("%b %d") %>
-            </span>
-          <% end %>
-        </div>
-
-        <span class="activity-chip mt-auto"><%= activity.category %></span>
-      </div>
-      </div>
+      <% end %>
+    </div>
     <% end %>
-  </div>
   <% end %>
+
   <% end %>
 </div>
