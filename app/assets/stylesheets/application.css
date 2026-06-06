@@ -695,7 +695,19 @@ body {
 }
 
 .app-footer {
-  border-color: rgba(255, 255, 255, 0.10) !important;
+  border-color: transparent !important;
+  position: relative;
+}
+
+/* Gradient hairline above the footer. */
+.app-footer::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(139, 124, 255, 0.5), rgba(61, 213, 243, 0.4), transparent);
 }
 
 .app-footer-links {
@@ -1688,9 +1700,24 @@ body {
   background: rgba(255, 255, 255, 0.06);
 }
 
+.app-mobile-nav-item {
+  position: relative;
+}
+
 .app-mobile-nav-item.is-active {
   color: var(--af-accent) !important;
-  background: rgba(61, 213, 243, 0.1);
+  background: rgba(61, 213, 243, 0.12);
+}
+
+/* Small active indicator above the current tab. */
+.app-mobile-nav-item.is-active::before {
+  content: "";
+  position: absolute;
+  top: 0.15rem;
+  width: 1.5rem;
+  height: 3px;
+  border-radius: 3px;
+  background: var(--af-gradient-brand);
 }
 
 .app-mobile-nav-icon {
