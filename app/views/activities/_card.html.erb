@@ -38,11 +38,11 @@
       <% end %>
     </div>
 
-    <span class="activity-chip"><%= activity.category %></span>
-
     <% if show_host && activity.user.present? %>
-      <p class="activity-meta small mb-0 mt-1">Hosted by <%= activity.user.name %></p>
+      <p class="activity-meta small mb-2">Hosted by <%= activity.user.name %></p>
     <% end %>
+
+    <span class="activity-chip mt-auto"><%= activity.category %></span>
 
     <% if show_delete %>
       <div class="activity-card-actions mt-2">

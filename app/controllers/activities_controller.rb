@@ -26,11 +26,19 @@ class ActivitiesController < ApplicationController
       base_scope = base_scope.where("city ILIKE ?", pattern)
     end
 
-    # Browse mode: landing page with no query params → grouped horizontal rows.
-    # Any explicit pagination, text search, category filter, or JSON format switches to flat grid.
-    @browsing_mode = @title_query.blank? && @category_query.blank? &&
-                     params[:page].blank? && params[:per_page].blank? &&
-                     !request.format.json?
+    # Layout is an explicit, URL-persisted choice so it stays consistent across
+    # navigation (clicking a card and coming back keeps the same layout).
+    #   view=grouped → Airbnb-style horizontal rows grouped by category
+    #   view=list    → flat, paginated grid of every matching activity
+    # Some actions only make sense as a flat list, so they force list mode
+    # regardless of the toggle: a text search, a single-category filter,
+    # pagination, or a JSON request.
+    requested_view  = params[:view].to_s
+    inherently_list = @title_query.present? || @category_query.present? ||
+                      params[:page].present? || params[:per_page].present? ||
+                      request.format.json?
+    @browsing_mode  = !inherently_list && requested_view != "list"
+    @view_mode      = @browsing_mode ? "grouped" : "list"
 
     if @browsing_mode
       all = base_scope.limit(300).to_a

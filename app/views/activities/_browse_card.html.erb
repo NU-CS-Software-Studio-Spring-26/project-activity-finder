@@ -1,0 +1,69 @@
+<%# locals: (activity:, signup_counts:, joined_ids:, return_to:, city_query: nil, searchable: false) %>
+<%
+  searchable  = local_assigns.fetch(:searchable, false)
+  city_query  = local_assigns[:city_query]
+  link_data   = activity_show_link_options(list_return_to: return_to)
+  show_path   = activity_show_path(activity, list_return_to: return_to)
+  taken       = signup_counts[activity.id] || 0
+  card_attrs  = { class: "activity-card" }
+  if searchable
+    card_attrs[:data] = { search_target: "card", activity_title: activity.title.to_s.downcase }
+  end
+  chip_opts = { category: activity.category }
+  chip_opts[:city] = city_query if city_query.present?
+%>
+<%= tag.div(**card_attrs) do %>
+  <div class="activity-card-img">
+    <%= link_to show_path, link_data do %>
+      <%= image_tag activity_image(activity), class: "img-fluid", alt: activity_image_alt(activity) %>
+    <% end %>
+  </div>
+
+  <div class="activity-card-body">
+    <div class="activity-card-badges d-flex flex-wrap gap-2 mb-2">
+      <% if activity.private? %>
+        <span class="badge text-bg-secondary d-inline-flex align-items-center gap-1">
+          <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
+            <path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2zm3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/>
+          </svg>
+          Private
+        </span>
+      <% end %>
+
+      <% if joined_ids.include?(activity.id) %>
+        <span class="badge text-bg-success">You're going</span>
+      <% end %>
+
+      <% if activity.capacity.present? %>
+        <% full = taken >= activity.capacity %>
+        <span class="badge d-inline-flex align-items-center <%= full ? "text-bg-danger" : "text-bg-light border" %>">
+          <% if full %><span class="badge-dot-red"></span><% end %>
+          <%= taken %>/<%= activity.capacity %> going<%= full ? " (full)" : "" %>
+        </span>
+      <% else %>
+        <span class="badge text-bg-light border"><%= taken %> going</span>
+      <% end %>
+    </div>
+
+    <h3 class="activity-title h5 mb-1">
+      <%= link_to activity.title, show_path, link_data %>
+    </h3>
+
+    <div class="activity-meta-list mb-2">
+      <% if activity.city.present? %>
+        <span class="activity-meta-item">
+          <svg class="activity-meta-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5z"/></svg>
+          <%= activity.city %>
+        </span>
+      <% end %>
+      <% if activity.event_date.present? %>
+        <span class="activity-meta-item">
+          <svg class="activity-meta-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 2v2H5a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-2V2h-2v2H9V2H7zm12 7v10H5V9h14z"/></svg>
+          <%= activity.event_date.strftime("%b %d") %>
+        </span>
+      <% end %>
+    </div>
+
+    <%= link_to activity.category, activities_path(chip_opts), class: "activity-chip mt-auto" %>
+  </div>
+<% end %>
