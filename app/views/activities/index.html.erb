@@ -1,5 +1,10 @@
 <% content_for :title, "Activities" %>
 
+<% content_for :head do %>
+  <%# Avoid Turbo showing a cached snapshot then re-fetching on browser back (double refresh). %>
+  <meta name="turbo-cache-control" content="no-preview">
+<% end %>
+
 <div data-controller="search">
   <section class="page-hero mb-4">
     <div class="page-hero-inner">
@@ -212,17 +217,18 @@
           <% pagination_opts = { per_page: p[:per_page] } %>
           <% pagination_opts[:city] = @city_query if @city_query.present? %>
           <% pagination_opts[:q] = @title_query if @title_query.present? %>
-          <% path_prev = activities_path(pagination_opts.merge(page: p[:page] - 1)) %>
-          <% path_next = activities_path(pagination_opts.merge(page: p[:page] + 1)) %>
+          <% path_prev = activity_index_path(**pagination_opts.merge(page: p[:page] - 1)) %>
+          <% path_next = activity_index_path(**pagination_opts.merge(page: p[:page] + 1)) %>
+          <% frame_link_data = { turbo_action: "advance" } %>
           <% if p[:page] <= 1 %>
             <span class="btn btn-outline-secondary btn-sm disabled" aria-disabled="true">Previous</span>
           <% else %>
-            <%= link_to "Previous", path_prev, class: "btn btn-outline-secondary btn-sm" %>
+            <%= link_to "Previous", path_prev, class: "btn btn-outline-secondary btn-sm", data: frame_link_data %>
           <% end %>
           <% if p[:page] >= p[:total_pages] %>
             <span class="btn btn-outline-secondary btn-sm disabled" aria-disabled="true">Next</span>
           <% else %>
-            <%= link_to "Next", path_next, class: "btn btn-outline-secondary btn-sm" %>
+            <%= link_to "Next", path_next, class: "btn btn-outline-secondary btn-sm", data: frame_link_data %>
           <% end %>
         </div>
       </div>
@@ -230,6 +236,8 @@
   </nav>
 
   <div class="activity-grid" data-search-target="results">
+    <% list_return_to = activity_index_return_path(pagination: @pagination, city: @city_query, q: @title_query) %>
+    <% activity_link_data = activity_show_link_options(list_return_to: list_return_to) %>
     <% @activities.each do |activity| %>
       <div
         class="activity-card"
@@ -237,7 +245,7 @@
         data-activity-title="<%= activity.title.to_s.downcase %>"
       >
         <div class="activity-card-img">
-          <%= link_to activity, **activity_show_link_options do %>
+          <%= link_to activity_show_path(activity, list_return_to: list_return_to), activity_link_data do %>
             <%= image_tag activity_image(activity), class: "img-fluid", alt: activity_image_alt(activity) %>
           <% end %>
         </div>
@@ -263,7 +271,7 @@
         </div>
 
         <h2 class="activity-title h5 mb-1">
-          <%= link_to activity.title, activity, **activity_show_link_options %>
+          <%= link_to activity.title, activity_show_path(activity, list_return_to: list_return_to), activity_link_data %>
         </h2>
 
         <div class="activity-meta-list mb-2">

@@ -45,7 +45,40 @@ class ActivitiesControllerTest < ActionDispatch::IntegrationTest
   test "index activity links break out of activities turbo frame" do
     get activities_url
     assert_response :success
-    assert_select "turbo-frame#activities_results a[data-turbo-frame='_top'][href='#{activity_path(@activity)}']", minimum: 2
+    expected_href = activity_path(@activity, return_to: "/activities")
+    assert_select "turbo-frame#activities_results a[data-turbo-frame='_top'][href='#{expected_href}']", minimum: 2
+    assert_select "meta[name=turbo-cache-control][content=no-preview]"
+  end
+
+  test "index activity links preserve pagination in return_to" do
+    4.times do |i|
+      Activity.create!(
+        title: "Paginated #{i}",
+        city: "Seattle",
+        category: "Test",
+        event_date: Date.today + i.days,
+        user: @user
+      )
+    end
+
+    get activities_path(page: 2, per_page: 6)
+    assert_response :success
+
+    expected_return_to = "/activities?page=2&per_page=6"
+    expected_href = activity_path(@activity, return_to: expected_return_to)
+    assert_select "turbo-frame#activities_results a[data-turbo-frame='_top'][href='#{expected_href}']", minimum: 1
+  end
+
+  test "show back link returns to activities list with preserved filters" do
+    get activity_url(@activity, return_to: "/?q=Running")
+    assert_response :success
+    assert_select "a.btn-outline-secondary[href='/?q=Running']", text: "Back to Activities"
+  end
+
+  test "show back link returns to same activities page" do
+    get activity_url(@activity, return_to: "/activities?page=3&per_page=12")
+    assert_response :success
+    assert_select "a.btn-outline-secondary[href='/activities?page=3&per_page=12']", text: "Back to Activities"
   end
 
   test "index shows create activity link" do

@@ -57,10 +57,31 @@ module ActivitiesHelper
     { from: "profile", return_to: return_to }
   end
 
+  def activity_index_path(**query_params)
+    if request.path == activities_path
+      activities_path(query_params)
+    else
+      root_path(query_params)
+    end
+  end
+
+  def activity_index_return_path(pagination:, city: nil, q: nil)
+    query_params = { per_page: pagination[:per_page] }
+    query_params[:page] = pagination[:page] if pagination[:page] > 1
+    query_params[:city] = city if city.present?
+    query_params[:q] = q if q.present?
+    activity_index_path(**query_params)
+  end
+
+  def activity_show_path(activity, list_return_to: nil)
+    url_params = list_return_to.present? ? { return_to: list_return_to } : {}
+    activity_path(activity, **url_params)
+  end
+
   # Links inside the home-page activities turbo frame must break out to a full
   # page visit; otherwise Turbo tries to render show inside the frame and fails.
-  def activity_show_link_options(return_to: nil)
-    activity_link_params(return_to: return_to).merge(data: { turbo_frame: "_top" })
+  def activity_show_link_options(list_return_to: nil)
+    { data: { turbo_frame: "_top" } }
   end
 
   def activity_location_map_showable?(activity)

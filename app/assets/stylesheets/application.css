@@ -900,6 +900,9 @@ body {
   border: 1px solid rgba(255, 255, 255, 0.12);
   box-shadow: var(--af-shadow);
   overflow: visible;
+  /* Stack above turbo-frame results (pagination/cards) so city dropdown isn't clipped underneath. */
+  position: relative;
+  z-index: 20;
 }
 
 .page-hero-inner {
@@ -1653,10 +1656,17 @@ body {
 /* City picker (activities index) */
 .activity-search-toolbar {
   width: 100%;
+  overflow: visible;
+}
+
+.activity-search {
+  overflow: visible;
 }
 
 .activity-city-toolbar {
   justify-content: flex-end;
+  position: relative;
+  z-index: 2;
 }
 
 /* City picker: custom menu (no Bootstrap Dropdown JS) — stack above page content */
@@ -1665,7 +1675,7 @@ body {
 }
 
 .city-picker-dropdown .dropdown-menu {
-  z-index: 1085;
+  z-index: 30;
 }
 
 .city-picker-toggle {
