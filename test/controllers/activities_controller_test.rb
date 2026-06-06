@@ -302,6 +302,7 @@ class ActivitiesControllerTest < ActionDispatch::IntegrationTest
     get edit_activity_url(foreign)
     assert_redirected_to root_path
     follow_redirect!
+    follow_redirect!
     assert_match "Not authorized", response.body
   end
 
