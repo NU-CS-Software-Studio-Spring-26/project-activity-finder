@@ -28,30 +28,32 @@ export default class extends Controller {
     this.emailAvailability = null
     this.emailCheckTimer = null
     this.emailCheckAbort = null
+    this.touched = new Set()
 
     this.validateAll()
 
-    this.nameTarget.addEventListener("input", () => this.validateAll())
-    this.nameTarget.addEventListener("blur", () => this.validateAll())
+    this.nameTarget.addEventListener("input", () => this.markTouched(this.nameTarget))
+    this.nameTarget.addEventListener("blur", () => this.markTouched(this.nameTarget))
 
     this.emailTarget.addEventListener("input", () => {
       this.emailAvailability = null
+      this.markTouched(this.emailTarget)
       this.scheduleEmailAvailabilityCheck()
-      this.validateAll()
     })
     this.emailTarget.addEventListener("blur", () => {
+      this.markTouched(this.emailTarget)
       this.checkEmailAvailability()
-      this.validateAll()
     })
 
-    this.passwordTarget.addEventListener("input", () => this.validateAll())
-    this.passwordTarget.addEventListener("blur", () => this.validateAll())
-    this.confirmationTarget.addEventListener("input", () => this.validateAll())
-    this.confirmationTarget.addEventListener("blur", () => this.validateAll())
+    this.passwordTarget.addEventListener("input", () => this.markTouched(this.passwordTarget))
+    this.passwordTarget.addEventListener("blur", () => this.markTouched(this.passwordTarget))
+    this.confirmationTarget.addEventListener("input", () => this.markTouched(this.confirmationTarget))
+    this.confirmationTarget.addEventListener("blur", () => this.markTouched(this.confirmationTarget))
 
     this.element.addEventListener("submit", (event) => {
       if (!this.formValid()) {
         event.preventDefault()
+        this.fieldTargets().forEach((field) => this.touched.add(field))
         this.validateAll()
         if (!this.emailAvailabilityChecked()) {
           this.checkEmailAvailability()
@@ -59,6 +61,15 @@ export default class extends Controller {
         this.firstInvalidField()?.focus()
       }
     })
+  }
+
+  markTouched(field) {
+    this.touched.add(field)
+    this.validateAll()
+  }
+
+  isTouched(field) {
+    return this.touched.has(field)
   }
 
   disconnect() {
@@ -178,6 +189,10 @@ export default class extends Controller {
   }
 
   setCharInvalid(field, feedbackTarget) {
+    if (!this.isTouched(field)) {
+      this.clearCharFeedback(field, feedbackTarget)
+      return
+    }
     field.classList.add("is-invalid")
     field.classList.remove("is-valid")
     field.setAttribute("aria-invalid", "true")
@@ -280,6 +295,15 @@ export default class extends Controller {
   }
 
   setInvalid(field, feedback, message) {
+    if (!this.isTouched(field)) {
+      field.classList.remove("is-invalid", "is-valid")
+      field.setAttribute("aria-invalid", "false")
+      if (feedback) {
+        feedback.textContent = ""
+        feedback.classList.add("d-none")
+      }
+      return false
+    }
     field.classList.add("is-invalid")
     field.classList.remove("is-valid")
     field.setAttribute("aria-invalid", "true")
