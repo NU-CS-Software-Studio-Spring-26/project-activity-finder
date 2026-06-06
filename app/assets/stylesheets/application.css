@@ -90,12 +90,27 @@ body {
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
   background:
-    radial-gradient(1200px 600px at 10% 10%, rgba(109, 94, 252, 0.25), transparent 55%),
-    radial-gradient(900px 500px at 90% 0%, rgba(61, 213, 243, 0.18), transparent 60%),
+    radial-gradient(1100px 620px at 8% -5%, rgba(109, 94, 252, 0.28), transparent 55%),
+    radial-gradient(900px 560px at 95% 0%, rgba(61, 213, 243, 0.20), transparent 58%),
+    radial-gradient(1000px 700px at 50% 115%, rgba(86, 69, 232, 0.16), transparent 60%),
     var(--af-bg);
   background-attachment: fixed;
   color: var(--af-text);
   overflow-wrap: anywhere;
+  position: relative;
+}
+
+/* Fine starfield/grain overlay for depth — sits behind all content. */
+.app-body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image:
+    radial-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+  background-size: 22px 22px;
+  opacity: 0.6;
 }
 
 .app-main {
