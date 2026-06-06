@@ -63,6 +63,8 @@
         <div class="invalid-feedback d-none" data-signup-validation-target="confirmationFeedback"></div>
       </div>
 
+      <%= render "shared/bot_prevention_fields" %>
+
       <%= f.submit "Create Account", class: "btn btn-primary btn-auth", data: { signup_validation_target: "submit" }, disabled: true %>
     <% end %>
 

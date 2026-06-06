@@ -1,0 +1,16 @@
+<%#
+  Bot-prevention inputs. Pairs with the BotPrevention controller concern.
+
+  The honeypot lives in a .bot-trap wrapper that is hidden via CSS (not
+  type="hidden"), so naive bots that fill every visible field still trip it,
+  while humans never see it. The timestamp is signed server-side so it can't
+  be forged to beat the time trap.
+%>
+<div class="bot-trap" aria-hidden="true">
+  <label for="<%= bot_prevention_honeypot_field %>">Leave this field empty</label>
+  <%= text_field_tag bot_prevention_honeypot_field, nil,
+        id: bot_prevention_honeypot_field,
+        tabindex: -1,
+        autocomplete: "off" %>
+</div>
+<%= hidden_field_tag bot_prevention_timestamp_field, bot_prevention_timestamp %>
