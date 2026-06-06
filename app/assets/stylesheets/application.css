@@ -2079,6 +2079,21 @@ body {
   transform: translateY(-1px);
 }
 
+.advisor-chat-draft-card {
+  margin-top: 0.65rem;
+  background: linear-gradient(145deg, rgba(61, 213, 243, 0.16), rgba(15, 22, 38, 0.9));
+  border-color: rgba(86, 69, 232, 0.4);
+}
+
+.advisor-chat-rec-kicker {
+  margin: 0 0 0.15rem;
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--af-accent);
+}
+
 .advisor-chat-rec-body {
   flex: 1;
   min-width: 0;

@@ -11,7 +11,8 @@ module Advisor
 
       render json: {
         reply: result[:reply],
-        recommendations: result[:recommendations]
+        recommendations: result[:recommendations],
+        draft_activity: draft_payload(result[:draft_activity])
       }
     rescue ActivityAdvisor::ChatService::ConfigurationError => e
       render json: { error: e.message }, status: :service_unavailable
@@ -23,6 +24,21 @@ module Advisor
     end
 
     private
+
+    # Turns a sanitized draft into a payload the chat widget can render: a short
+    # summary plus a prefill URL for the real new-activity form (the user still
+    # reviews and submits it, so nothing is created without confirmation).
+    def draft_payload(draft)
+      return nil if draft.blank?
+
+      {
+        title: draft[:title],
+        category: draft[:category],
+        city: draft[:city],
+        event_date: draft[:event_date],
+        url: new_activity_path(activity: draft)
+      }
+    end
 
     def message_params
       permitted = params.permit(messages: [ :role, :content ])

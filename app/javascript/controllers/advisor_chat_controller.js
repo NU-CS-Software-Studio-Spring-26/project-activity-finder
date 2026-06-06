@@ -83,8 +83,9 @@ export default class extends Controller {
         return
       }
 
-      this.appendMessage("assistant", data.reply, data.recommendations)
-      this.history.push({ role: "assistant", content: data.reply })
+      const reply = data.reply?.trim() || this.defaultReply(data)
+      this.appendMessage("assistant", reply, data.recommendations, data.draft_activity)
+      this.history.push({ role: "assistant", content: reply })
     } catch {
       this.appendMessage("assistant", "I couldn’t reach the server. Check your connection and try again.")
     } finally {
@@ -95,7 +96,7 @@ export default class extends Controller {
     }
   }
 
-  appendMessage(role, text, recommendations = []) {
+  appendMessage(role, text, recommendations = [], draft = null) {
     const wrapper = document.createElement("div")
     wrapper.className = `advisor-chat-message advisor-chat-message--${role}`
 
@@ -105,6 +106,10 @@ export default class extends Controller {
     const paragraph = document.createElement("p")
     paragraph.textContent = text
     bubble.appendChild(paragraph)
+
+    if (draft?.url) {
+      bubble.appendChild(this.buildDraftCard(draft))
+    }
 
     if (recommendations?.length) {
       const list = document.createElement("div")
@@ -139,6 +144,34 @@ export default class extends Controller {
     wrapper.appendChild(bubble)
     this.messagesTarget.appendChild(wrapper)
     this.scrollToBottom()
+  }
+
+  buildDraftCard(draft) {
+    const card = document.createElement("article")
+    card.className = "advisor-chat-rec-card advisor-chat-draft-card"
+
+    const metaParts = [ draft.category, draft.city, draft.event_date ].filter(Boolean)
+    const meta = metaParts.length
+      ? `<p class="advisor-chat-rec-meta">${metaParts.map((part) => this.escapeHtml(part)).join(" · ")}</p>`
+      : ""
+
+    card.innerHTML = `
+      <div class="advisor-chat-rec-body">
+        <p class="advisor-chat-rec-kicker">New activity draft</p>
+        <h3 class="advisor-chat-rec-title">${this.escapeHtml(draft.title)}</h3>
+        ${meta}
+        <p class="advisor-chat-rec-reason">Review the details and publish it when you're ready.</p>
+      </div>
+      <a class="advisor-chat-rec-btn btn btn-sm" href="${this.escapeHtml(draft.url)}">Create this event</a>
+    `
+    return card
+  }
+
+  // Fallback copy when the model returns only a JSON block with no prose.
+  defaultReply(data) {
+    if (data.draft_activity) return "I've put together a draft — review and publish it below."
+    if (data.recommendations?.length) return "Here's what I found for you:"
+    return "Sorry, I didn't catch that. Could you tell me a bit more about what you're looking for?"
   }
 
   showTyping(visible) {
