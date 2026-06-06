@@ -158,7 +158,7 @@ class ActivitiesController < ApplicationController
 
   # GET /activities/new
   def new
-    @activity = Activity.new
+    @activity = Activity.new(prefill_params)
   end
 
   # GET /activities/1/edit
@@ -221,6 +221,17 @@ class ActivitiesController < ApplicationController
           :capacity,
           :visibility
         ])
+    end
+
+    # Optional, non-destructive prefill for GET /activities/new (e.g. from the
+    # Activity Advisor). Only whitelisted fields are read; the user still reviews
+    # and submits the form, so validation happens normally on create.
+    def prefill_params
+      return {} unless params[:activity].present?
+
+      params.fetch(:activity, {}).permit(
+        :title, :description, :location, :city, :category, :event_date, :capacity
+      )
     end
 
     def check_activity_access!
