@@ -38,25 +38,22 @@
   </div>
 
   <div
-    class="mb-3"
-    data-controller="city-field"
-    data-city-field-popular-cities-value='<%= ActivitiesHelper::POPULAR_ACTIVITY_CITIES.to_json %>'
-    data-city-field-max-length-value="100"
+    class="mb-3 city-picker-field"
+    data-controller="city-picker"
+    data-city-picker-popular-cities-value='<%= raw Activity.allowed_cities.to_json %>'
+    data-city-picker-initial-city-value="<%= h(activity.city.to_s) %>"
+    data-city-picker-mode-value="field"
+    data-city-picker-required-value="true"
+    data-city-picker-empty-label-value="Select a city"
   >
     <%= form.label :city, "City *", class: "form-label" %>
-    <%= form.text_field :city,
-          class: "form-control",
-          required: true,
-          list: "activity-city-suggestions",
-          autocomplete: "address-level2",
-          data: { city_field_target: "input" } %>
-    <datalist id="activity-city-suggestions">
-      <% ActivitiesHelper::POPULAR_ACTIVITY_CITIES.each do |city| %>
-        <option value="<%= city %>"></option>
-      <% end %>
-    </datalist>
-    <div class="form-text d-none" data-city-field-target="hint"></div>
-    <div class="invalid-feedback d-none" data-city-field-target="feedback"></div>
+    <%= form.hidden_field :city, data: { city_picker_target: "cityInput" } %>
+    <%= render "shared/city_picker_menu",
+          id_prefix: "activity-city",
+          aria_label: "Select city",
+          go_button_title: "Apply city",
+          dropdown_class: "city-picker-dropdown-field w-100" %>
+    <div id="activity-city-help" class="form-text">Search or pick a supported US city from the list.</div>
   </div>
 
   <div class="mb-3">

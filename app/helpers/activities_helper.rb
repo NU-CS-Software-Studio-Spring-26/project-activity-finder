@@ -1,34 +1,7 @@
 module ActivitiesHelper
   NON_MAP_LOCATION_PATTERN = /\A(online|virtual|remote|zoom|teams|google\s*meet|webex|n\/a|tbd|none|—|-)\z/i.freeze
 
-  POPULAR_ACTIVITY_CITIES = [
-    "Chicago",
-    "Madison",
-    "Milwaukee",
-    "Minneapolis",
-    "Detroit",
-    "Indianapolis",
-    "Columbus",
-    "Cleveland",
-    "St. Louis",
-    "Kansas City",
-    "Denver",
-    "Seattle",
-    "Portland",
-    "San Francisco",
-    "Los Angeles",
-    "San Diego",
-    "Phoenix",
-    "Dallas",
-    "Houston",
-    "Austin",
-    "Atlanta",
-    "Miami",
-    "Boston",
-    "New York",
-    "Philadelphia",
-    "Washington"
-  ].freeze
+  POPULAR_ACTIVITY_CITIES = Activity::ALLOWED_CITIES
 
   EXTERNAL_ACTIVITY_IMAGE_FALLBACKS = [
     [ /sunrise ridge hike/i, "https://www.hikeoftheweek.com/wp-content/uploads/2016/07/DSC03218-scaled.jpg" ],

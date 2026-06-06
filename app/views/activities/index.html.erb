@@ -76,8 +76,10 @@
           <div
             class="activity-city-toolbar d-flex flex-wrap gap-2 align-items-center align-self-lg-end order-2 ms-lg-auto flex-shrink-0"
             data-controller="city-picker"
-            data-city-picker-popular-cities-value='<%= raw ActivitiesHelper::POPULAR_ACTIVITY_CITIES.to_json %>'
+            data-city-picker-popular-cities-value='<%= raw Activity.allowed_cities.to_json %>'
             data-city-picker-initial-city-value="<%= h(@city_query) %>"
+            data-city-picker-mode-value="filter"
+            data-city-picker-empty-label-value="All cities"
           >
             <%= form_with url: activities_path, method: :get, local: true, id: "activity-city-filter-form", class: "activity-city-filter m-0", data: { city_picker_target: "form" } do %>
               <%= hidden_field_tag :page, 1 %>
@@ -86,54 +88,10 @@
               <%= hidden_field_tag :q, @title_query if @title_query.present? %>
             <% end %>
 
-            <div class="dropdown city-picker-dropdown" data-city-picker-target="dropdownRoot">
-              <button
-                type="button"
-                class="btn btn-outline-secondary dropdown-toggle city-picker-toggle d-inline-flex align-items-center gap-2 text-start"
-                id="city-picker-toggle"
-                data-action="click->city-picker#toggleMenu"
-                aria-expanded="false"
-                aria-haspopup="listbox"
-                aria-controls="city-picker-menu"
-                aria-label="Filter by city"
-                data-city-picker-target="toggle"
-              >
-                <svg class="city-picker-pin" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false">
-                  <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5S10.62 6.5 12 6.5s2.5 1.12 2.5 2.5S13.38 11.5 12 11.5z" />
-                </svg>
-                <span data-city-picker-target="label" class="text-truncate flex-grow-1" style="min-width: 0"><%= @city_query.presence || "All cities" %></span>
-              </button>
-              <div
-                id="city-picker-menu"
-                class="dropdown-menu dropdown-menu-end shadow city-picker-panel p-2"
-                role="presentation"
-                data-city-picker-target="menu"
-              >
-                <div class="input-group input-group-sm mb-2">
-                  <input
-                    type="search"
-                    id="city-picker-search"
-                    class="form-control"
-                    placeholder="Search cities…"
-                    autocomplete="address-level2"
-                    aria-label="Search for a city"
-                    data-city-picker-target="searchInput"
-                    data-action="input->city-picker#filterList input->city-picker#validateSearchInput keydown.enter->city-picker#applySearch"
-                  >
-                  <button type="button" class="btn btn-outline-secondary" data-action="city-picker#applySearch" title="Apply city filter">
-                    Go
-                  </button>
-                </div>
-                <div class="invalid-feedback d-none small" data-city-picker-target="searchFeedback"></div>
-
-                <div
-                  class="city-picker-city-list border rounded"
-                  data-city-picker-target="list"
-                  role="listbox"
-                  aria-label="City suggestions"
-                ></div>
-              </div>
-            </div>
+            <%= render "shared/city_picker_menu",
+                  id_prefix: "activity-index-city",
+                  aria_label: "Filter by city",
+                  go_button_title: "Apply city filter" %>
           </div>
         </div>
 

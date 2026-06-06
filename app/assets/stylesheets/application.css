@@ -1683,6 +1683,20 @@ body {
   max-width: 16rem;
 }
 
+.city-picker-field {
+  position: relative;
+  overflow: visible;
+}
+
+.city-picker-dropdown-field {
+  max-width: none;
+}
+
+.city-picker-dropdown-field .city-picker-toggle {
+  width: 100%;
+  max-width: none;
+}
+
 .city-picker-pin {
   width: 1.125rem;
   height: 1.125rem;
