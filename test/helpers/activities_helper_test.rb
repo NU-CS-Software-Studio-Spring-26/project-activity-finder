@@ -66,15 +66,18 @@ class ActivitiesHelperTest < ActionView::TestCase
     assert activity_location_map_showable?(activity)
   end
 
-  test "activity_image uses default asset when no uploads or title match" do
+  test "activity_image returns a category SVG placeholder when no uploads or title match" do
     activity = Activity.create!(
       title: "Neighborhood Board Game Night",
       city: "Seattle",
-      category: "Social",
+      category: "Social & Networking",
       event_date: Date.today,
       user: @user
     )
 
-    assert_match(/activity_finder_default_thumbnail/, activity_image(activity))
+    img = activity_image(activity)
+    assert img.start_with?("data:image/svg+xml;base64,"), "expected an SVG data URI, got: #{img[0..60]}"
+    decoded = Base64.strict_decode64(img.delete_prefix("data:image/svg+xml;base64,"))
+    assert_includes decoded, "Social &amp; Networking"
   end
 end
