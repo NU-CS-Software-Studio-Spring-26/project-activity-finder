@@ -15,10 +15,8 @@
             @activity,
             method: :delete,
             class: "btn btn-danger",
-            form: {
-              data: { turbo_confirm: "Are you sure?" },
-              params: { from: "profile", return_to: params[:return_to] }
-            } %>
+            params: { from: "profile", return_to: @return_to },
+            form: { data: { turbo_confirm: "Are you sure?" } } %>
     <% end %>
   </div>
 

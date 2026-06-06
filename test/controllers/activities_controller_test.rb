@@ -308,6 +308,42 @@ class ActivitiesControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to user_path(@user)
   end
 
+  test "should destroy activity from profile form params" do
+    assert_difference("Activity.count", -1) do
+      delete activity_path(@activity), params: { from: "profile", return_to: user_path(@user) }
+    end
+
+    assert_redirected_to user_path(@user)
+  end
+
+  test "should destroy activity with absolute profile return_to url" do
+    return_to = "http://www.example.com#{user_path(@user, tab: "created")}"
+
+    assert_difference("Activity.count", -1) do
+      delete activity_path(@activity), params: { from: "profile", return_to: return_to }
+    end
+
+    assert_redirected_to user_path(@user, tab: "created")
+  end
+
+  test "host show delete form includes profile context params" do
+    get activity_url(@activity, from: "profile", return_to: user_path(@user))
+
+    assert_select "form[action=?]", activity_path(@activity) do
+      assert_select "input[name=from][value=profile]"
+      assert_select "input[name=return_to][value=?]", user_path(@user)
+    end
+  end
+
+  test "reject destroy without profile context" do
+    assert_no_difference("Activity.count") do
+      delete activity_path(@activity)
+    end
+
+    assert_redirected_to activity_path(@activity)
+    assert_match(/profile/i, flash[:alert])
+  end
+
   test "admin can edit another user's activity" do
     admin = User.create!(
       name: "Admin",
@@ -450,6 +486,75 @@ class ActivitiesControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to activity_url(@activity)
     follow_redirect!
     assert_match "hosting", flash[:alert]
+  end
+
+  test "join on deleted activity redirects with clear message" do
+    other = User.create!(
+      name: "Host",
+      email: "deleted-host@example.com",
+      password: "password",
+      password_confirmation: "password"
+    )
+    foreign = Activity.create!(
+      title: "Deleted Event",
+      city: "Seattle",
+      category: "Social",
+      event_date: Date.today,
+      user: other
+    )
+    foreign_id = foreign.id
+    foreign.destroy!
+
+    joiner = User.create!(
+      name: "Late Joiner",
+      email: "deleted-joiner@example.com",
+      password: "password",
+      password_confirmation: "password"
+    )
+
+    post login_path, params: { email: joiner.email, password: "password" }
+
+    assert_no_difference("ActivitySignup.count") do
+      post join_activity_url(foreign_id)
+    end
+
+    assert_redirected_to activities_path
+    assert_match(/no longer available/i, flash[:alert])
+  end
+
+  test "show deleted activity renders unavailable page" do
+    activity_id = @activity.id
+    @activity.destroy!
+
+    get activity_url(activity_id)
+
+    assert_response :gone
+    assert_match(/no longer available/i, response.body)
+    assert_select "a[href=?]", activities_path, text: "Browse activities"
+  end
+
+  test "leave on deleted activity redirects with clear message" do
+    other = User.create!(
+      name: "Host",
+      email: "leave-host@example.com",
+      password: "password",
+      password_confirmation: "password"
+    )
+    foreign = Activity.create!(
+      title: "Removed Event",
+      city: "Seattle",
+      category: "Social",
+      event_date: Date.today,
+      user: other
+    )
+    ActivitySignup.create!(activity: foreign, user: @user)
+    foreign_id = foreign.id
+    foreign.destroy!
+
+    delete leave_activity_url(foreign_id)
+
+    assert_redirected_to activities_path
+    assert_match(/no longer available/i, flash[:alert])
   end
 
   test "can export activity as calendar file" do
