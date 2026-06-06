@@ -874,9 +874,34 @@ body {
 .activity-info-card,
 .activity-hero-card,
 .image-preview-item {
-  background: var(--af-surface);
-  border: 1px solid var(--af-border);
+  background:
+    linear-gradient(165deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0) 45%),
+    var(--af-surface);
+  border: 1px solid rgba(255, 255, 255, 0.10);
   box-shadow: var(--af-shadow-soft);
+  position: relative;
+}
+
+/* Thin top highlight gives surfaces a lit, dimensional edge. */
+.surface-card,
+.auth-card,
+.activity-card,
+.activity-main-info,
+.activity-info-card,
+.activity-hero-card {
+  overflow: clip;
+}
+
+.surface-card::after,
+.auth-card::after,
+.activity-main-info::after,
+.activity-info-card::after {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.35), transparent);
+  pointer-events: none;
 }
 
 .surface-card-header {
