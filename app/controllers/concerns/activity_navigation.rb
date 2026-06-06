@@ -8,7 +8,7 @@ module ActivityNavigation
   end
 
   def safe_profile_return_path?(path)
-    path = path.to_s
+    path = normalized_return_path(path)
     path.present? &&
       path.start_with?("/") &&
       !path.start_with?("//") &&
@@ -16,8 +16,21 @@ module ActivityNavigation
       path.match?(%r{\A/users/\d+(\?.*)?\z})
   end
 
+  def normalized_return_path(path)
+    path = path.to_s.strip
+    return path if path.blank?
+    return path unless path.match?(%r{\Ahttps?://}i)
+
+    uri = URI.parse(path)
+    normalized = uri.path.to_s
+    normalized = "#{normalized}?#{uri.query}" if uri.query.present?
+    normalized
+  rescue URI::InvalidURIError
+    nil
+  end
+
   def profile_return_path
-    path = params[:return_to].to_s
+    path = normalized_return_path(params[:return_to])
     return path if safe_profile_return_path?(path)
 
     user_path(current_user)

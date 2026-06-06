@@ -50,10 +50,8 @@
               activity_path(activity),
               method: :delete,
               class: "btn btn-sm btn-danger",
-              form: {
-                data: { turbo_confirm: "Delete this activity? This cannot be undone." },
-                params: { from: "profile", return_to: return_to }
-              } %>
+              params: { from: "profile", return_to: return_to },
+              form: { data: { turbo_confirm: "Delete this activity? This cannot be undone." } } %>
       </div>
     <% end %>
   </div>

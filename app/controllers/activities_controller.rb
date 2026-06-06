@@ -93,7 +93,7 @@ class ActivitiesController < ApplicationController
     @activity = Activity.find_by(share_token: params[:token])
 
     unless @activity
-      redirect_to root_path, alert: "Invalid or expired invitation link."
+      redirect_to activities_path, alert: activity_unavailable_message
       return
     end
 
@@ -212,10 +212,31 @@ class ActivitiesController < ApplicationController
   end
 
   private
+    ACTIVITY_UNAVAILABLE_MESSAGE = "This activity is no longer available. It may have been removed by the host."
+
     # Use callbacks to share common setup or constraints between actions.
     def set_activity
-      @activity = Activity.find(params.expect(:id))
+      @activity = Activity.find_by(id: params.expect(:id))
+      handle_missing_activity unless @activity
     end
+
+    def handle_missing_activity
+      respond_to do |format|
+        format.html do
+          if request.post? || request.delete? || action_name.in?(%w[export_pdf export_ics edit update destroy])
+            redirect_to activities_path, alert: activity_unavailable_message, status: :see_other
+          else
+            render :unavailable, status: :gone
+          end
+        end
+        format.json { render json: { error: activity_unavailable_message }, status: :gone }
+      end
+    end
+
+    def activity_unavailable_message
+      ACTIVITY_UNAVAILABLE_MESSAGE
+    end
+    helper_method :activity_unavailable_message
 
     # Only allow a list of trusted parameters through.
     def activity_params

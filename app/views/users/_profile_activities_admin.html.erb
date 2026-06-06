@@ -67,7 +67,7 @@
               activity: activity,
               show_host: true,
               show_delete: true,
-              return_to: request.original_url %>
+              return_to: request.fullpath %>
       <% end %>
     </div>
   <% elsif @activities_pagination[:total].positive? %>

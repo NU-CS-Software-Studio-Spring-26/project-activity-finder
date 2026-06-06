@@ -66,7 +66,7 @@
   <% if @hosted_activities.any? %>
     <div class="activity-grid">
       <% @hosted_activities.each do |activity| %>
-        <%= render "activities/card", activity: activity, return_to: request.original_url %>
+        <%= render "activities/card", activity: activity, return_to: request.fullpath %>
       <% end %>
     </div>
   <% elsif @created_pagination[:total].positive? %>
@@ -103,7 +103,7 @@
   <% if @joined_activities.any? %>
     <div class="activity-grid">
       <% @joined_activities.each do |activity| %>
-        <%= render "activities/card", activity: activity, show_host: true, return_to: request.original_url %>
+        <%= render "activities/card", activity: activity, show_host: true, return_to: request.fullpath %>
       <% end %>
     </div>
   <% elsif @joined_pagination[:total].positive? %>

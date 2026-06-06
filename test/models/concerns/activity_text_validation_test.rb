@@ -112,6 +112,20 @@ class ActivityTextValidationTest < ActiveSupport::TestCase
     assert_includes activity.errors[:description], "must use readable words and sentences"
   end
 
+  test "accepts location with common address abbreviations" do
+    [
+      "123 Main St",
+      "500 Oak Tree Blvd",
+      "7201 East Green Lake Dr N",
+      "Community Center, 42 Maple Ave",
+      "Northwest Hwy and 5th Rd"
+    ].each do |location|
+      activity = build_activity(location: location)
+
+      assert activity.valid?, "expected #{location.inspect} to be valid but got #{activity.errors.full_messages.join(", ")}"
+    end
+  end
+
   test "rejects gibberish location" do
     activity = build_activity(location: "hfclfcsuhsfchjchaakjscn")
 
