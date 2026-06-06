@@ -1146,9 +1146,11 @@ body {
 
 .activity-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 17.5rem), 1fr));
+  /* auto-fill keeps column width stable so a lone card does not stretch full-width. */
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 17.5rem), 1fr));
   gap: 22px;
   align-items: stretch;
+  justify-content: start;
 }
 
 .activity-card {
@@ -1267,7 +1269,7 @@ body {
 
 @media (min-width: 1400px) {
   .activity-grid {
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 18.75rem), 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 18.75rem), 1fr));
   }
 }
 
