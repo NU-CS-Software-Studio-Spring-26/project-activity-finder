@@ -2157,3 +2157,51 @@ body {
   align-items: center;
   justify-content: center;
 }
+
+/* ---------------------------------------------------------------------------
+   Motion & micro-interactions
+   --------------------------------------------------------------------------- */
+@keyframes af-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.page-hero,
+.auth-card,
+.activity-detail-page > *,
+.profile-header,
+.profile-section,
+.activity-card {
+  animation: af-fade-up 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Gentle stagger across the first row of cards in the browse grid. */
+.activity-grid .activity-card:nth-child(1) { animation-delay: 0.02s; }
+.activity-grid .activity-card:nth-child(2) { animation-delay: 0.06s; }
+.activity-grid .activity-card:nth-child(3) { animation-delay: 0.10s; }
+.activity-grid .activity-card:nth-child(4) { animation-delay: 0.14s; }
+.activity-grid .activity-card:nth-child(5) { animation-delay: 0.18s; }
+.activity-grid .activity-card:nth-child(6) { animation-delay: 0.22s; }
+
+/* Respect users who prefer reduced motion: drop transforms and animations. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .activity-card:hover,
+  .activity-card:focus-within {
+    transform: none;
+  }
+}
