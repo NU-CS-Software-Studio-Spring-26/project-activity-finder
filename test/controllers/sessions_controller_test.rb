@@ -23,6 +23,7 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
 
     assert_redirected_to root_path
     follow_redirect!
+    follow_redirect!
     assert_match "Logged in successfully", response.body
   end
 
@@ -80,6 +81,7 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
 
     assert_redirected_to root_path
     follow_redirect!
+    follow_redirect!
     assert_match "Account successfully created, Integration OAuth", response.body
 
     user = User.find_by!(email: "integration_oauth@example.com")
@@ -100,6 +102,7 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
     get "/auth/google_oauth2/callback"
 
     assert_redirected_to root_path
+    follow_redirect!
     follow_redirect!
     assert_match "Welcome back, Test User", response.body
     @user.reload

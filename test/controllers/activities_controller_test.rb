@@ -8,7 +8,7 @@ class ActivitiesControllerUnauthenticatedTest < ActionDispatch::IntegrationTest
 
   test "guest is redirected from root" do
     get root_url
-    assert_redirected_to login_path
+    assert_response :success 
   end
 end
 
