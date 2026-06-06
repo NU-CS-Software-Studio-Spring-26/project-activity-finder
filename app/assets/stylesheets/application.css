@@ -836,10 +836,25 @@ body {
   flex-shrink: 0;
 }
 
+.badge {
+  border-radius: 999px;
+  padding: 0.4em 0.7em;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
 .badge.text-bg-light.border {
   background: rgba(255, 255, 255, 0.10) !important;
   color: rgba(255, 255, 255, 0.85) !important;
   border-color: rgba(255, 255, 255, 0.16) !important;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+.badge.text-bg-success {
+  background: rgba(45, 200, 140, 0.18) !important;
+  color: #6ff0c0 !important;
+  border: 1px solid rgba(45, 200, 140, 0.4);
 }
 
 /* Page patterns */
@@ -1087,12 +1102,30 @@ body {
 .activity-card {
   border-radius: var(--af-radius);
   overflow: hidden;
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  display: flex;
+  flex-direction: column;
 }
 
-.activity-card:hover {
-  transform: translateY(-5px);
+.activity-card:hover,
+.activity-card:focus-within {
+  transform: translateY(-6px);
   box-shadow: var(--af-shadow);
+  border-color: rgba(139, 124, 255, 0.55);
+}
+
+.activity-card-img {
+  position: relative;
+  overflow: hidden;
+}
+
+/* Soft gradient scrim so badges/text stay legible over bright photos. */
+.activity-card-img::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 55%, rgba(7, 10, 20, 0.55) 100%);
+  pointer-events: none;
 }
 
 .activity-card-img img {
@@ -1101,25 +1134,36 @@ body {
   height: auto;
   max-height: 12.5rem;
   object-fit: cover;
+  transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.activity-card:hover .activity-card-img img,
+.activity-card:focus-within .activity-card-img img {
+  transform: scale(1.06);
 }
 
 .activity-card-body {
-  padding: 15px;
+  padding: 16px 17px 18px;
   display: flex;
   flex-direction: column;
-  gap: 2px;
-  min-height: 100%;
+  gap: 3px;
+  flex: 1;
 }
 
 .activity-title {
-  font-size: 1rem;
+  font-size: 1.05rem;
   font-weight: 600;
   overflow-wrap: anywhere;
 }
 
 .activity-title a {
   text-decoration: none;
-  color: rgba(255, 255, 255, 0.92);
+  color: rgba(255, 255, 255, 0.94);
+  transition: color 0.15s ease;
+}
+
+.activity-card:hover .activity-title a {
+  color: var(--af-accent);
 }
 
 .activity-meta {
