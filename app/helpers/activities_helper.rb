@@ -13,7 +13,7 @@ module ActivitiesHelper
     "Music & Live Events"  => %w[#2a1a3a #8a3ac4],
     "Workshop / Class"     => %w[#2a2e1a #7a8a40],
     "Social & Networking"  => %w[#1a2030 #3a5ab4],
-    "Volunteer"            => %w[#2e2a10 #b4901e],
+    "Volunteer"            => %w[#2e2a10 #b4901e]
   }.freeze
 
   POPULAR_ACTIVITY_CITIES = Activity::ALLOWED_CITIES
@@ -111,6 +111,6 @@ module ActivitiesHelper
               font-size="22" font-weight="600" fill="rgba(255,255,255,0.85)">#{label}</text>
       </svg>
     SVG
-    "data:image/svg+xml;base64,#{[svg].pack('m0')}"
+    "data:image/svg+xml;base64,#{[ svg ].pack('m0')}"
   end
 end
