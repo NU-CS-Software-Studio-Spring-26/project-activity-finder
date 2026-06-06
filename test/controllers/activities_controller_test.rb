@@ -188,7 +188,7 @@ class ActivitiesControllerTest < ActionDispatch::IntegrationTest
 
   test "should create activity" do
     assert_difference("Activity.count") do
-      post activities_url, params: { activity: { category: @activity.category, city: @activity.city, description: @activity.description, event_date: @activity.event_date, location: @activity.location, title: @activity.title } }
+      post activities_url, params: { activity: { category: @activity.category, city: @activity.city, description: @activity.description, event_date: @activity.event_date, location: @activity.location, title: @activity.title } }.merge(bot_prevention_params)
     end
 
     assert_redirected_to activities_path
@@ -205,7 +205,7 @@ class ActivitiesControllerTest < ActionDispatch::IntegrationTest
           location: @activity.location,
           title: "Fake City Event"
         }
-      }
+      }.merge(bot_prevention_params)
     end
 
     assert_response :unprocessable_entity
@@ -223,7 +223,7 @@ class ActivitiesControllerTest < ActionDispatch::IntegrationTest
           location: @activity.location,
           title: "SELECT * FROM database"
         }
-      }
+      }.merge(bot_prevention_params)
     end
 
     assert_response :unprocessable_entity

@@ -39,6 +39,12 @@ class UsersController < ApplicationController
   def create
     @user = User.new(signup_params)
 
+    if bot_submission?
+      flash.now[:alert] = "We couldn't verify your submission. Please try again."
+      render :new, status: :unprocessable_entity
+      return
+    end
+
     if @user.save
       reset_session
       session[:user_id] = @user.id

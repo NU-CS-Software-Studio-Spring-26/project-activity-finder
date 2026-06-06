@@ -179,6 +179,12 @@ class ActivitiesController < ApplicationController
   def create
     @activity = current_user.activities.build(activity_params)
 
+    if bot_submission?
+      flash.now[:alert] = "We couldn't verify your submission. Please try again."
+      render :new, status: :unprocessable_entity
+      return
+    end
+
     if @activity.save
       attach_new_images
       normalize_image_positions

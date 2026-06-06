@@ -13,5 +13,16 @@ module ActiveSupport
     fixtures :all
 
     # Add more helper methods to be used by all tests here...
+
+    # Bot-prevention fields a real form would carry: a blank honeypot and a
+    # signed render timestamp old enough to clear the time trap. Merge into
+    # create-form POST params so legitimate submissions aren't flagged as bots.
+    def bot_prevention_params(rendered_at: 1.minute.ago)
+      verifier = Rails.application.message_verifier(:bot_prevention)
+      {
+        BotPrevention::TIMESTAMP_FIELD =>
+          verifier.generate(rendered_at.to_f, purpose: :form_render_time)
+      }
+    end
   end
 end

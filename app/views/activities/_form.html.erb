@@ -189,6 +189,8 @@
     <div id="image-preview-list" class="image-preview-list mt-3"></div>
   </div>
 
+  <%= render "shared/bot_prevention_fields" %>
+
   <div>
     <%= form.submit class: "btn btn-primary", data: { activity_form_validation_target: "submit" } %>
   </div>
