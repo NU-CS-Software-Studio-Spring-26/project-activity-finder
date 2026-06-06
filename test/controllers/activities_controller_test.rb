@@ -42,6 +42,40 @@ class ActivitiesControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
+  test "index defaults to grouped (by category) layout" do
+    get activities_url
+    assert_response :success
+    # Grouped layout shows category sections and no pagination bar.
+    assert_select "section.category-section"
+    assert_select "nav.activity-pagination", count: 0
+    # The layout toggle is present with grouped marked active.
+    assert_select ".view-toggle-btn-active", text: /By category/
+  end
+
+  test "index renders flat list layout when view=list" do
+    get activities_path(view: "list")
+    assert_response :success
+    # List layout shows the flat grid + pagination, no category sections.
+    assert_select "div.activity-grid"
+    assert_select "nav.activity-pagination"
+    assert_select "section.category-section", count: 0
+    assert_select ".view-toggle-btn-active", text: /All listings/
+  end
+
+  test "index keeps grouped layout when filtering by city" do
+    get activities_path(view: "grouped", city: "Seattle")
+    assert_response :success
+    assert_select "section.category-section"
+    assert_select "nav.activity-pagination", count: 0
+  end
+
+  test "index toggle links preserve the city filter" do
+    get activities_path(view: "grouped", city: "Seattle")
+    assert_response :success
+    # "All listings" toggle should carry the active city filter through.
+    assert_select ".view-toggle a[href='#{activities_path(view: "list", city: "Seattle")}']"
+  end
+
   test "index activity links break out of activities turbo frame" do
     get activities_url
     assert_response :success
