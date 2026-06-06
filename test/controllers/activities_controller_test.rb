@@ -42,6 +42,52 @@ class ActivitiesControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
+  test "index activity links break out of activities turbo frame" do
+    get activities_url
+    assert_response :success
+
+    expected_return_to = activities_path(per_page: 12)
+    expected_href = activity_path(@activity, return_to: expected_return_to)
+    assert_select "turbo-frame#activities_results a[data-turbo-frame='_top'][href='#{expected_href}']", minimum: 2
+    assert_select "meta[name=turbo-cache-control][content=no-preview]"
+  end
+
+  test "index activity links preserve pagination in return_to" do
+    4.times do |i|
+      Activity.create!(
+        title: "Paginated #{i}",
+        city: "Seattle",
+        category: "Test",
+        event_date: Date.today + i.days,
+        user: @user
+      )
+    end
+
+    get activities_path(page: 2, per_page: 6)
+    assert_response :success
+
+    expected_return_to = activities_path(page: 2, per_page: 6)
+    assert_select "turbo-frame#activities_results a[data-turbo-frame='_top']" do |links|
+      assert links.size >= 1, "expected at least one activity link on page 2"
+      links.each do |link|
+        return_to = Rack::Utils.parse_query(URI.parse(link["href"]).query)["return_to"]
+        assert_equal expected_return_to, return_to
+      end
+    end
+  end
+
+  test "show back link returns to activities list with preserved filters" do
+    get activity_url(@activity, return_to: "/?q=Running")
+    assert_response :success
+    assert_select "a.btn-outline-secondary[href='/?q=Running']", text: "Back to Activities"
+  end
+
+  test "show back link returns to same activities page" do
+    get activity_url(@activity, return_to: "/activities?page=3&per_page=12")
+    assert_response :success
+    assert_select "a.btn-outline-secondary[href='/activities?page=3&per_page=12']", text: "Back to Activities"
+  end
+
   test "index shows create activity link" do
     get activities_url
     assert_response :success
@@ -101,6 +147,8 @@ class ActivitiesControllerTest < ActionDispatch::IntegrationTest
   test "should get new" do
     get new_activity_url
     assert_response :success
+    assert_select "#activity-city-toggle"
+    assert_select "input[name='activity[city]'][type=hidden]"
   end
 
   test "should create activity" do
@@ -109,6 +157,24 @@ class ActivitiesControllerTest < ActionDispatch::IntegrationTest
     end
 
     assert_redirected_to activities_path
+  end
+
+  test "should not create activity with unsupported city" do
+    assert_no_difference("Activity.count") do
+      post activities_url, params: {
+        activity: {
+          category: @activity.category,
+          city: "1234",
+          description: @activity.description,
+          event_date: @activity.event_date,
+          location: @activity.location,
+          title: "Fake City Event"
+        }
+      }
+    end
+
+    assert_response :unprocessable_entity
+    assert_match(/must be a supported city/i, response.body)
   end
 
   test "should show activity" do
@@ -205,7 +271,7 @@ class ActivitiesControllerTest < ActionDispatch::IntegrationTest
     )
     foreign = Activity.create!(
       title: "Theirs",
-      city: "NYC",
+      city: "New York",
       category: "X",
       event_date: Date.today,
       user: other
@@ -227,7 +293,7 @@ class ActivitiesControllerTest < ActionDispatch::IntegrationTest
     )
     foreign = Activity.create!(
       title: "Theirs",
-      city: "NYC",
+      city: "New York",
       category: "X",
       event_date: Date.today,
       user: other
@@ -248,7 +314,7 @@ class ActivitiesControllerTest < ActionDispatch::IntegrationTest
     )
     foreign = Activity.create!(
       title: "Theirs",
-      city: "NYC",
+      city: "New York",
       category: "X",
       event_date: Date.today,
       user: other
@@ -304,7 +370,7 @@ class ActivitiesControllerTest < ActionDispatch::IntegrationTest
 
     foreign = Activity.create!(
       title: "Tiny event",
-      city: "NYC",
+      city: "New York",
       category: "X",
       event_date: Date.today,
       user: host,

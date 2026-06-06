@@ -1,0 +1,54 @@
+<%# locals: (id_prefix:, aria_label:, go_button_title: "Apply", dropdown_class: nil) %>
+<% id_prefix = local_assigns.fetch(:id_prefix) %>
+<% aria_label = local_assigns.fetch(:aria_label) %>
+<% go_button_title = local_assigns.fetch(:go_button_title, "Apply") %>
+<% dropdown_class = local_assigns[:dropdown_class] %>
+
+<div class="dropdown city-picker-dropdown <%= dropdown_class %>" data-city-picker-target="dropdownRoot">
+  <button
+    type="button"
+    class="btn btn-outline-secondary dropdown-toggle city-picker-toggle d-inline-flex align-items-center gap-2 text-start"
+    id="<%= id_prefix %>-toggle"
+    data-action="click->city-picker#toggleMenu"
+    aria-expanded="false"
+    aria-haspopup="listbox"
+    aria-controls="<%= id_prefix %>-menu"
+    aria-label="<%= aria_label %>"
+    data-city-picker-target="toggle"
+  >
+    <svg class="city-picker-pin" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false">
+      <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5S10.62 6.5 12 6.5s2.5 1.12 2.5 2.5S13.38 11.5 12 11.5z" />
+    </svg>
+    <span data-city-picker-target="label" class="text-truncate flex-grow-1" style="min-width: 0"></span>
+  </button>
+  <div
+    id="<%= id_prefix %>-menu"
+    class="dropdown-menu dropdown-menu-end shadow city-picker-panel p-2"
+    role="presentation"
+    data-city-picker-target="menu"
+  >
+    <div class="input-group input-group-sm mb-2">
+      <input
+        type="search"
+        id="<%= id_prefix %>-search"
+        class="form-control"
+        placeholder="Search cities…"
+        autocomplete="address-level2"
+        aria-label="Search for a city"
+        data-city-picker-target="searchInput"
+        data-action="input->city-picker#filterList input->city-picker#validateSearchInput keydown.enter->city-picker#applySearch"
+      >
+      <button type="button" class="btn btn-outline-secondary" data-action="city-picker#applySearch" title="<%= go_button_title %>">
+        Go
+      </button>
+    </div>
+    <div class="invalid-feedback d-none small" data-city-picker-target="searchFeedback"></div>
+
+    <div
+      class="city-picker-city-list border rounded"
+      data-city-picker-target="list"
+      role="listbox"
+      aria-label="City suggestions"
+    ></div>
+  </div>
+</div>
