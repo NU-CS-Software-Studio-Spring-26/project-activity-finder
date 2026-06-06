@@ -46,7 +46,8 @@ class ActivitiesControllerTest < ActionDispatch::IntegrationTest
     get activities_url
     assert_response :success
 
-    expected_return_to = activities_path(per_page: 12)
+    # Browse mode (no query params) returns to plain /activities
+    expected_return_to = activities_path
     expected_href = activity_path(@activity, return_to: expected_return_to)
     assert_select "turbo-frame#activities_results a[data-turbo-frame='_top'][href='#{expected_href}']", minimum: 2
     assert_select "meta[name=turbo-cache-control][content=no-preview]"
