@@ -1,7 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["input", "form", "clearButton", "inputClearButton"]
+  static targets = ["input", "form", "inputClearButton"]
 
   connect() {
     this.submitTimeout = null
@@ -55,9 +55,6 @@ export default class extends Controller {
   updateButtons() {
     const query = this.inputTarget.value.trim()
 
-    if (this.hasClearButtonTarget) {
-      this.clearButtonTarget.disabled = query === ""
-    }
     if (this.hasInputClearButtonTarget) {
       this.inputClearButtonTarget.classList.toggle("d-none", query === "")
     }
