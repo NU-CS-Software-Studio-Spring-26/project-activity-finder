@@ -61,6 +61,7 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
   test "cannot edit another user" do
     get edit_user_url(@bob)
     assert_redirected_to root_path
+    follow_redirect! # root -> activities (because logged_in?)
     follow_redirect!
     assert_match "Not authorized", response.body
   end

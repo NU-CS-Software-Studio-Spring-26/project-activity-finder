@@ -2386,3 +2386,113 @@ button:focus-visible,
 ::-webkit-scrollbar-track {
   background: transparent;
 }
+
+/* ── Welcome / Landing page ───────────────────────────────────────────────── */
+
+.welcome-hero {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 5rem 1.5rem 4rem;
+  background: radial-gradient(ellipse at 50% 0%, rgba(86, 69, 232, 0.18) 0%, transparent 65%);
+}
+
+.welcome-hero-inner {
+  max-width: 680px;
+}
+
+.welcome-headline {
+  font-size: clamp(2rem, 5vw, 3.25rem);
+  font-weight: 700;
+  line-height: 1.15;
+  color: var(--af-text);
+  margin-bottom: 1.25rem;
+}
+
+.welcome-subline {
+  font-size: clamp(1rem, 2.5vw, 1.2rem);
+  color: var(--af-muted);
+  margin-bottom: 2.25rem;
+  line-height: 1.6;
+}
+
+.welcome-ctas {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.welcome-btn-primary {
+  background: linear-gradient(135deg, var(--af-primary) 0%, var(--af-primary-2) 100%);
+  color: var(--af-on-primary);
+  font-weight: 600;
+  padding: 0.7rem 2rem;
+  border-radius: 50px;
+  border: none;
+  font-size: 1rem;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+.welcome-btn-primary:hover,
+.welcome-btn-primary:focus-visible {
+  opacity: 0.88;
+  transform: translateY(-1px);
+  color: var(--af-on-primary);
+}
+
+.welcome-btn-secondary {
+  background: transparent;
+  color: var(--af-text-soft);
+  font-weight: 600;
+  padding: 0.7rem 2rem;
+  border-radius: 50px;
+  border: 1.5px solid var(--af-border-strong);
+  font-size: 1rem;
+  transition: border-color 0.15s ease, color 0.15s ease, transform 0.15s ease;
+}
+
+.welcome-btn-secondary:hover,
+.welcome-btn-secondary:focus-visible {
+  border-color: var(--af-accent);
+  color: var(--af-accent);
+  transform: translateY(-1px);
+}
+
+.welcome-features {
+  padding: 1rem 0 3rem;
+}
+
+.welcome-feature-card {
+  background: var(--af-surface);
+  border: 1px solid var(--af-border);
+  border-radius: var(--af-radius);
+  padding: 2rem 1.75rem;
+  height: 100%;
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.welcome-feature-card:hover {
+  border-color: var(--af-primary);
+  transform: translateY(-3px);
+}
+
+.welcome-feature-icon {
+  color: var(--af-accent);
+  margin-bottom: 1rem;
+}
+
+.welcome-feature-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--af-text);
+  margin-bottom: 0.6rem;
+}
+
+.welcome-feature-body {
+  font-size: 0.95rem;
+  color: var(--af-muted);
+  line-height: 1.6;
+  margin-bottom: 0;
+}

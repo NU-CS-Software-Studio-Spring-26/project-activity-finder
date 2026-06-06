@@ -8,7 +8,7 @@ class ActivitiesControllerUnauthenticatedTest < ActionDispatch::IntegrationTest
 
   test "guest is redirected from root" do
     get root_url
-    assert_redirected_to login_path
+    assert_response :success
   end
 end
 
@@ -302,6 +302,7 @@ class ActivitiesControllerTest < ActionDispatch::IntegrationTest
 
     get edit_activity_url(foreign)
     assert_redirected_to root_path
+    follow_redirect!
     follow_redirect!
     assert_match "Not authorized", response.body
   end

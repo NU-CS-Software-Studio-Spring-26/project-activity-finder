@@ -1,0 +1,60 @@
+<% content_for :title, "Welcome to Open Scene" %>
+
+<div class="welcome-hero">
+  <div class="welcome-hero-inner">
+    <h1 class="welcome-headline">What are you doing this weekend?</h1>
+    <p class="welcome-subline">
+      Discover local activities, host your own events, and connect with people who share your interests.
+    </p>
+    <div class="welcome-ctas">
+      <%= link_to "Get Started", signup_path, class: "btn welcome-btn-primary" %>
+      <%= link_to "Log in", login_path, class: "btn welcome-btn-secondary" %>
+    </div>
+  </div>
+</div>
+
+<div class="welcome-features">
+  <div class="row g-4 justify-content-center">
+    <div class="col-12 col-md-4">
+      <div class="welcome-feature-card">
+        <div class="welcome-feature-icon" aria-hidden="true">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+          </svg>
+        </div>
+        <h2 class="welcome-feature-title">Discover activities near you</h2>
+        <p class="welcome-feature-body">
+          Browse hikes, game nights, art walks, and more happening in your city — all in one place.
+        </p>
+      </div>
+    </div>
+
+    <div class="col-12 col-md-4">
+      <div class="welcome-feature-card">
+        <div class="welcome-feature-icon" aria-hidden="true">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 5v14M5 12h14"/>
+          </svg>
+        </div>
+        <h2 class="welcome-feature-title">Host your own event</h2>
+        <p class="welcome-feature-body">
+          Planning something? Create an activity in seconds and let your community know what's on.
+        </p>
+      </div>
+    </div>
+
+    <div class="col-12 col-md-4">
+      <div class="welcome-feature-card">
+        <div class="welcome-feature-icon" aria-hidden="true">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/>
+          </svg>
+        </div>
+        <h2 class="welcome-feature-title">Invite friends with a link</h2>
+        <p class="welcome-feature-body">
+          Share a private invite link so the right people can join, even before they have an account.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
