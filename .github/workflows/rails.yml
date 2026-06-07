@@ -48,3 +48,6 @@ jobs:
 
       - name: Run tests
         run: bin/rails test
+
+      - name: Run Cucumber features
+        run: bundle exec cucumber
