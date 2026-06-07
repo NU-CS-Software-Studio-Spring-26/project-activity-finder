@@ -1,0 +1,14 @@
+title: Activity Finder
+main_page: README.md
+markup: markdown
+op_dir: doc
+line_numbers: true
+generator_name: aliki
+exclude:
+  - test/
+  - tmp/
+  - log/
+  - storage/
+  - vendor/
+  - node_modules/
+  - public/
