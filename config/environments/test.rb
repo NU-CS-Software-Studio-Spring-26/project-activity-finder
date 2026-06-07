@@ -9,6 +9,10 @@ ENV["GOOGLE_CLIENT_SECRET"] ||= "test-google-placeholder"
 ENV["APP_HOST"] ||= "http://www.example.com"
 
 Rails.application.configure do
+  # Configure 'rails notes' to inspect Cucumber files
+  config.annotations.register_directories('features')
+  config.annotations.register_extensions('feature') { |tag| /#\s*(#{tag}):?\s*(.*)$/ }
+
   # Settings specified here will take precedence over those in config/application.rb.
 
   # While tests run files are not watched, reloading is not necessary.
