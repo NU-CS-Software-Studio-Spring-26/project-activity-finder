@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>signup_validation_controller.js - Activity Finder</title>
+
+
+  <meta name="keywords" content="ruby,documentation,signup_validation_controller.js">
+  <meta
+    name="description"
+    content="signup_validation_controller.js: WHATWG email validation pattern (matches what browsers use for type=&quot;email&quot;). Rejects invalid domains like &quot;gmailsad,."
+  >
+
+
+
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="signup_validation_controller.js - Activity Finder">
+
+
+
+    <meta property="og:description" content="WHATWG email validation pattern (matches what browsers use for type=&quot;email&quot;). Rejects invalid domains like &quot;gmailsad,.">
+
+
+
+
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="signup_validation_controller.js - Activity Finder">
+
+
+
+    <meta name="twitter:description" content="WHATWG email validation pattern (matches what browsers use for type=&quot;email&quot;). Rejects invalid domains like &quot;gmailsad,.">
+
+
+
+<script type="text/javascript">
+  var rdoc_rel_prefix = "../../../";
+  var index_rel_prefix = "../../../";
+</script>
+
+<script
+  src="../../../js/theme-toggle.js?v=7.2.0"
+></script>
+
+<script
+  src="../../../js/search_navigation.js?v=7.2.0"
+  defer
+></script>
+
+<script
+  src="../../../js/search_data.js?v=7.2.0"
+  defer
+></script>
+
+<script
+  src="../../../js/search_ranker.js?v=7.2.0"
+  defer
+></script>
+
+<script
+  src="../../../js/search_controller.js?v=7.2.0"
+  defer
+></script>
+
+<script
+  src="../../../js/c_highlighter.js?v=7.2.0"
+  defer
+></script>
+
+<script
+  src="../../../js/bash_highlighter.js?v=7.2.0"
+  defer
+></script>
+
+<script
+  src="../../../js/aliki.js?v=7.2.0"
+  defer
+></script>
+
+<link
+  href="../../../css/rdoc.css?v=7.2.0"
+  rel="stylesheet"
+>
+
+
+
+
+<body role="document" class="file has-toc">
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <!-- Chevron (right arrow) - used for expand/collapse -->
+  <symbol
+    id="icon-chevron"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <polyline points="9 18 15 12 9 6"></polyline>
+  </symbol>
+
+  <!-- File/Document - Pages section -->
+  <symbol
+    id="icon-file"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <path
+      d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"
+    ></path>
+
+    <polyline points="14 2 14 8 20 8"></polyline>
+  </symbol>
+
+  <!-- Layers/Stack - Classes and Modules section -->
+  <symbol
+    id="icon-layers"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+    <polyline points="2 17 12 22 22 17"></polyline>
+    <polyline points="2 12 12 17 22 12"></polyline>
+  </symbol>
+
+  <!-- Curly braces with C - Class Methods section -->
+  <symbol
+    id="icon-class-methods"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <path d="M6 3C3.5 3 2 4.5 2 7v3c0 1.5-1 2-1 2s1 .5 1 2v5c0 2.5 1.5 4 4 4"></path>
+    <path d="M18 3c2.5 0 4 1.5 4 4v3c0 1.5 1 2 1 2s-1 .5-1 2v5c0 2.5-1.5 4-4 4"></path>
+
+    <text
+      x="12"
+      y="17"
+      text-anchor="middle"
+      font-size="13"
+      font-weight="bold"
+      fill="currentColor"
+      stroke="none"
+    >
+      C
+    </text>
+  </symbol>
+
+  <!-- Curly braces with I - Instance Methods section -->
+  <symbol
+    id="icon-instance-methods"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <path d="M6 3C3.5 3 2 4.5 2 7v3c0 1.5-1 2-1 2s1 .5 1 2v5c0 2.5 1.5 4 4 4"></path>
+    <path d="M18 3c2.5 0 4 1.5 4 4v3c0 1.5 1 2 1 2s-1 .5-1 2v5c0 2.5-1.5 4-4 4"></path>
+
+    <text
+      x="12"
+      y="17"
+      text-anchor="middle"
+      font-size="13"
+      font-weight="bold"
+      fill="currentColor"
+      stroke="none"
+    >
+      I
+    </text>
+  </symbol>
+
+  <!-- Double chevrons up - Ancestors section -->
+  <symbol
+    id="icon-ancestors"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <polyline points="17 11 12 6 7 11"></polyline>
+    <polyline points="17 18 12 13 7 18"></polyline>
+  </symbol>
+
+  <!-- User with plus - Included Modules section -->
+  <symbol
+    id="icon-includes"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+    <circle cx="8.5" cy="7" r="4"></circle>
+
+    <line
+      x1="20"
+      y1="8"
+      x2="20"
+      y2="14"
+    ></line>
+
+    <line
+      x1="23"
+      y1="11"
+      x2="17"
+      y2="11"
+    ></line>
+  </symbol>
+
+  <!-- User with check - Extended Modules section -->
+  <symbol
+    id="icon-extends"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+    <circle cx="8.5" cy="7" r="4"></circle>
+    <polyline points="17 11 19 13 23 9"></polyline>
+  </symbol>
+
+  <!-- List - Sections section -->
+  <symbol
+    id="icon-list"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <line
+      x1="8"
+      y1="6"
+      x2="21"
+      y2="6"
+    ></line>
+
+    <line
+      x1="8"
+      y1="12"
+      x2="21"
+      y2="12"
+    ></line>
+
+    <line
+      x1="8"
+      y1="18"
+      x2="21"
+      y2="18"
+    ></line>
+
+    <line
+      x1="3"
+      y1="6"
+      x2="3.01"
+      y2="6"
+    ></line>
+
+    <line
+      x1="3"
+      y1="12"
+      x2="3.01"
+      y2="12"
+    ></line>
+
+    <line
+      x1="3"
+      y1="18"
+      x2="3.01"
+      y2="18"
+    ></line>
+  </symbol>
+</svg>
+
+<header class="top-navbar">
+  <a href="../../../index.html" class="navbar-brand">
+    Activity Finder
+  </a>
+
+  <!-- Desktop search bar -->
+  <div class="navbar-search navbar-search-desktop" role="search">
+    <form action="#" method="get" accept-charset="utf-8">
+      <input id="search-field" role="combobox" aria-label="Search"
+             aria-autocomplete="list" aria-controls="search-results-desktop"
+             type="text" name="search" placeholder="Search (/) for a class, method..."
+             spellcheck="false" autocomplete="off"
+             title="Type to search, Up and Down to navigate, Enter to load">
+      <ul id="search-results-desktop" aria-label="Search Results"
+          aria-busy="false" aria-expanded="false"
+          aria-atomic="false" class="initially-hidden search-results"></ul>
+    </form>
+  </div>
+
+  <!-- Mobile search icon button -->
+  <button id="search-toggle" class="navbar-search-mobile" aria-label="Open search" type="button">
+    <span aria-hidden="true">🔍</span>
+  </button>
+
+  <!-- Theme toggle button -->
+  <button id="theme-toggle" class="theme-toggle" aria-label="Switch to dark mode" type="button">
+    <span class="theme-toggle-icon" aria-hidden="true">🌙</span>
+  </button>
+</header>
+
+<!-- Search Modal (Mobile) -->
+<div id="search-modal" class="search-modal" hidden aria-modal="true" role="dialog" aria-label="Search">
+  <div class="search-modal-backdrop"></div>
+  <div class="search-modal-content">
+    <div class="search-modal-header">
+      <form class="search-modal-form" action="#" method="get" accept-charset="utf-8">
+        <span class="search-modal-icon" aria-hidden="true">🔍</span>
+        <input id="search-field-mobile" role="combobox" aria-label="Search"
+               aria-autocomplete="list" aria-controls="search-results-mobile"
+               type="text" name="search" placeholder="Search documentation"
+               spellcheck="false" autocomplete="off">
+        <button type="button" class="search-modal-close" aria-label="Close search" id="search-modal-close">
+          <span aria-hidden="true">esc</span>
+        </button>
+      </form>
+    </div>
+    <div class="search-modal-body">
+      <ul id="search-results-mobile" aria-label="Search Results"
+          aria-busy="false" aria-expanded="false"
+          aria-atomic="false" class="search-results search-modal-results initially-hidden"></ul>
+      <div class="search-modal-empty">
+        <p>No recent searches</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="navigation-toggle" role="button" tabindex="0" aria-label="Toggle sidebar" aria-expanded="true" aria-controls="navigation">
+  <span aria-hidden="true">&#9776;</span>
+</div>
+
+
+<nav id="navigation" role="navigation" hidden>
+  
+
+
+
+
+
+
+  <div id="fileindex-section" class="nav-section">
+    <details class="nav-section-collapsible" open>
+      <summary class="nav-section-header">
+        <span class="nav-section-icon">
+          <svg>
+            <use href="#icon-file"></use>
+          </svg>
+        </span>
+
+        <span class="nav-section-title">Pages</span>
+
+        <span class="nav-section-chevron">
+          <svg>
+            <use href="#icon-chevron"></use>
+          </svg>
+        </span>
+      </summary>
+
+      <ul class="nav-list">
+
+
+
+
+
+
+            <li>
+              <a href="../../../README_md.html">
+                README
+              </a>
+            </li>
+
+
+
+
+
+          <li>
+            <details  open>
+              <summary>
+                
+                  app
+                  
+                
+              </summary>
+
+              <ul class="link-list">
+
+                  <li>
+                    <a href="../../../app/assets/stylesheets/application_css.html">
+                      application.css
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../../app/javascript/application_js.html">
+                      application.js
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../../app/javascript/controllers/activity_form_validation_controller_js.html">
+                      activity_form_validation_controller.js
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../../app/javascript/controllers/activity_map_controller_js.html">
+                      activity_map_controller.js
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../../app/javascript/controllers/advisor_chat_controller_js.html">
+                      advisor_chat_controller.js
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../../app/javascript/controllers/application_js.html">
+                      application.js
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../../app/javascript/controllers/category_picker_controller_js.html">
+                      category_picker_controller.js
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../../app/javascript/controllers/city_picker_controller_js.html">
+                      city_picker_controller.js
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../../app/javascript/controllers/flash_controller_js.html">
+                      flash_controller.js
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../../app/javascript/controllers/hello_controller_js.html">
+                      hello_controller.js
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../../app/javascript/controllers/index_js.html">
+                      index.js
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../../app/javascript/controllers/profile_activities_controller_js.html">
+                      profile_activities_controller.js
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../../app/javascript/controllers/search_controller_js.html">
+                      search_controller.js
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../../app/javascript/controllers/share_link_controller_js.html">
+                      share_link_controller.js
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../../app/javascript/controllers/signup_validation_controller_js.html">
+                      signup_validation_controller.js
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../../app/javascript/image_upload_js.html">
+                      image_upload.js
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../../app/javascript/pwa_js.html">
+                      pwa.js
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../../app/javascript/utils/profanity_filter_js.html">
+                      profanity_filter.js
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../../app/javascript/utils/readable_text_js.html">
+                      readable_text.js
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../../app/views/activities/_activity_json_jbuilder.html">
+                      _activity.json.jbuilder
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../../app/views/activities/index_json_jbuilder.html">
+                      index.json.jbuilder
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../../app/views/activities/show_json_jbuilder.html">
+                      show.json.jbuilder
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../../app/views/pwa/service-worker_js.html">
+                      service-worker.js
+                    </a>
+                  </li>
+
+              </ul>
+            </details>
+          </li>
+
+
+
+
+
+          <li>
+            <details >
+              <summary>
+                
+                  lib
+                  
+                
+              </summary>
+
+              <ul class="link-list">
+
+                  <li>
+                    <a href="../../../lib/tasks/rdoc_rake.html">
+                      rdoc.rake
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../../lib/tasks/seed_large_rake.html">
+                      seed_large.rake
+                    </a>
+                  </li>
+
+              </ul>
+            </details>
+          </li>
+
+      </ul>
+    </details>
+  </div>
+
+
+  <div id="classindex-section" class="nav-section">
+  <details class="nav-section-collapsible" open>
+    <summary class="nav-section-header">
+      <span class="nav-section-icon">
+        <svg><use href="#icon-layers"></use></svg>
+      </span>
+      <span class="nav-section-title">Classes and Modules</span>
+      <span class="nav-section-chevron">
+        <svg><use href="#icon-chevron"></use></svg>
+      </span>
+    </summary>
+
+    <ul class="link-list nav-list"><li><code><a href="../../../ActivitiesController.html">ActivitiesController</a></code></li><li><code><a href="../../../ActivitiesHelper.html">ActivitiesHelper</a></code></li><li><code><a href="../../../Activity.html">Activity</a></code></li><li><details><summary><code><a href="../../../ActivityAdvisor.html">ActivityAdvisor</a></code></summary><ul class="link-list nav-list"><li><code><a href="../../../ActivityAdvisor/ActivityCatalog.html">ActivityCatalog</a></code></li><li><details><summary><code><a href="../../../ActivityAdvisor/ChatService.html">ChatService</a></code></summary><ul class="link-list nav-list"><li><code><a href="../../../ActivityAdvisor/ChatService/BedrockError.html">BedrockError</a></code></li><li><code><a href="../../../ActivityAdvisor/ChatService/ConfigurationError.html">ConfigurationError</a></code></li></ul></details></li><li><code><a href="../../../ActivityAdvisor/RecommendationParser.html">RecommendationParser</a></code></li></ul></details></li><li><code><a href="../../../ActivityCalendarExporter.html">ActivityCalendarExporter</a></code></li><li><code><a href="../../../ActivityListPagination.html">ActivityListPagination</a></code></li><li><code><a href="../../../ActivityNavigation.html">ActivityNavigation</a></code></li><li><code><a href="../../../ActivityPdfExporter.html">ActivityPdfExporter</a></code></li><li><code><a href="../../../ActivityProfanityFilter.html">ActivityProfanityFilter</a></code></li><li><code><a href="../../../ActivitySignup.html">ActivitySignup</a></code></li><li><code><a href="../../../ActivityTextValidation.html">ActivityTextValidation</a></code></li><li><details><summary><code><a href="../../../Advisor.html">Advisor</a></code></summary><ul class="link-list nav-list"><li><code><a href="../../../Advisor/MessagesController.html">MessagesController</a></code></li></ul></details></li><li><code><a href="../../../ApplicationController.html">ApplicationController</a></code></li><li><code><a href="../../../ApplicationHelper.html">ApplicationHelper</a></code></li><li><code><a href="../../../ApplicationJob.html">ApplicationJob</a></code></li><li><code><a href="../../../ApplicationMailer.html">ApplicationMailer</a></code></li><li><code><a href="../../../ApplicationRecord.html">ApplicationRecord</a></code></li><li><code><a href="../../../BotPrevention.html">BotPrevention</a></code></li><li><code><a href="../../../LocationGeocoder.html">LocationGeocoder</a></code></li><li><code><a href="../../../OmniauthHost.html">OmniauthHost</a></code></li><li><code><a href="../../../PagesController.html">PagesController</a></code></li><li><code><a href="../../../PasswordsController.html">PasswordsController</a></code></li><li><code><a href="../../../SessionsController.html">SessionsController</a></code></li><li><code><a href="../../../SessionsHelper.html">SessionsHelper</a></code></li><li><code><a href="../../../User.html">User</a></code></li><li><code><a href="../../../UserMailer.html">UserMailer</a></code></li><li><code><a href="../../../UsersController.html">UsersController</a></code></li><li><code><a href="../../../UsersHelper.html">UsersHelper</a></code></li></ul>
+  </details>
+</div>
+
+</nav>
+
+<main role="main" aria-label="Page app/javascript/controllers/signup_validation_controller.js">
+
+<p>import { Controller } from “@hotwired/stimulus”</p>
+
+<p>// WHATWG email validation pattern (matches what browsers use for type=“email”). // Rejects invalid domains like “gmailsad,.com” that a looser [^\s@] pattern would allow. const EMAIL_PATTERN = /^[a-zA-Z0-9.!#$%&amp;‘*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]<a href="a-zA-Z0-9">0,61</a>)?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]<a href="a-zA-Z0-9">0,61</a>)?)+$/ const ALLOWED_CHARS = /^[a-zA-Z0-9.]*$/ const MIN_PASSWORD_LENGTH = 5 const EMAIL_CHECK_DELAY_MS = 400</p>
+
+<p>export default class extends Controller {</p>
+
+<pre>static targets = [
+  &quot;name&quot;,
+  &quot;email&quot;,
+  &quot;password&quot;,
+  &quot;confirmation&quot;,
+  &quot;submit&quot;,
+  &quot;nameFeedback&quot;,
+  &quot;emailFeedback&quot;,
+  &quot;emailHint&quot;,
+  &quot;passwordFeedback&quot;,
+  &quot;passwordCharFeedback&quot;,
+  &quot;confirmationFeedback&quot;
+]
+
+static values = {
+  checkEmailUrl: String
+}
+
+connect() {
+  this.emailAvailability = null
+  this.emailCheckTimer = null
+  this.emailCheckAbort = null
+  this.touched = new Set()
+
+  this.validateAll()
+
+  this.nameTarget.addEventListener(&quot;input&quot;, () =&gt; this.markTouched(this.nameTarget))
+  this.nameTarget.addEventListener(&quot;blur&quot;, () =&gt; this.markTouched(this.nameTarget))
+
+  this.emailTarget.addEventListener(&quot;input&quot;, () =&gt; {
+    this.emailAvailability = null
+    this.markTouched(this.emailTarget)
+    this.scheduleEmailAvailabilityCheck()
+  })
+  this.emailTarget.addEventListener(&quot;blur&quot;, () =&gt; {
+    this.markTouched(this.emailTarget)
+    this.checkEmailAvailability()
+  })
+
+  this.passwordTarget.addEventListener(&quot;input&quot;, () =&gt; this.markTouched(this.passwordTarget))
+  this.passwordTarget.addEventListener(&quot;blur&quot;, () =&gt; this.markTouched(this.passwordTarget))
+  this.confirmationTarget.addEventListener(&quot;input&quot;, () =&gt; this.markTouched(this.confirmationTarget))
+  this.confirmationTarget.addEventListener(&quot;blur&quot;, () =&gt; this.markTouched(this.confirmationTarget))
+
+  this.element.addEventListener(&quot;submit&quot;, (event) =&gt; {
+    if (!this.formValid()) {
+      event.preventDefault()
+      this.fieldTargets().forEach((field) =&gt; this.touched.add(field))
+      this.validateAll()
+      if (!this.emailAvailabilityChecked()) {
+        this.checkEmailAvailability()
+      }
+      this.firstInvalidField()?.focus()
+    }
+  })
+}
+
+markTouched(field) {
+  this.touched.add(field)
+  this.validateAll()
+}
+
+isTouched(field) {
+  return this.touched.has(field)
+}
+
+disconnect() {
+  clearTimeout(this.emailCheckTimer)
+  this.emailCheckAbort?.abort()
+}
+
+fieldTargets() {
+  return [this.nameTarget, this.emailTarget, this.passwordTarget, this.confirmationTarget]
+}
+
+emailAvailabilityChecked() {
+  return this.emailAvailability === true
+}
+
+emailAvailabilityPending() {
+  return this.emailAvailability === &quot;checking&quot; || this.emailAvailability === null
+}
+
+formValid() {
+  return (
+    this.validateName() &amp;&amp;
+    this.validateEmail() &amp;&amp;
+    this.validatePassword() &amp;&amp;
+    this.validatePasswordChars() &amp;&amp;
+    this.validateConfirmation() &amp;&amp;
+    this.emailAvailabilityChecked()
+  )
+}
+
+validateAll() {
+  this.validateName()
+  this.validateEmail()
+  this.validatePassword()
+  this.validatePasswordChars()
+  this.validateConfirmation()
+  if (this.hasSubmitTarget) {
+    this.submitTarget.disabled = !this.formValid()
+  }
+}
+
+scheduleEmailAvailabilityCheck() {
+  clearTimeout(this.emailCheckTimer)
+  const value = this.emailTarget.value.trim()
+
+  if (!EMAIL_PATTERN.test(value)) {
+    this.clearEmailHint()
+    return
+  }
+
+  this.emailCheckTimer = setTimeout(() =&gt; this.checkEmailAvailability(), EMAIL_CHECK_DELAY_MS)
+}
+
+async checkEmailAvailability() {
+  if (!this.hasCheckEmailUrlValue) return
+
+  const value = this.emailTarget.value.trim()
+  if (!EMAIL_PATTERN.test(value)) {
+    this.emailAvailability = null
+    this.clearEmailHint()
+    return
+  }
+
+  this.emailCheckAbort?.abort()
+  this.emailCheckAbort = new AbortController()
+  this.emailAvailability = &quot;checking&quot;
+  this.showEmailHint(&quot;Checking if this email is available…&quot;)
+  this.validateAll()
+
+  try {
+    const url = new URL(this.checkEmailUrlValue, window.location.origin)
+    url.searchParams.set(&quot;email&quot;, value)
+
+    const response = await fetch(url.toString(), {
+      headers: { Accept: &quot;application/json&quot; },
+      signal: this.emailCheckAbort.signal
+    })
+
+    if (!response.ok) {
+      this.emailAvailability = null
+      this.clearEmailHint()
+      this.validateAll()
+      return
+    }
+
+    const data = await response.json()
+    if (this.emailTarget.value.trim() !== value) return
+
+    // Server rejected the format outright — treat as invalid, not &quot;already registered&quot;.
+    if (data.error === &quot;invalid&quot;) {
+      this.emailAvailability = &quot;invalid&quot;
+    } else {
+      this.emailAvailability = data.available === true
+    }
+    this.clearEmailHint()
+    this.validateAll()
+  } catch (error) {
+    if (error.name === &quot;AbortError&quot;) return
+    this.emailAvailability = null
+    this.clearEmailHint()
+    this.validateAll()
+  }
+}
+
+validateName() {
+  const value = this.nameTarget.value.trim()
+  if (value === &quot;&quot;) {
+    return this.setInvalid(this.nameTarget, this.nameFeedbackTarget, &quot;Name is required.&quot;)
+  }
+  return this.setValid(this.nameTarget, this.nameFeedbackTarget)
+}
+
+validatePasswordChars() {
+  const value = this.passwordTarget.value
+  if (value === &quot;&quot;) return true // let validatePassword handle empty case
+  if (!ALLOWED_CHARS.test(value)) {
+    this.setCharInvalid(this.passwordTarget, this.passwordCharFeedbackTarget)
+    return false
+  }
+  this.clearCharFeedback(this.passwordTarget, this.passwordCharFeedbackTarget)
+  return true
+}
+
+setCharInvalid(field, feedbackTarget) {
+  if (!this.isTouched(field)) {
+    this.clearCharFeedback(field, feedbackTarget)
+    return
+  }
+  field.classList.add(&quot;is-invalid&quot;)
+  field.classList.remove(&quot;is-valid&quot;)
+  field.setAttribute(&quot;aria-invalid&quot;, &quot;true&quot;)
+  if (feedbackTarget) {
+    feedbackTarget.textContent = &quot;Only letters (a-z), numbers (0-9), and periods (.) are allowed.&quot;
+    feedbackTarget.classList.remove(&quot;d-none&quot;)
+  }
+}
+
+clearCharFeedback(field, feedbackTarget) {
+  if (feedbackTarget) {
+    feedbackTarget.textContent = &quot;&quot;
+    feedbackTarget.classList.add(&quot;d-none&quot;)
+  }
+}
+
+validateEmail() {
+  const value = this.emailTarget.value.trim()
+  if (value === &quot;&quot;) {
+    this.emailAvailability = null
+    this.clearEmailHint()
+    return this.setInvalid(this.emailTarget, this.emailFeedbackTarget, &quot;Email is required.&quot;)
+  }
+  if (!EMAIL_PATTERN.test(value)) {
+    this.emailAvailability = null
+    this.clearEmailHint()
+    return this.setInvalid(this.emailTarget, this.emailFeedbackTarget, &quot;Enter a valid email address.&quot;)
+  }
+
+  if (this.emailAvailability === &quot;checking&quot;) {
+    this.emailTarget.classList.remove(&quot;is-valid&quot;, &quot;is-invalid&quot;)
+    this.emailTarget.setAttribute(&quot;aria-invalid&quot;, &quot;false&quot;)
+    if (this.hasEmailFeedbackTarget) {
+      this.emailFeedbackTarget.textContent = &quot;&quot;
+      this.emailFeedbackTarget.classList.add(&quot;d-none&quot;)
+    }
+    return false
+  }
+
+  if (this.emailAvailability === &quot;invalid&quot;) {
+    return this.setInvalid(this.emailTarget, this.emailFeedbackTarget, &quot;Enter a valid email address.&quot;)
+  }
+
+  if (this.emailAvailability === false) {
+    return this.setInvalid(
+      this.emailTarget,
+      this.emailFeedbackTarget,
+      &quot;This email is already registered. Try logging in instead.&quot;
+    )
+  }
+
+  if (this.emailAvailability === true) {
+    return this.setValid(this.emailTarget, this.emailFeedbackTarget)
+  }
+
+  this.emailTarget.classList.remove(&quot;is-valid&quot;, &quot;is-invalid&quot;)
+  this.emailTarget.setAttribute(&quot;aria-invalid&quot;, &quot;false&quot;)
+  if (this.hasEmailFeedbackTarget) {
+    this.emailFeedbackTarget.textContent = &quot;&quot;
+    this.emailFeedbackTarget.classList.add(&quot;d-none&quot;)
+  }
+  return false
+}
+
+validatePassword() {
+  const value = this.passwordTarget.value
+  if (value.length &lt; MIN_PASSWORD_LENGTH) {
+    this.setInvalid(
+      this.passwordTarget,
+      this.passwordFeedbackTarget,
+      `Password must be at least ${MIN_PASSWORD_LENGTH} characters.`
+    )
+    return false
+  }
+  this.setValid(this.passwordTarget, this.passwordFeedbackTarget)
+  if (this.confirmationTarget.value.length &gt; 0) {
+    this.validateConfirmation()
+  }
+  return true
+}
+
+validateConfirmation() {
+  const password = this.passwordTarget.value
+  const confirmation = this.confirmationTarget.value
+  if (confirmation === &quot;&quot;) {
+    return this.setInvalid(this.confirmationTarget, this.confirmationFeedbackTarget, &quot;Please confirm your password.&quot;)
+  }
+  if (password !== confirmation) {
+    return this.setInvalid(this.confirmationTarget, this.confirmationFeedbackTarget, &quot;Passwords must match.&quot;)
+  }
+  return this.setValid(this.confirmationTarget, this.confirmationFeedbackTarget)
+}
+
+showEmailHint(message) {
+  if (!this.hasEmailHintTarget) return
+  this.emailHintTarget.textContent = message
+  this.emailHintTarget.classList.remove(&quot;d-none&quot;)
+}
+
+clearEmailHint() {
+  if (!this.hasEmailHintTarget) return
+  this.emailHintTarget.textContent = &quot;&quot;
+  this.emailHintTarget.classList.add(&quot;d-none&quot;)
+}
+
+setInvalid(field, feedback, message) {
+  if (!this.isTouched(field)) {
+    field.classList.remove(&quot;is-invalid&quot;, &quot;is-valid&quot;)
+    field.setAttribute(&quot;aria-invalid&quot;, &quot;false&quot;)
+    if (feedback) {
+      feedback.textContent = &quot;&quot;
+      feedback.classList.add(&quot;d-none&quot;)
+    }
+    return false
+  }
+  field.classList.add(&quot;is-invalid&quot;)
+  field.classList.remove(&quot;is-valid&quot;)
+  field.setAttribute(&quot;aria-invalid&quot;, &quot;true&quot;)
+  if (feedback) {
+    feedback.textContent = message
+    feedback.classList.remove(&quot;d-none&quot;)
+  }
+  return false
+}
+
+setValid(field, feedback) {
+  const touched = field.value.length &gt; 0
+  field.classList.remove(&quot;is-invalid&quot;)
+  field.setAttribute(&quot;aria-invalid&quot;, &quot;false&quot;)
+  if (touched) {
+    field.classList.add(&quot;is-valid&quot;)
+  } else {
+    field.classList.remove(&quot;is-valid&quot;)
+  }
+  if (feedback) {
+    feedback.textContent = &quot;&quot;
+    feedback.classList.add(&quot;d-none&quot;)
+  }
+  return true
+}
+
+firstInvalidField() {
+  return this.fieldTargets().find((field) =&gt; field.classList.contains(&quot;is-invalid&quot;))
+}</pre>
+
+<p>}</p>
+
+</main>
+
+<aside class="table-of-contents" role="complementary" aria-label="Table of Contents">
+  <div class="toc-sticky">
+    <h3 class="toc-heading">On This Page</h3>
+    <nav class="toc-nav" id="toc-nav" aria-label="Page sections">
+      <!-- Generated by JavaScript based on page headings -->
+    </nav>
+  </div>
+</aside>
+
+
+<footer class="site-footer">
+  
+
+  <div class="footer-bottom">
+    <p>
+      Generated by <a href="https://ruby.github.io/rdoc/">RDoc 7.2.0</a>
+      using the Aliki theme by <a href="http://st0012.dev">Stan Lo</a>
+    </p>
+  </div>
+</footer>
+
+</body>
+

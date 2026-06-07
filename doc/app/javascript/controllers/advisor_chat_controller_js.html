@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>advisor_chat_controller.js - Activity Finder</title>
+
+
+  <meta name="keywords" content="ruby,documentation,advisor_chat_controller.js">
+  <meta
+    name="description"
+    content="advisor_chat_controller.js: Boolean } connect() { this. history = [] this."
+  >
+
+
+
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="advisor_chat_controller.js - Activity Finder">
+
+
+
+    <meta property="og:description" content="Boolean } connect() { this. history = [] this.">
+
+
+
+
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="advisor_chat_controller.js - Activity Finder">
+
+
+
+    <meta name="twitter:description" content="Boolean } connect() { this. history = [] this.">
+
+
+
+<script type="text/javascript">
+  var rdoc_rel_prefix = "../../../";
+  var index_rel_prefix = "../../../";
+</script>
+
+<script
+  src="../../../js/theme-toggle.js?v=7.2.0"
+></script>
+
+<script
+  src="../../../js/search_navigation.js?v=7.2.0"
+  defer
+></script>
+
+<script
+  src="../../../js/search_data.js?v=7.2.0"
+  defer
+></script>
+
+<script
+  src="../../../js/search_ranker.js?v=7.2.0"
+  defer
+></script>
+
+<script
+  src="../../../js/search_controller.js?v=7.2.0"
+  defer
+></script>
+
+<script
+  src="../../../js/c_highlighter.js?v=7.2.0"
+  defer
+></script>
+
+<script
+  src="../../../js/bash_highlighter.js?v=7.2.0"
+  defer
+></script>
+
+<script
+  src="../../../js/aliki.js?v=7.2.0"
+  defer
+></script>
+
+<link
+  href="../../../css/rdoc.css?v=7.2.0"
+  rel="stylesheet"
+>
+
+
+
+
+<body role="document" class="file has-toc">
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <!-- Chevron (right arrow) - used for expand/collapse -->
+  <symbol
+    id="icon-chevron"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <polyline points="9 18 15 12 9 6"></polyline>
+  </symbol>
+
+  <!-- File/Document - Pages section -->
+  <symbol
+    id="icon-file"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <path
+      d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"
+    ></path>
+
+    <polyline points="14 2 14 8 20 8"></polyline>
+  </symbol>
+
+  <!-- Layers/Stack - Classes and Modules section -->
+  <symbol
+    id="icon-layers"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+    <polyline points="2 17 12 22 22 17"></polyline>
+    <polyline points="2 12 12 17 22 12"></polyline>
+  </symbol>
+
+  <!-- Curly braces with C - Class Methods section -->
+  <symbol
+    id="icon-class-methods"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <path d="M6 3C3.5 3 2 4.5 2 7v3c0 1.5-1 2-1 2s1 .5 1 2v5c0 2.5 1.5 4 4 4"></path>
+    <path d="M18 3c2.5 0 4 1.5 4 4v3c0 1.5 1 2 1 2s-1 .5-1 2v5c0 2.5-1.5 4-4 4"></path>
+
+    <text
+      x="12"
+      y="17"
+      text-anchor="middle"
+      font-size="13"
+      font-weight="bold"
+      fill="currentColor"
+      stroke="none"
+    >
+      C
+    </text>
+  </symbol>
+
+  <!-- Curly braces with I - Instance Methods section -->
+  <symbol
+    id="icon-instance-methods"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <path d="M6 3C3.5 3 2 4.5 2 7v3c0 1.5-1 2-1 2s1 .5 1 2v5c0 2.5 1.5 4 4 4"></path>
+    <path d="M18 3c2.5 0 4 1.5 4 4v3c0 1.5 1 2 1 2s-1 .5-1 2v5c0 2.5-1.5 4-4 4"></path>
+
+    <text
+      x="12"
+      y="17"
+      text-anchor="middle"
+      font-size="13"
+      font-weight="bold"
+      fill="currentColor"
+      stroke="none"
+    >
+      I
+    </text>
+  </symbol>
+
+  <!-- Double chevrons up - Ancestors section -->
+  <symbol
+    id="icon-ancestors"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <polyline points="17 11 12 6 7 11"></polyline>
+    <polyline points="17 18 12 13 7 18"></polyline>
+  </symbol>
+
+  <!-- User with plus - Included Modules section -->
+  <symbol
+    id="icon-includes"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+    <circle cx="8.5" cy="7" r="4"></circle>
+
+    <line
+      x1="20"
+      y1="8"
+      x2="20"
+      y2="14"
+    ></line>
+
+    <line
+      x1="23"
+      y1="11"
+      x2="17"
+      y2="11"
+    ></line>
+  </symbol>
+
+  <!-- User with check - Extended Modules section -->
+  <symbol
+    id="icon-extends"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+    <circle cx="8.5" cy="7" r="4"></circle>
+    <polyline points="17 11 19 13 23 9"></polyline>
+  </symbol>
+
+  <!-- List - Sections section -->
+  <symbol
+    id="icon-list"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <line
+      x1="8"
+      y1="6"
+      x2="21"
+      y2="6"
+    ></line>
+
+    <line
+      x1="8"
+      y1="12"
+      x2="21"
+      y2="12"
+    ></line>
+
+    <line
+      x1="8"
+      y1="18"
+      x2="21"
+      y2="18"
+    ></line>
+
+    <line
+      x1="3"
+      y1="6"
+      x2="3.01"
+      y2="6"
+    ></line>
+
+    <line
+      x1="3"
+      y1="12"
+      x2="3.01"
+      y2="12"
+    ></line>
+
+    <line
+      x1="3"
+      y1="18"
+      x2="3.01"
+      y2="18"
+    ></line>
+  </symbol>
+</svg>
+
+<header class="top-navbar">
+  <a href="../../../index.html" class="navbar-brand">
+    Activity Finder
+  </a>
+
+  <!-- Desktop search bar -->
+  <div class="navbar-search navbar-search-desktop" role="search">
+    <form action="#" method="get" accept-charset="utf-8">
+      <input id="search-field" role="combobox" aria-label="Search"
+             aria-autocomplete="list" aria-controls="search-results-desktop"
+             type="text" name="search" placeholder="Search (/) for a class, method..."
+             spellcheck="false" autocomplete="off"
+             title="Type to search, Up and Down to navigate, Enter to load">
+      <ul id="search-results-desktop" aria-label="Search Results"
+          aria-busy="false" aria-expanded="false"
+          aria-atomic="false" class="initially-hidden search-results"></ul>
+    </form>
+  </div>
+
+  <!-- Mobile search icon button -->
+  <button id="search-toggle" class="navbar-search-mobile" aria-label="Open search" type="button">
+    <span aria-hidden="true">🔍</span>
+  </button>
+
+  <!-- Theme toggle button -->
+  <button id="theme-toggle" class="theme-toggle" aria-label="Switch to dark mode" type="button">
+    <span class="theme-toggle-icon" aria-hidden="true">🌙</span>
+  </button>
+</header>
+
+<!-- Search Modal (Mobile) -->
+<div id="search-modal" class="search-modal" hidden aria-modal="true" role="dialog" aria-label="Search">
+  <div class="search-modal-backdrop"></div>
+  <div class="search-modal-content">
+    <div class="search-modal-header">
+      <form class="search-modal-form" action="#" method="get" accept-charset="utf-8">
+        <span class="search-modal-icon" aria-hidden="true">🔍</span>
+        <input id="search-field-mobile" role="combobox" aria-label="Search"
+               aria-autocomplete="list" aria-controls="search-results-mobile"
+               type="text" name="search" placeholder="Search documentation"
+               spellcheck="false" autocomplete="off">
+        <button type="button" class="search-modal-close" aria-label="Close search" id="search-modal-close">
+          <span aria-hidden="true">esc</span>
+        </button>
+      </form>
+    </div>
+    <div class="search-modal-body">
+      <ul id="search-results-mobile" aria-label="Search Results"
+          aria-busy="false" aria-expanded="false"
+          aria-atomic="false" class="search-results search-modal-results initially-hidden"></ul>
+      <div class="search-modal-empty">
+        <p>No recent searches</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="navigation-toggle" role="button" tabindex="0" aria-label="Toggle sidebar" aria-expanded="true" aria-controls="navigation">
+  <span aria-hidden="true">&#9776;</span>
+</div>
+
+
+<nav id="navigation" role="navigation" hidden>
+  
+
+
+
+
+
+
+  <div id="fileindex-section" class="nav-section">
+    <details class="nav-section-collapsible" open>
+      <summary class="nav-section-header">
+        <span class="nav-section-icon">
+          <svg>
+            <use href="#icon-file"></use>
+          </svg>
+        </span>
+
+        <span class="nav-section-title">Pages</span>
+
+        <span class="nav-section-chevron">
+          <svg>
+            <use href="#icon-chevron"></use>
+          </svg>
+        </span>
+      </summary>
+
+      <ul class="nav-list">
+
+
+
+
+
+
+            <li>
+              <a href="../../../README_md.html">
+                README
+              </a>
+            </li>
+
+
+
+
+
+          <li>
+            <details  open>
+              <summary>
+                
+                  app
+                  
+                
+              </summary>
+
+              <ul class="link-list">
+
+                  <li>
+                    <a href="../../../app/assets/stylesheets/application_css.html">
+                      application.css
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../../app/javascript/application_js.html">
+                      application.js
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../../app/javascript/controllers/activity_form_validation_controller_js.html">
+                      activity_form_validation_controller.js
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../../app/javascript/controllers/activity_map_controller_js.html">
+                      activity_map_controller.js
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../../app/javascript/controllers/advisor_chat_controller_js.html">
+                      advisor_chat_controller.js
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../../app/javascript/controllers/application_js.html">
+                      application.js
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../../app/javascript/controllers/category_picker_controller_js.html">
+                      category_picker_controller.js
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../../app/javascript/controllers/city_picker_controller_js.html">
+                      city_picker_controller.js
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../../app/javascript/controllers/flash_controller_js.html">
+                      flash_controller.js
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../../app/javascript/controllers/hello_controller_js.html">
+                      hello_controller.js
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../../app/javascript/controllers/index_js.html">
+                      index.js
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../../app/javascript/controllers/profile_activities_controller_js.html">
+                      profile_activities_controller.js
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../../app/javascript/controllers/search_controller_js.html">
+                      search_controller.js
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../../app/javascript/controllers/share_link_controller_js.html">
+                      share_link_controller.js
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../../app/javascript/controllers/signup_validation_controller_js.html">
+                      signup_validation_controller.js
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../../app/javascript/image_upload_js.html">
+                      image_upload.js
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../../app/javascript/pwa_js.html">
+                      pwa.js
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../../app/javascript/utils/profanity_filter_js.html">
+                      profanity_filter.js
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../../app/javascript/utils/readable_text_js.html">
+                      readable_text.js
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../../app/views/activities/_activity_json_jbuilder.html">
+                      _activity.json.jbuilder
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../../app/views/activities/index_json_jbuilder.html">
+                      index.json.jbuilder
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../../app/views/activities/show_json_jbuilder.html">
+                      show.json.jbuilder
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../../app/views/pwa/service-worker_js.html">
+                      service-worker.js
+                    </a>
+                  </li>
+
+              </ul>
+            </details>
+          </li>
+
+
+
+
+
+          <li>
+            <details >
+              <summary>
+                
+                  lib
+                  
+                
+              </summary>
+
+              <ul class="link-list">
+
+                  <li>
+                    <a href="../../../lib/tasks/rdoc_rake.html">
+                      rdoc.rake
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../../lib/tasks/seed_large_rake.html">
+                      seed_large.rake
+                    </a>
+                  </li>
+
+              </ul>
+            </details>
+          </li>
+
+      </ul>
+    </details>
+  </div>
+
+
+  <div id="classindex-section" class="nav-section">
+  <details class="nav-section-collapsible" open>
+    <summary class="nav-section-header">
+      <span class="nav-section-icon">
+        <svg><use href="#icon-layers"></use></svg>
+      </span>
+      <span class="nav-section-title">Classes and Modules</span>
+      <span class="nav-section-chevron">
+        <svg><use href="#icon-chevron"></use></svg>
+      </span>
+    </summary>
+
+    <ul class="link-list nav-list"><li><code><a href="../../../ActivitiesController.html">ActivitiesController</a></code></li><li><code><a href="../../../ActivitiesHelper.html">ActivitiesHelper</a></code></li><li><code><a href="../../../Activity.html">Activity</a></code></li><li><details><summary><code><a href="../../../ActivityAdvisor.html">ActivityAdvisor</a></code></summary><ul class="link-list nav-list"><li><code><a href="../../../ActivityAdvisor/ActivityCatalog.html">ActivityCatalog</a></code></li><li><details><summary><code><a href="../../../ActivityAdvisor/ChatService.html">ChatService</a></code></summary><ul class="link-list nav-list"><li><code><a href="../../../ActivityAdvisor/ChatService/BedrockError.html">BedrockError</a></code></li><li><code><a href="../../../ActivityAdvisor/ChatService/ConfigurationError.html">ConfigurationError</a></code></li></ul></details></li><li><code><a href="../../../ActivityAdvisor/RecommendationParser.html">RecommendationParser</a></code></li></ul></details></li><li><code><a href="../../../ActivityCalendarExporter.html">ActivityCalendarExporter</a></code></li><li><code><a href="../../../ActivityListPagination.html">ActivityListPagination</a></code></li><li><code><a href="../../../ActivityNavigation.html">ActivityNavigation</a></code></li><li><code><a href="../../../ActivityPdfExporter.html">ActivityPdfExporter</a></code></li><li><code><a href="../../../ActivityProfanityFilter.html">ActivityProfanityFilter</a></code></li><li><code><a href="../../../ActivitySignup.html">ActivitySignup</a></code></li><li><code><a href="../../../ActivityTextValidation.html">ActivityTextValidation</a></code></li><li><details><summary><code><a href="../../../Advisor.html">Advisor</a></code></summary><ul class="link-list nav-list"><li><code><a href="../../../Advisor/MessagesController.html">MessagesController</a></code></li></ul></details></li><li><code><a href="../../../ApplicationController.html">ApplicationController</a></code></li><li><code><a href="../../../ApplicationHelper.html">ApplicationHelper</a></code></li><li><code><a href="../../../ApplicationJob.html">ApplicationJob</a></code></li><li><code><a href="../../../ApplicationMailer.html">ApplicationMailer</a></code></li><li><code><a href="../../../ApplicationRecord.html">ApplicationRecord</a></code></li><li><code><a href="../../../BotPrevention.html">BotPrevention</a></code></li><li><code><a href="../../../LocationGeocoder.html">LocationGeocoder</a></code></li><li><code><a href="../../../OmniauthHost.html">OmniauthHost</a></code></li><li><code><a href="../../../PagesController.html">PagesController</a></code></li><li><code><a href="../../../PasswordsController.html">PasswordsController</a></code></li><li><code><a href="../../../SessionsController.html">SessionsController</a></code></li><li><code><a href="../../../SessionsHelper.html">SessionsHelper</a></code></li><li><code><a href="../../../User.html">User</a></code></li><li><code><a href="../../../UserMailer.html">UserMailer</a></code></li><li><code><a href="../../../UsersController.html">UsersController</a></code></li><li><code><a href="../../../UsersHelper.html">UsersHelper</a></code></li></ul>
+  </details>
+</div>
+
+</nav>
+
+<main role="main" aria-label="Page app/javascript/controllers/advisor_chat_controller.js">
+
+<p>import { Controller } from “@hotwired/stimulus”</p>
+
+<p>export default class extends Controller {</p>
+
+<pre>static targets = [ &quot;fab&quot;, &quot;panel&quot;, &quot;messages&quot;, &quot;form&quot;, &quot;input&quot;, &quot;send&quot;, &quot;typing&quot; ]
+static values = { url: String, open: Boolean }
+
+connect() {
+  this.history = []
+  this.boundEscape = this.onEscape.bind(this)
+  document.addEventListener(&quot;keydown&quot;, this.boundEscape)
+}
+
+disconnect() {
+  document.removeEventListener(&quot;keydown&quot;, this.boundEscape)
+}
+
+toggle() {
+  this.openValue ? this.close() : this.open()
+}
+
+open() {
+  this.openValue = true
+  this.panelTarget.hidden = false
+  this.panelTarget.classList.add(&quot;is-open&quot;)
+  this.fabTarget.setAttribute(&quot;aria-expanded&quot;, &quot;true&quot;)
+  this.fabTarget.classList.add(&quot;is-hidden&quot;)
+  this.inputTarget.focus()
+}
+
+close() {
+  this.openValue = false
+  this.panelTarget.classList.remove(&quot;is-open&quot;)
+  this.fabTarget.setAttribute(&quot;aria-expanded&quot;, &quot;false&quot;)
+  this.fabTarget.classList.remove(&quot;is-hidden&quot;)
+  window.setTimeout(() =&gt; {
+    if (!this.openValue) this.panelTarget.hidden = true
+  }, 220)
+}
+
+keydown(event) {
+  if (event.key === &quot;Enter&quot; &amp;&amp; !event.shiftKey) {
+    event.preventDefault()
+    this.formTarget.requestSubmit()
+  }
+}
+
+resize() {
+  const field = this.inputTarget
+  field.style.height = &quot;auto&quot;
+  field.style.height = `${Math.min(field.scrollHeight, 120)}px`
+}
+
+async send(event) {
+  event.preventDefault()
+
+  const text = this.inputTarget.value.trim()
+  if (!text || this.isSending) return
+
+  this.isSending = true
+  this.sendTarget.disabled = true
+
+  this.appendMessage(&quot;user&quot;, text)
+  this.history.push({ role: &quot;user&quot;, content: text })
+  this.inputTarget.value = &quot;&quot;
+  this.resize()
+  this.showTyping(true)
+
+  try {
+    const response = await fetch(this.urlValue, {
+      method: &quot;POST&quot;,
+      headers: {
+        &quot;Content-Type&quot;: &quot;application/json&quot;,
+        Accept: &quot;application/json&quot;,
+        &quot;X-CSRF-Token&quot;: this.csrfToken
+      },
+      body: JSON.stringify({ messages: this.history })
+    })
+
+    const data = await response.json()
+
+    if (!response.ok) {
+      this.appendMessage(&quot;assistant&quot;, data.error || &quot;Sorry, something went wrong. Please try again.&quot;)
+      return
+    }
+
+    const reply = data.reply?.trim() || this.defaultReply(data)
+    this.appendMessage(&quot;assistant&quot;, reply, data.recommendations, data.draft_activity)
+    this.history.push({ role: &quot;assistant&quot;, content: reply })
+  } catch {
+    this.appendMessage(&quot;assistant&quot;, &quot;I couldn’t reach the server. Check your connection and try again.&quot;)
+  } finally {
+    this.showTyping(false)
+    this.isSending = false
+    this.sendTarget.disabled = false
+    this.inputTarget.focus()
+  }
+}
+
+appendMessage(role, text, recommendations = [], draft = null) {
+  const wrapper = document.createElement(&quot;div&quot;)
+  wrapper.className = `advisor-chat-message advisor-chat-message--${role}`
+
+  const bubble = document.createElement(&quot;div&quot;)
+  bubble.className = &quot;advisor-chat-bubble&quot;
+
+  const paragraph = document.createElement(&quot;p&quot;)
+  paragraph.textContent = text
+  bubble.appendChild(paragraph)
+
+  if (draft?.url) {
+    bubble.appendChild(this.buildDraftCard(draft))
+  }
+
+  if (recommendations?.length) {
+    const list = document.createElement(&quot;div&quot;)
+    list.className = &quot;advisor-chat-recommendations&quot;
+    list.setAttribute(&quot;role&quot;, &quot;list&quot;)
+    list.setAttribute(&quot;aria-label&quot;, &quot;Recommended activities&quot;)
+
+    recommendations.forEach((item) =&gt; {
+      const card = document.createElement(&quot;article&quot;)
+      card.className = &quot;advisor-chat-rec-card&quot;
+      card.setAttribute(&quot;role&quot;, &quot;listitem&quot;)
+
+      const metaParts = [ item.category, item.city, item.event_date ].filter(Boolean)
+      const meta = metaParts.length
+        ? `&lt;p class=&quot;advisor-chat-rec-meta&quot;&gt;${metaParts.map((part) =&gt; this.escapeHtml(part)).join(&quot; · &quot;)}&lt;/p&gt;`
+        : &quot;&quot;
+
+      card.innerHTML = `
+        &lt;div class=&quot;advisor-chat-rec-body&quot;&gt;
+          &lt;h3 class=&quot;advisor-chat-rec-title&quot;&gt;${this.escapeHtml(item.title)}&lt;/h3&gt;
+          ${meta}
+          &lt;p class=&quot;advisor-chat-rec-reason&quot;&gt;${this.escapeHtml(item.reason)}&lt;/p&gt;
+        &lt;/div&gt;
+        &lt;a class=&quot;advisor-chat-rec-btn btn btn-sm&quot; href=&quot;${this.escapeHtml(item.url)}&quot;&gt;View &amp;amp; join&lt;/a&gt;
+      `
+      list.appendChild(card)
+    })
+
+    bubble.appendChild(list)
+  }
+
+  wrapper.appendChild(bubble)
+  this.messagesTarget.appendChild(wrapper)
+  this.scrollToBottom()
+}
+
+buildDraftCard(draft) {
+  const card = document.createElement(&quot;article&quot;)
+  card.className = &quot;advisor-chat-rec-card advisor-chat-draft-card&quot;
+
+  const metaParts = [ draft.category, draft.city, draft.event_date ].filter(Boolean)
+  const meta = metaParts.length
+    ? `&lt;p class=&quot;advisor-chat-rec-meta&quot;&gt;${metaParts.map((part) =&gt; this.escapeHtml(part)).join(&quot; · &quot;)}&lt;/p&gt;`
+    : &quot;&quot;
+
+  card.innerHTML = `
+    &lt;div class=&quot;advisor-chat-rec-body&quot;&gt;
+      &lt;p class=&quot;advisor-chat-rec-kicker&quot;&gt;New activity draft&lt;/p&gt;
+      &lt;h3 class=&quot;advisor-chat-rec-title&quot;&gt;${this.escapeHtml(draft.title)}&lt;/h3&gt;
+      ${meta}
+      &lt;p class=&quot;advisor-chat-rec-reason&quot;&gt;Review the details and publish it when you&#39;re ready.&lt;/p&gt;
+    &lt;/div&gt;
+    &lt;a class=&quot;advisor-chat-rec-btn btn btn-sm&quot; href=&quot;${this.escapeHtml(draft.url)}&quot;&gt;Create this event&lt;/a&gt;
+  `
+  return card
+}
+
+// Fallback copy when the model returns only a JSON block with no prose.
+defaultReply(data) {
+  if (data.draft_activity) return &quot;I&#39;ve put together a draft — review and publish it below.&quot;
+  if (data.recommendations?.length) return &quot;Here&#39;s what I found for you:&quot;
+  return &quot;Sorry, I didn&#39;t catch that. Could you tell me a bit more about what you&#39;re looking for?&quot;
+}
+
+showTyping(visible) {
+  this.typingTarget.hidden = !visible
+  if (visible) this.scrollToBottom()
+}
+
+scrollToBottom() {
+  this.messagesTarget.scrollTop = this.messagesTarget.scrollHeight
+}
+
+onEscape(event) {
+  if (event.key === &quot;Escape&quot; &amp;&amp; this.openValue) this.close()
+}
+
+get csrfToken() {
+  return document.querySelector(&#39;meta[name=&quot;csrf-token&quot;]&#39;)?.content
+}
+
+escapeHtml(value) {
+  return String(value)
+    .replaceAll(&quot;&amp;&quot;, &quot;&amp;amp;&quot;)
+    .replaceAll(&quot;&lt;&quot;, &quot;&amp;lt;&quot;)
+    .replaceAll(&quot;&gt;&quot;, &quot;&amp;gt;&quot;)
+    .replaceAll(&#39;&quot;&#39;, &quot;&amp;quot;&quot;)
+}</pre>
+
+<p>}</p>
+
+</main>
+
+<aside class="table-of-contents" role="complementary" aria-label="Table of Contents">
+  <div class="toc-sticky">
+    <h3 class="toc-heading">On This Page</h3>
+    <nav class="toc-nav" id="toc-nav" aria-label="Page sections">
+      <!-- Generated by JavaScript based on page headings -->
+    </nav>
+  </div>
+</aside>
+
+
+<footer class="site-footer">
+  
+
+  <div class="footer-bottom">
+    <p>
+      Generated by <a href="https://ruby.github.io/rdoc/">RDoc 7.2.0</a>
+      using the Aliki theme by <a href="http://st0012.dev">Stan Lo</a>
+    </p>
+  </div>
+</footer>
+
+</body>
+
