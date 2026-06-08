@@ -34,6 +34,10 @@ Then("I should be on the login page") do
   expect(page).to have_current_path(login_path, ignore_query: true)
 end
 
+Then("I should be on the activities page") do
+  expect(page).to have_current_path(activities_path, ignore_query: true)
+end
+
 Then("I should see {string}") do |text|
   expect(combined_page_content).to include(text)
 end
