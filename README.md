@@ -39,7 +39,7 @@ Things you may want to cover:
 
 
 # Heroku Deployment
-- https://activity-finder-8073ba70e16c.herokuapp.com/activities
+- https://activity-finder-8073ba70e16c.herokuapp.com
 
 ### Google Sign-In on Heroku
 
